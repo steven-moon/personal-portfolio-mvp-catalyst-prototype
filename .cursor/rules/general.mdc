@@ -3,10 +3,46 @@ description:
 globs: 
 alwaysApply: false
 ---
-# Description: General coding guidelines for Personal Portfolio MVP
+# Description: General coding guidelines for the Personal Portfolio MVP Catalyst Project
 # Globs: *.*
 
-## Project Guidelines
-- This is a React TypeScript project with Vite and TailwindCSS
-- Follow modern React practices
+## General Project Guidelines
+- This is a React 18+ TypeScript project built with Vite, TailwindCSS, and shadcn/ui components
+- Follow modern React practices using functional components and hooks
 - Use TypeScript for type safety
+- Use React Router for navigation
+- Use TailwindCSS for styling
+- Use shadcn/ui components for UI elements
+- Optimize for performance and accessibility
+
+## Code Style
+- Use 2 spaces for indentation
+- Use meaningful variable and function names
+- Write comments for complex logic
+- Keep functions small and focused on a single responsibility
+- Use ES6+ features where appropriate
+- Prefer const over let, avoid var
+- Use async/await over promises where appropriate
+- Organize imports alphabetically
+- Add proper TypeScript types to all variables, functions, and components
+
+## React Guidelines
+- Use functional components over class components
+- Use React hooks for state and side effects
+- Use React Context for global state when appropriate
+- Split large components into smaller, reusable ones
+- Add proper prop typing with TypeScript interfaces
+- Use React.memo for performance optimization when necessary
+- Use proper key props in lists
+
+## UI/UX Guidelines
+- Follow neumorphic design principles as described in the project README
+- Ensure all UI elements are responsive and work on all devices
+- Implement smooth animations and transitions
+- Ensure accessibility (WCAG) compliance
+- Use Lucide React for icons
+
+## Documentation
+- Keep code documentation up to date
+- Document complex algorithms and business logic
+- Use JSDoc comments for functions and components 
