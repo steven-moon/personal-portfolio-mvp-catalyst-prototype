@@ -1,8 +1,9 @@
+
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from "sonner";
 import NeumorphicButton from '@/components/ui/NeumorphicButton';
-import { FileEdit, Settings, BookOpen, FileText, User, LogOut } from 'lucide-react';
+import { FileEdit, Settings, BookOpen, FileText, User } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 
 const AdminCard = ({ title, description, icon: Icon, onClick }: { 
@@ -27,13 +28,6 @@ const AdminCard = ({ title, description, icon: Icon, onClick }: {
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const { logout } = useAuth();
-  
-  const handleLogout = () => {
-    logout();
-    toast.success('Logged out successfully');
-    navigate('/');
-  };
   
   const handleCardClick = (section: string) => {
     if (section === 'Blog Posts') {
@@ -55,14 +49,6 @@ const Dashboard = () => {
     <div className="container py-12 mx-auto page-transition">
       <div className="flex justify-between items-center mb-10">
         <h1 className="text-3xl font-bold text-neu-accent">Admin Dashboard</h1>
-        <NeumorphicButton
-          variant="secondary"
-          className="flex items-center gap-2"
-          onClick={handleLogout}
-        >
-          <LogOut size={18} />
-          Logout
-        </NeumorphicButton>
       </div>
       
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
