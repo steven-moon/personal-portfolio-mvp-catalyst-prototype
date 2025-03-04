@@ -2,7 +2,7 @@
 import React from 'react';
 import NeumorphicCard from '../ui/NeumorphicCard';
 import ContactInfoItem from './ContactInfoItem';
-import { Mail, MapPin, Github, Linkedin } from 'lucide-react';
+import { Mail, MapPin, Github, Linkedin, Twitter, Instagram, Youtube } from 'lucide-react';
 
 const ContactInfo = () => {
   return (
@@ -51,6 +51,51 @@ const ContactInfo = () => {
               className="text-neu-text-secondary hover:text-neu-accent transition-medium"
             >
               linkedin.com/in/johndoe
+            </a>
+          }
+        />
+
+        <ContactInfoItem
+          icon={Twitter}
+          title="Twitter"
+          content={
+            <a 
+              href="https://twitter.com" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-neu-text-secondary hover:text-neu-accent transition-medium"
+            >
+              twitter.com/johndoe
+            </a>
+          }
+        />
+
+        <ContactInfoItem
+          icon={Instagram}
+          title="Instagram"
+          content={
+            <a 
+              href="https://instagram.com" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-neu-text-secondary hover:text-neu-accent transition-medium"
+            >
+              instagram.com/johndoe
+            </a>
+          }
+        />
+
+        <ContactInfoItem
+          icon={Youtube}
+          title="YouTube"
+          content={
+            <a 
+              href="https://youtube.com" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-neu-text-secondary hover:text-neu-accent transition-medium"
+            >
+              youtube.com/c/johndoe
             </a>
           }
         />
