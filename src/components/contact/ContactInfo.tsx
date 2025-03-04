@@ -4,7 +4,24 @@ import NeumorphicCard from '../ui/NeumorphicCard';
 import ContactInfoItem from './ContactInfoItem';
 import { Mail, MapPin, Github, Linkedin, Twitter, Instagram, Youtube } from 'lucide-react';
 
+// This would typically come from a context or API
+// For now we'll use a static example that matches our editor
+const contactData = {
+  email: "hello@example.com",
+  location: "San Francisco, CA",
+  socialMedia: [
+    { id: 'github', name: 'GitHub', icon: Github, url: 'https://github.com/johndoe', enabled: true },
+    { id: 'linkedin', name: 'LinkedIn', icon: Linkedin, url: 'https://linkedin.com/in/johndoe', enabled: true },
+    { id: 'twitter', name: 'Twitter', icon: Twitter, url: 'https://twitter.com/johndoe', enabled: true },
+    { id: 'instagram', name: 'Instagram', icon: Instagram, url: 'https://instagram.com/johndoe', enabled: true },
+    { id: 'youtube', name: 'YouTube', icon: Youtube, url: 'https://youtube.com/c/johndoe', enabled: true }
+  ]
+};
+
 const ContactInfo = () => {
+  // In a real implementation, you would fetch this data from an API or context
+  const { email, location, socialMedia } = contactData;
+  
   return (
     <NeumorphicCard className="h-full">
       <h2 className="text-2xl font-semibold mb-6">Contact Information</h2>
@@ -13,8 +30,8 @@ const ContactInfo = () => {
           icon={Mail}
           title="Email"
           content={
-            <a href="mailto:hello@example.com" className="text-neu-text-secondary hover:text-neu-accent transition-medium">
-              hello@example.com
+            <a href={`mailto:${email}`} className="text-neu-text-secondary hover:text-neu-accent transition-medium">
+              {email}
             </a>
           }
         />
@@ -22,83 +39,29 @@ const ContactInfo = () => {
         <ContactInfoItem
           icon={MapPin}
           title="Location"
-          content={<p className="text-neu-text-secondary">San Francisco, CA</p>}
+          content={<p className="text-neu-text-secondary">{location}</p>}
         />
         
-        <ContactInfoItem
-          icon={Github}
-          title="GitHub"
-          content={
-            <a 
-              href="https://github.com" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="text-neu-text-secondary hover:text-neu-accent transition-medium"
-            >
-              github.com/johndoe
-            </a>
-          }
-        />
-        
-        <ContactInfoItem
-          icon={Linkedin}
-          title="LinkedIn"
-          content={
-            <a 
-              href="https://linkedin.com" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="text-neu-text-secondary hover:text-neu-accent transition-medium"
-            >
-              linkedin.com/in/johndoe
-            </a>
-          }
-        />
-
-        <ContactInfoItem
-          icon={Twitter}
-          title="Twitter"
-          content={
-            <a 
-              href="https://twitter.com" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="text-neu-text-secondary hover:text-neu-accent transition-medium"
-            >
-              twitter.com/johndoe
-            </a>
-          }
-        />
-
-        <ContactInfoItem
-          icon={Instagram}
-          title="Instagram"
-          content={
-            <a 
-              href="https://instagram.com" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="text-neu-text-secondary hover:text-neu-accent transition-medium"
-            >
-              instagram.com/johndoe
-            </a>
-          }
-        />
-
-        <ContactInfoItem
-          icon={Youtube}
-          title="YouTube"
-          content={
-            <a 
-              href="https://youtube.com" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="text-neu-text-secondary hover:text-neu-accent transition-medium"
-            >
-              youtube.com/c/johndoe
-            </a>
-          }
-        />
+        {socialMedia.filter(item => item.enabled).map(social => {
+          const Icon = social.icon;
+          return (
+            <ContactInfoItem
+              key={social.id}
+              icon={Icon}
+              title={social.name}
+              content={
+                <a 
+                  href={social.url} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-neu-text-secondary hover:text-neu-accent transition-medium"
+                >
+                  {social.url.replace(/(https?:\/\/)?(www\.)?/, '')}
+                </a>
+              }
+            />
+          );
+        })}
       </div>
     </NeumorphicCard>
   );
