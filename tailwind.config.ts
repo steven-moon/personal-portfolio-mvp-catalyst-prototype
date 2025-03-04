@@ -69,6 +69,7 @@ export default {
 					'accent-hover': '#3A80D2',
 					'text': '#333333',
 					'text-secondary': '#666666',
+					'border': '#C8C8C9',  // Added the missing neu-border color
 				}
 			},
 			borderRadius: {
