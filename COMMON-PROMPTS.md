@@ -9,3 +9,6 @@ use the {file-name} of (add your )
 
 echo "# Description: Guidelines for maintaining Cursor rules" > .cursor/rules/rule_maintenance.mdc && echo "# Globs: .cursor/rules/**/*.mdc" >> .cursor/rules/rule_maintenance.mdc && echo "" >> .cursor/rules/rule_maintenance.mdc && echo "## Rule Maintenance Guidelines" >> .cursor/rules/rule_maintenance.mdc && echo "- Keep Cursor rules up to date with project changes" >> .cursor/rules/rule_maintenance.mdc && echo "- Review and update rules periodically" >> .cursor/rules/rule_maintenance.mdc && echo "- Update rules when adding new technologies or patterns" >> .cursor/
 
+
+
+

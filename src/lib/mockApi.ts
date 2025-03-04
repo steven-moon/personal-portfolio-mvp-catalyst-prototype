@@ -1,9 +1,14 @@
 import { BlogPost, BLOG_POSTS } from '../data/blogData';
 import { Project, PROJECTS } from '../data/projectData';
+import { HomePage, HOME_DATA } from '../data/homeData';
+import { ContactInfo, CONTACT_DATA } from '../data/contactData';
+import { storeProfileImage } from './localStorageUtils';
 
 // In-memory store for the mock data
 let blogPosts = [...BLOG_POSTS];
 let projects = [...PROJECTS];
+let homeData = { ...HOME_DATA };
+let contactData = { ...CONTACT_DATA };
 
 // Helper to generate new IDs
 const getNextId = (items: { id: number }[]): number => {
@@ -181,5 +186,63 @@ export const mockProjectApi = {
     };
     
     return imageUrls;
+  }
+};
+
+// Mock implementation for Home API
+export const mockHomeApi = {
+  // Get home page content
+  async getHomeContent(): Promise<HomePage> {
+    await delay();
+    return { ...homeData };
+  },
+
+  // Update home page content
+  async updateHomeContent(updatedContent: HomePage): Promise<HomePage> {
+    await delay();
+    homeData = { ...updatedContent };
+    return { ...homeData };
+  },
+
+  // Upload profile image
+  async uploadProfileImage(image: File): Promise<string> {
+    await delay();
+    
+    try {
+      console.log("Mock API: Uploading profile image", image.name, image.size);
+      
+      // Store the image locally using our storage utility
+      const localPath = await storeProfileImage(image);
+      console.log("Mock API: Image stored successfully at:", localPath);
+      
+      return localPath;
+    } catch (error) {
+      console.error("Mock API: Failed to store image locally:", error);
+      
+      // Fallback to placeholder service if local storage fails
+      const width = 500;
+      const height = 500;
+      const randomId = Math.floor(Math.random() * 1000);
+      const fallbackUrl = `https://picsum.photos/id/${randomId}/${width}/${height}`;
+      console.log("Mock API: Using fallback image:", fallbackUrl);
+      
+      return fallbackUrl;
+    }
+  }
+};
+
+// Mock implementation for Contact API
+export const mockContactApi = {
+  // Get contact info
+  async getContactInfo(): Promise<ContactInfo> {
+    await delay();
+    return { ...contactData };
+  },
+
+  // Update contact info
+  async updateContactInfo(updatedContact: ContactInfo): Promise<ContactInfo> {
+    await delay();
+    contactData = { ...updatedContact };
+    return { ...contactData };
   }
 }; 

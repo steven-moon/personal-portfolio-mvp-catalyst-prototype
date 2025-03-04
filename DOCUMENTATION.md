@@ -151,6 +151,40 @@ export interface Project {
 }
 ```
 
+### HomePage
+
+```typescript
+export interface HomePage {
+  hero: {
+    title: string;
+    subtitle: string;
+    profession: string;
+    profileImage?: string;
+    services: {
+      id: string;
+      title: string;
+      description: string;
+    }[];
+  }
+}
+```
+
+### Contact
+
+```typescript
+export interface ContactInfo {
+  email: string;
+  location: string;
+  socialMedia: {
+    id: string;
+    name: string;
+    icon: string; // Icon component reference name
+    url: string;
+    enabled: boolean;
+  }[];
+}
+```
+
 In a production environment, these would typically be fetched from an API.
 
 ## Admin Dashboard

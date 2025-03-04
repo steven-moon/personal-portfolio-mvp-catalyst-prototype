@@ -1,51 +1,51 @@
-
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { toast } from "sonner";
 import NeumorphicCard from '@/components/ui/NeumorphicCard';
 import NeumorphicButton from '@/components/ui/NeumorphicButton';
-import { Save, Image, Trash } from 'lucide-react';
-
-interface HeroContent {
-  title: string;
-  subtitle: string;
-  profession: string;
-  services: {
-    id: string;
-    title: string;
-    description: string;
-  }[];
-}
+import { Save, Image, Trash, Upload } from 'lucide-react';
+import { HomeService } from '@/lib/apiService';
+import { HomePage } from '@/data/homeData';
+import LocalImage from '@/components/ui/LocalImage';
+import { clearProfileImage } from '@/lib/localStorageUtils';
 
 const HomeEditor = () => {
-  const [heroContent, setHeroContent] = useState<HeroContent>({
-    title: "John Doe",
-    subtitle: "Creating beautiful digital experiences with attention to detail",
-    profession: "Frontend Developer",
-    services: [
-      {
-        id: "1",
-        title: "UI/UX Design",
-        description: "Creating intuitive and beautiful user interfaces."
-      },
-      {
-        id: "2",
-        title: "Web Development",
-        description: "Building responsive and performant websites."
-      },
-      {
-        id: "3",
-        title: "Mobile Apps",
-        description: "Developing cross-platform mobile experiences."
-      }
-    ]
+  const [heroContent, setHeroContent] = useState<HomePage['hero']>({
+    title: "",
+    subtitle: "",
+    profession: "",
+    services: []
   });
 
   const [profileImage, setProfileImage] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isDragging, setIsDragging] = useState<boolean>(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // This effect would typically fetch the current hero content from an API
+  // Fetch the current hero content from the API
   useEffect(() => {
-    // In a real implementation, we would fetch the content from an API
-    // For now, we're using the initial state defined above
+    const fetchHomeContent = async () => {
+      try {
+        setIsLoading(true);
+        const data = await HomeService.getHomeContent();
+        setHeroContent({
+          title: data.hero.title,
+          subtitle: data.hero.subtitle,
+          profession: data.hero.profession,
+          services: data.hero.services || []
+        });
+        
+        if (data.hero.profileImage) {
+          setProfileImage(data.hero.profileImage);
+        }
+      } catch (error) {
+        console.error('Error fetching home content:', error);
+        toast.error('Failed to load home page content');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchHomeContent();
   }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -96,27 +96,148 @@ const HomeEditor = () => {
     });
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      // In a real implementation, we would upload the file to a server
-      // For now, we'll just create a local URL for preview
-      const imageUrl = URL.createObjectURL(file);
-      setProfileImage(imageUrl);
+  // Handle file input change (when user selects a file)
+  const handleImageChange = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+    
+    const file = files[0];
+    console.log("File selected:", file.name);
+    
+    try {
+      setIsLoading(true);
+      
+      // First set a local preview for immediate feedback
+      const localPreviewUrl = URL.createObjectURL(file);
+      setProfileImage(localPreviewUrl);
+      
+      // Then upload to the API
+      const serverImageUrl = await HomeService.uploadProfileImage(file);
+      console.log("Upload successful, server URL:", serverImageUrl);
+      
+      // Update with the server URL
+      setProfileImage(serverImageUrl);
       toast.success("Image uploaded successfully");
+      
+      // Clean up the local URL
+      URL.revokeObjectURL(localPreviewUrl);
+    } catch (error) {
+      console.error("Upload failed:", error);
+      toast.error("Failed to upload image");
+    } finally {
+      setIsLoading(false);
+      // Reset input so the same file can be selected again
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  }, []);
+
+  // Trigger file input click
+  const triggerFileInput = useCallback(() => {
+    console.log("Triggering file input");
+    fileInputRef.current?.click();
+  }, []);
+
+  // Handle drag events
+  const handleDragEnter = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
+  }, []);
+
+  const handleDragLeave = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+  }, []);
+
+  const handleDragOver = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
+  }, []);
+
+  const handleDrop = useCallback(async (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+    
+    const files = e.dataTransfer.files;
+    if (!files || files.length === 0) return;
+    
+    const file = files[0];
+    console.log("File dropped:", file.name, file.type);
+    
+    if (!file.type.startsWith('image/')) {
+      toast.error("Please drop an image file");
+      return;
+    }
+    
+    try {
+      setIsLoading(true);
+      
+      // First set a local preview for immediate feedback
+      const localPreviewUrl = URL.createObjectURL(file);
+      setProfileImage(localPreviewUrl);
+      
+      // Then upload to the API
+      const serverImageUrl = await HomeService.uploadProfileImage(file);
+      console.log("Upload successful, server URL:", serverImageUrl);
+      
+      // Update with the server URL
+      setProfileImage(serverImageUrl);
+      toast.success("Image uploaded successfully");
+      
+      // Clean up the local URL
+      URL.revokeObjectURL(localPreviewUrl);
+    } catch (error) {
+      console.error("Upload failed:", error);
+      toast.error("Failed to upload image");
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+  
+  const handleRemoveImage = useCallback(() => {
+    // Clear the profile image from local storage
+    clearProfileImage();
+    // Update the UI state
+    setProfileImage(null);
+    toast.success("Image removed");
+  }, []);
+
+  const handleSave = async () => {
+    try {
+      setIsLoading(true);
+      // Prepare the data to save
+      const homeData: HomePage = {
+        hero: {
+          ...heroContent,
+          profileImage: profileImage || undefined
+        }
+      };
+      
+      // Save to the API
+      await HomeService.updateHomeContent(homeData);
+      toast.success("Home page content saved successfully");
+    } catch (error) {
+      console.error('Error saving home content:', error);
+      toast.error('Failed to save home page content');
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const handleRemoveImage = () => {
-    setProfileImage(null);
-    toast.success("Image removed");
-  };
-
-  const handleSave = () => {
-    // In a real implementation, we would save the content to an API
-    console.log("Saving content:", heroContent);
-    toast.success("Home page content saved successfully");
-  };
+  if (isLoading && heroContent.services.length === 0) {
+    return (
+      <div className="container py-12 mx-auto">
+        <div className="animate-pulse space-y-8">
+          <div className="h-10 bg-neu-pressed w-1/3 rounded"></div>
+          <div className="h-64 bg-neu-pressed rounded"></div>
+          <div className="h-64 bg-neu-pressed rounded"></div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="container py-12 mx-auto page-transition">
@@ -125,9 +246,14 @@ const HomeEditor = () => {
         <NeumorphicButton 
           onClick={handleSave}
           className="flex items-center gap-2"
+          disabled={isLoading}
         >
-          <Save size={18} />
-          Save Changes
+          {isLoading ? 'Saving...' : (
+            <>
+              <Save size={18} />
+              Save Changes
+            </>
+          )}
         </NeumorphicButton>
       </div>
       
@@ -179,6 +305,7 @@ const HomeEditor = () => {
                 variant="secondary" 
                 onClick={handleAddService}
                 size="sm"
+                disabled={isLoading}
               >
                 Add Service
               </NeumorphicButton>
@@ -190,6 +317,7 @@ const HomeEditor = () => {
                   <button 
                     onClick={() => handleRemoveService(index)}
                     className="absolute top-2 right-2 p-2 rounded-full hover:bg-red-100 text-red-500"
+                    disabled={isLoading}
                   >
                     <Trash size={16} />
                   </button>
@@ -202,6 +330,7 @@ const HomeEditor = () => {
                         value={service.title}
                         onChange={(e) => handleServiceChange(index, 'title', e.target.value)}
                         className="w-full px-4 py-2 rounded-lg neu-pressed"
+                        disabled={isLoading}
                       />
                     </div>
                     
@@ -211,6 +340,7 @@ const HomeEditor = () => {
                         value={service.description}
                         onChange={(e) => handleServiceChange(index, 'description', e.target.value)}
                         className="w-full px-4 py-2 rounded-lg neu-pressed min-h-[80px]"
+                        disabled={isLoading}
                       />
                     </div>
                   </div>
@@ -225,36 +355,55 @@ const HomeEditor = () => {
             <h2 className="text-xl font-semibold mb-4">Profile Image</h2>
             
             <div className="flex flex-col items-center">
-              <div className="w-64 h-64 rounded-full overflow-hidden neu-pressed mb-4 flex items-center justify-center">
+              <div 
+                className={`w-64 h-64 rounded-full overflow-hidden neu-pressed mb-4 flex items-center justify-center relative cursor-pointer ${isDragging ? 'border-4 border-dashed border-neu-accent bg-neu-accent/10' : ''}`}
+                onDragEnter={handleDragEnter}
+                onDragLeave={handleDragLeave}
+                onDragOver={handleDragOver}
+                onDrop={handleDrop}
+                onClick={triggerFileInput}
+              >
                 {profileImage ? (
-                  <img src={profileImage} alt="Profile" className="w-full h-full object-cover" />
+                  <LocalImage 
+                    src={profileImage} 
+                    alt="Profile" 
+                    className="w-full h-full object-cover" 
+                    isProfileImage={true}
+                    fallbackSrc="https://placehold.co/500x500/333/fff?text=Profile"
+                  />
                 ) : (
-                  <div className="text-neu-text-secondary text-center">
-                    <Image size={48} className="mx-auto mb-2 opacity-50" />
-                    <p>No image selected</p>
+                  <div className="text-neu-text-secondary text-center p-4 pointer-events-none">
+                    <Upload size={48} className="mx-auto mb-2 opacity-50" />
+                    <p>Drop image here or click to upload</p>
                   </div>
                 )}
               </div>
               
               <div className="flex gap-3">
-                <label className="cursor-pointer">
-                  <input 
-                    type="file" 
-                    accept="image/*" 
-                    className="hidden"
-                    onChange={handleImageChange}
-                  />
-                  <NeumorphicButton 
-                    type="button" 
-                    variant="secondary"
-                    size="sm"
-                    className="flex items-center gap-2"
-                  >
-                    <Image size={16} />
-                    Upload Image
-                  </NeumorphicButton>
-                </label>
+                {/* Hidden file input */}
+                <input 
+                  type="file" 
+                  accept="image/*" 
+                  className="hidden"
+                  onChange={handleImageChange}
+                  disabled={isLoading}
+                  ref={fileInputRef}
+                />
                 
+                {/* Upload button */}
+                <NeumorphicButton 
+                  type="button" 
+                  variant="secondary"
+                  size="sm"
+                  className="flex items-center gap-2"
+                  disabled={isLoading}
+                  onClick={triggerFileInput}
+                >
+                  <Image size={16} />
+                  Upload Image
+                </NeumorphicButton>
+                
+                {/* Remove button - only shown when an image exists */}
                 {profileImage && (
                   <NeumorphicButton 
                     type="button" 
@@ -262,6 +411,7 @@ const HomeEditor = () => {
                     variant="secondary"
                     onClick={handleRemoveImage}
                     className="flex items-center gap-2 text-red-500"
+                    disabled={isLoading}
                   >
                     <Trash size={16} />
                     Remove

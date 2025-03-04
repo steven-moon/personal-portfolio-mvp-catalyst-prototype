@@ -1,25 +1,56 @@
-
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import NeumorphicCard from '../ui/NeumorphicCard';
 import ContactInfoItem from './ContactInfoItem';
-import { Mail, MapPin, Github, Linkedin, Twitter, Instagram, Youtube } from 'lucide-react';
+import { Mail, MapPin, Github, Linkedin, Twitter, Instagram, Youtube, LucideIcon } from 'lucide-react';
+import { ContactService } from '@/lib/apiService';
+import { ContactInfo as ContactInfoType } from '@/data/contactData';
 
-// This would typically come from a context or API
-// For now we'll use a static example that matches our editor
-const contactData = {
-  email: "hello@example.com",
-  location: "San Francisco, CA",
-  socialMedia: [
-    { id: 'github', name: 'GitHub', icon: Github, url: 'https://github.com/johndoe', enabled: true },
-    { id: 'linkedin', name: 'LinkedIn', icon: Linkedin, url: 'https://linkedin.com/in/johndoe', enabled: true },
-    { id: 'twitter', name: 'Twitter', icon: Twitter, url: 'https://twitter.com/johndoe', enabled: true },
-    { id: 'instagram', name: 'Instagram', icon: Instagram, url: 'https://instagram.com/johndoe', enabled: true },
-    { id: 'youtube', name: 'YouTube', icon: Youtube, url: 'https://youtube.com/c/johndoe', enabled: true }
-  ]
+// Map of icon names to icon components
+const iconMap: Record<string, LucideIcon> = {
+  Github,
+  Linkedin,
+  Twitter,
+  Instagram,
+  Youtube
 };
 
 const ContactInfo = () => {
-  // In a real implementation, you would fetch this data from an API or context
+  const [isLoading, setIsLoading] = useState(true);
+  const [contactData, setContactData] = useState<ContactInfoType>({
+    email: "",
+    location: "",
+    socialMedia: []
+  });
+
+  useEffect(() => {
+    const fetchContactData = async () => {
+      try {
+        setIsLoading(true);
+        const data = await ContactService.getContactInfo();
+        setContactData(data);
+      } catch (error) {
+        console.error('Error fetching contact data:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchContactData();
+  }, []);
+
+  if (isLoading) {
+    return (
+      <NeumorphicCard className="h-full">
+        <div className="animate-pulse space-y-4">
+          <div className="h-8 bg-neu-pressed rounded w-2/3"></div>
+          <div className="h-16 bg-neu-pressed rounded w-full"></div>
+          <div className="h-16 bg-neu-pressed rounded w-full"></div>
+          <div className="h-16 bg-neu-pressed rounded w-full"></div>
+        </div>
+      </NeumorphicCard>
+    );
+  }
+  
   const { email, location, socialMedia } = contactData;
   
   return (
@@ -43,7 +74,8 @@ const ContactInfo = () => {
         />
         
         {socialMedia.filter(item => item.enabled).map(social => {
-          const Icon = social.icon;
+          // Check if the icon name exists in our map, otherwise default to Github
+          const Icon = iconMap[social.icon] || Github;
           return (
             <ContactInfoItem
               key={social.id}

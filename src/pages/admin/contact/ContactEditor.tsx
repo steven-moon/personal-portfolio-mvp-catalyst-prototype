@@ -1,32 +1,64 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { toast } from "sonner";
 import NeumorphicCard from '@/components/ui/NeumorphicCard';
 import NeumorphicButton from '@/components/ui/NeumorphicButton';
 import { Switch } from '@/components/ui/switch';
-import { Save, Mail, MapPin, Linkedin, Github, Twitter, Instagram, Youtube } from 'lucide-react';
+import { Save, Mail, MapPin, Linkedin, Github, Twitter, Instagram, Youtube, LucideIcon } from 'lucide-react';
+import { ContactService } from '@/lib/apiService';
+import { ContactInfo } from '@/data/contactData';
 
-interface SocialMediaOption {
-  id: string;
-  name: string;
-  icon: React.ElementType;
-  url: string;
-  enabled: boolean;
+// Map of icon names to icon components
+const iconMap: Record<string, LucideIcon> = {
+  Github,
+  Linkedin,
+  Twitter,
+  Instagram,
+  Youtube
+};
+
+// Extended social media type for internal use with LucideIcon
+interface SocialMediaWithComponent extends Omit<ContactInfo['socialMedia'][0], 'icon'> {
+  icon: LucideIcon;
 }
 
 const ContactEditor = () => {
-  const [contactInfo, setContactInfo] = useState({
-    email: "hello@example.com",
-    location: "San Francisco, CA"
+  const [isLoading, setIsLoading] = useState(true);
+  const [contactInfo, setContactInfo] = useState<Omit<ContactInfo, 'socialMedia'>>({
+    email: "",
+    location: ""
   });
 
-  const [socialMedia, setSocialMedia] = useState<SocialMediaOption[]>([
-    { id: 'github', name: 'GitHub', icon: Github, url: 'https://github.com/johndoe', enabled: true },
-    { id: 'linkedin', name: 'LinkedIn', icon: Linkedin, url: 'https://linkedin.com/in/johndoe', enabled: true },
-    { id: 'twitter', name: 'Twitter', icon: Twitter, url: 'https://twitter.com/johndoe', enabled: true },
-    { id: 'instagram', name: 'Instagram', icon: Instagram, url: 'https://instagram.com/johndoe', enabled: true },
-    { id: 'youtube', name: 'YouTube', icon: Youtube, url: 'https://youtube.com/c/johndoe', enabled: true }
-  ]);
+  const [socialMedia, setSocialMedia] = useState<SocialMediaWithComponent[]>([]);
+
+  // Fetch contact data when component mounts
+  useEffect(() => {
+    const fetchContactData = async () => {
+      try {
+        setIsLoading(true);
+        const data = await ContactService.getContactInfo();
+        
+        setContactInfo({
+          email: data.email,
+          location: data.location
+        });
+        
+        // Convert string icon names to actual components
+        const socialMediaWithComponents = data.socialMedia.map(social => ({
+          ...social,
+          icon: iconMap[social.icon] || Github // Default to Github if icon not found
+        }));
+        
+        setSocialMedia(socialMediaWithComponents);
+      } catch (error) {
+        console.error('Error fetching contact data:', error);
+        toast.error('Failed to load contact information');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchContactData();
+  }, []);
 
   const handleSocialMediaToggle = (id: string) => {
     setSocialMedia(prevSocialMedia => 
@@ -52,16 +84,37 @@ const ContactEditor = () => {
     }));
   };
 
-  const handleSave = () => {
-    // In a real implementation, this would save to a backend
-    toast.success("Contact information updated successfully!");
-    
-    // Log the data that would be saved
-    console.log("Contact info saved:", {
-      contactInfo,
-      socialMedia: socialMedia.filter(item => item.enabled)
-    });
+  const handleSave = async () => {
+    try {
+      // Convert icon components back to string names for API
+      const socialMediaForApi = socialMedia.map(social => {
+        // Find the name of the icon by comparing with our iconMap
+        const iconName = Object.entries(iconMap).find(([_, component]) => 
+          component === social.icon
+        )?.[0] || 'Github';
+        
+        return {
+          ...social,
+          icon: iconName
+        };
+      });
+      
+      const updatedContactData: ContactInfo = {
+        ...contactInfo,
+        socialMedia: socialMediaForApi
+      };
+      
+      await ContactService.updateContactInfo(updatedContactData);
+      toast.success("Contact information updated successfully!");
+    } catch (error) {
+      console.error('Error saving contact data:', error);
+      toast.error('Failed to update contact information');
+    }
   };
+
+  if (isLoading) {
+    return <div className="container py-12 mx-auto">Loading contact information...</div>;
+  }
 
   return (
     <div className="container py-12 mx-auto page-transition">

@@ -72,6 +72,9 @@ const Navbar = () => {
       <NavLink to="/admin/contact" isActive={location.pathname === '/admin/contact'}>
         Contact
       </NavLink>
+      <NavLink to="/" isActive={location.pathname === '/'}>
+        Return to Portfolio
+      </NavLink>
     </>
   );
 

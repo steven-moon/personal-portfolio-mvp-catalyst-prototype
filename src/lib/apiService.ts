@@ -1,6 +1,8 @@
-import { mockBlogApi, mockProjectApi } from './mockApi';
+import { mockBlogApi, mockProjectApi, mockHomeApi, mockContactApi } from './mockApi';
 import * as blogApi from './blogApi';
 import * as projectApi from './projectApi';
+import * as homeApi from './homeApi';
+import * as contactApi from './contactApi';
 
 // Determine whether to use mock API or real API
 // In a real app, this would be controlled by environment variables
@@ -30,6 +32,23 @@ export const ProjectService = USE_MOCK_API ? mockProjectApi : {
   deleteProject: projectApi.deleteProject,
   getProjectsByTag: projectApi.getProjectsByTag,
   uploadProjectImages: projectApi.uploadProjectImages,
+};
+
+/**
+ * Home API - Exports all home page related API functions
+ */
+export const HomeService = USE_MOCK_API ? mockHomeApi : {
+  getHomeContent: homeApi.getHomeContent,
+  updateHomeContent: homeApi.updateHomeContent,
+  uploadProfileImage: homeApi.uploadProfileImage,
+};
+
+/**
+ * Contact API - Exports all contact page related API functions
+ */
+export const ContactService = USE_MOCK_API ? mockContactApi : {
+  getContactInfo: contactApi.getContactInfo,
+  updateContactInfo: contactApi.updateContactInfo,
 };
 
 // Optional: Additional service configuration and setup
