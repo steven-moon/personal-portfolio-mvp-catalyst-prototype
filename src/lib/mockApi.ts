@@ -4,11 +4,81 @@ import { HomePage, HOME_DATA } from '../data/homeData';
 import { ContactInfo, CONTACT_DATA } from '../data/contactData';
 import { storeProfileImage } from './localStorageUtils';
 
-// In-memory store for the mock data
-let blogPosts = [...BLOG_POSTS];
-let projects = [...PROJECTS];
-let homeData = { ...HOME_DATA };
-let contactData = { ...CONTACT_DATA };
+// Storage keys for persisting mock data
+const STORAGE_KEYS = {
+  BLOGS: 'mock_blog_posts',
+  PROJECTS: 'mock_projects',
+  HOME: 'mock_home_data',
+  CONTACT: 'mock_contact_data'
+};
+
+// Load or initialize in-memory store for the mock data
+const loadOrInitializeData = () => {
+  // Try to load data from localStorage first
+  try {
+    // BlogPosts
+    const storedBlogPosts = localStorage.getItem(STORAGE_KEYS.BLOGS);
+    let blogPostsData = [...BLOG_POSTS];
+    if (storedBlogPosts) {
+      blogPostsData = JSON.parse(storedBlogPosts);
+      console.log('Loaded blog posts from localStorage');
+    }
+
+    // Projects
+    const storedProjects = localStorage.getItem(STORAGE_KEYS.PROJECTS);
+    let projectsData = [...PROJECTS];
+    if (storedProjects) {
+      projectsData = JSON.parse(storedProjects);
+      console.log('Loaded projects from localStorage');
+    }
+
+    // Home
+    const storedHome = localStorage.getItem(STORAGE_KEYS.HOME);
+    let homeDataObj = { ...HOME_DATA };
+    if (storedHome) {
+      homeDataObj = JSON.parse(storedHome);
+      console.log('Loaded home data from localStorage');
+    }
+
+    // Contact
+    const storedContact = localStorage.getItem(STORAGE_KEYS.CONTACT);
+    let contactDataObj = { ...CONTACT_DATA };
+    if (storedContact) {
+      contactDataObj = JSON.parse(storedContact);
+      console.log('Loaded contact data from localStorage');
+    }
+
+    return {
+      blogPosts: blogPostsData,
+      projects: projectsData,
+      homeData: homeDataObj,
+      contactData: contactDataObj
+    };
+  } catch (error) {
+    console.error('Error loading data from localStorage, using defaults:', error);
+    // Fallback to default data
+    return {
+      blogPosts: [...BLOG_POSTS],
+      projects: [...PROJECTS],
+      homeData: { ...HOME_DATA },
+      contactData: { ...CONTACT_DATA }
+    };
+  }
+};
+
+// Initialize data
+const { blogPosts, projects, homeData, contactData } = loadOrInitializeData();
+
+// Helper to save data to localStorage
+const persistData = (key: string, data: any) => {
+  try {
+    localStorage.setItem(key, JSON.stringify(data));
+    return true;
+  } catch (error) {
+    console.error(`Failed to save data to localStorage (${key}):`, error);
+    return false;
+  }
+};
 
 // Helper to generate new IDs
 const getNextId = (items: { id: number }[]): number => {
@@ -44,6 +114,7 @@ export const mockBlogApi = {
       id: getNextId(blogPosts),
     };
     blogPosts.push(newPost);
+    persistData(STORAGE_KEYS.BLOGS, blogPosts);
     return { ...newPost };
   },
 
@@ -53,44 +124,56 @@ export const mockBlogApi = {
     blogPostUpdate: Partial<Omit<BlogPost, 'id'>>
   ): Promise<BlogPost> {
     await delay();
-    const index = blogPosts.findIndex(post => post.id === id);
-    if (index === -1) {
+    const postIndex = blogPosts.findIndex(post => post.id === id);
+    
+    if (postIndex === -1) {
       throw new Error(`Blog post with ID ${id} not found`);
     }
+    
     const updatedPost = {
-      ...blogPosts[index],
+      ...blogPosts[postIndex],
       ...blogPostUpdate,
     };
-    blogPosts[index] = updatedPost;
+    
+    blogPosts[postIndex] = updatedPost;
+    persistData(STORAGE_KEYS.BLOGS, blogPosts);
     return { ...updatedPost };
   },
 
   // Delete blog post
   async deleteBlogPost(id: number): Promise<void> {
     await delay();
-    const index = blogPosts.findIndex(post => post.id === id);
-    if (index === -1) {
+    const postIndex = blogPosts.findIndex(post => post.id === id);
+    
+    if (postIndex === -1) {
       throw new Error(`Blog post with ID ${id} not found`);
     }
-    blogPosts.splice(index, 1);
+    
+    blogPosts.splice(postIndex, 1);
+    persistData(STORAGE_KEYS.BLOGS, blogPosts);
   },
-
+  
   // Search blog posts
   async searchBlogPosts(query: string): Promise<BlogPost[]> {
     await delay();
-    const lowerQuery = query.toLowerCase();
+    if (!query) return [...blogPosts];
+    
+    const lowercaseQuery = query.toLowerCase();
     return blogPosts.filter(post => 
-      post.title.toLowerCase().includes(lowerQuery) || 
-      post.content.toLowerCase().includes(lowerQuery) ||
-      post.excerpt.toLowerCase().includes(lowerQuery)
+      post.title.toLowerCase().includes(lowercaseQuery) || 
+      post.content.toLowerCase().includes(lowercaseQuery) ||
+      post.category.toLowerCase().includes(lowercaseQuery)
     );
   },
-
-  // Get blog posts by category
+  
+  // Get posts by category
   async getBlogPostsByCategory(category: string): Promise<BlogPost[]> {
     await delay();
+    if (!category) return [...blogPosts];
+    
+    const lowercaseCategory = category.toLowerCase();
     return blogPosts.filter(post => 
-      post.category.toLowerCase() === category.toLowerCase()
+      post.category.toLowerCase() === lowercaseCategory
     );
   }
 };
@@ -121,6 +204,7 @@ export const mockProjectApi = {
       id: getNextId(projects),
     };
     projects.push(newProject);
+    persistData(STORAGE_KEYS.PROJECTS, projects);
     return { ...newProject };
   },
 
@@ -130,62 +214,57 @@ export const mockProjectApi = {
     projectUpdate: Partial<Omit<Project, 'id'>>
   ): Promise<Project> {
     await delay();
-    const index = projects.findIndex(project => project.id === id);
-    if (index === -1) {
+    const projectIndex = projects.findIndex(project => project.id === id);
+    
+    if (projectIndex === -1) {
       throw new Error(`Project with ID ${id} not found`);
     }
+    
     const updatedProject = {
-      ...projects[index],
+      ...projects[projectIndex],
       ...projectUpdate,
     };
-    projects[index] = updatedProject;
+    
+    projects[projectIndex] = updatedProject;
+    persistData(STORAGE_KEYS.PROJECTS, projects);
     return { ...updatedProject };
   },
 
   // Delete project
   async deleteProject(id: number): Promise<void> {
     await delay();
-    const index = projects.findIndex(project => project.id === id);
-    if (index === -1) {
+    const projectIndex = projects.findIndex(project => project.id === id);
+    
+    if (projectIndex === -1) {
       throw new Error(`Project with ID ${id} not found`);
     }
-    projects.splice(index, 1);
+    
+    projects.splice(projectIndex, 1);
+    persistData(STORAGE_KEYS.PROJECTS, projects);
   },
-
+  
   // Get projects by tag
   async getProjectsByTag(tag: string): Promise<Project[]> {
     await delay();
+    if (!tag) return [...projects];
+    
+    const lowercaseTag = tag.toLowerCase();
     return projects.filter(project => 
-      project.tags.some(t => t.toLowerCase() === tag.toLowerCase())
+      project.tags.some(t => t.toLowerCase() === lowercaseTag)
     );
   },
-
-  // Upload project images (mock implementation)
+  
+  // Upload project images
   async uploadProjectImages(
     projectId: number,
     images: File[]
   ): Promise<string[]> {
-    await delay(500); // Longer delay to simulate upload
-    
-    // Find the project
-    const projectIndex = projects.findIndex(p => p.id === projectId);
-    if (projectIndex === -1) {
-      throw new Error(`Project with ID ${projectId} not found`);
-    }
-    
-    // Generate mock image URLs
-    const imageUrls = images.map((_, index) => 
-      `/images/projects/project-${projectId}-image-${Date.now()}-${index}.jpg`
+    await delay();
+    // Mock implementation - in a real app, this would upload to cloud storage
+    const mockImageUrls = images.map(image => 
+      `/images/projects/project-${projectId}-${Date.now()}-${image.name.replace(/[^a-zA-Z0-9.]/g, '_')}.jpg`
     );
-    
-    // Update the project with new images
-    const project = projects[projectIndex];
-    projects[projectIndex] = {
-      ...project,
-      images: [...(project.images || []), ...imageUrls]
-    };
-    
-    return imageUrls;
+    return mockImageUrls;
   }
 };
 
@@ -200,7 +279,8 @@ export const mockHomeApi = {
   // Update home page content
   async updateHomeContent(updatedContent: HomePage): Promise<HomePage> {
     await delay();
-    homeData = { ...updatedContent };
+    Object.assign(homeData, updatedContent);
+    persistData(STORAGE_KEYS.HOME, homeData);
     return { ...homeData };
   },
 
@@ -242,7 +322,24 @@ export const mockContactApi = {
   // Update contact info
   async updateContactInfo(updatedContact: ContactInfo): Promise<ContactInfo> {
     await delay();
-    contactData = { ...updatedContact };
+    Object.assign(contactData, updatedContact);
+    persistData(STORAGE_KEYS.CONTACT, contactData);
     return { ...contactData };
   }
+}; 
+
+// For debugging purposes
+export const _debugMockData = {
+  resetAllData: () => {
+    Object.keys(STORAGE_KEYS).forEach(key => {
+      localStorage.removeItem(STORAGE_KEYS[key as keyof typeof STORAGE_KEYS]);
+    });
+    location.reload();
+  },
+  getCurrentData: () => ({
+    blogPosts,
+    projects,
+    homeData,
+    contactData
+  })
 }; 
