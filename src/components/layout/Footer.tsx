@@ -1,6 +1,5 @@
-
 import React from 'react';
-import { GitHub, Linkedin, Mail } from 'lucide-react';
+import { Github, Linkedin, Mail } from 'lucide-react';
 
 const Footer = () => {
   return (
@@ -20,7 +19,7 @@ const Footer = () => {
             className="p-2 neu-flat rounded-full hover:scale-105 transition-medium"
             aria-label="GitHub"
           >
-            <GitHub size={20} />
+            <Github size={20} />
           </a>
           <a 
             href="https://linkedin.com" 

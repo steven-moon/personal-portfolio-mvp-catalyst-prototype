@@ -1,9 +1,8 @@
-
 import React, { useState } from 'react';
 import NeumorphicCard from '../ui/NeumorphicCard';
 import NeumorphicButton from '../ui/NeumorphicButton';
 import { toast } from '@/hooks/use-toast';
-import { Send, GitHub, Linkedin, Mail, MapPin } from 'lucide-react';
+import { Send, Github, Linkedin, Mail, MapPin } from 'lucide-react';
 
 const ContactForm = () => {
   const [formData, setFormData] = useState({
@@ -162,7 +161,7 @@ const ContactForm = () => {
                 
                 <div className="flex items-start">
                   <div className="p-3 neu-pressed rounded-lg mr-4">
-                    <GitHub className="text-neu-accent" size={20} />
+                    <Github className="text-neu-accent" size={20} />
                   </div>
                   <div>
                     <h3 className="text-lg font-medium mb-1">GitHub</h3>
