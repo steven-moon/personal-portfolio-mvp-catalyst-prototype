@@ -3,7 +3,7 @@ import { toast } from "sonner";
 import NeumorphicCard from '@/components/ui/NeumorphicCard';
 import NeumorphicButton from '@/components/ui/NeumorphicButton';
 import { Switch } from '@/components/ui/switch';
-import { Save, Palette, Globe, Moon, Bot, Info } from 'lucide-react';
+import { Save, Palette, Globe, Moon, Bot, Info, Share2 } from 'lucide-react';
 
 // Define the site settings types
 interface SiteSettings {
@@ -30,6 +30,20 @@ interface SiteSettings {
     enableProjects: boolean;
     enableContactForm: boolean;
     enableNewsletter: boolean;
+  };
+  socialMedia: {
+    enableGithub: boolean;
+    enableLinkedin: boolean;
+    enableTwitter: boolean;
+    enableInstagram: boolean;
+    enableYoutube: boolean;
+    enableFacebook: boolean;
+    githubUrl: string;
+    linkedinUrl: string;
+    twitterUrl: string;
+    instagramUrl: string;
+    youtubeUrl: string;
+    facebookUrl: string;
   };
 }
 
@@ -77,9 +91,23 @@ const SiteSettingsEditor = () => {
       enableContactForm: true,
       enableNewsletter: false,
     },
+    socialMedia: {
+      enableGithub: true,
+      enableLinkedin: true,
+      enableTwitter: false,
+      enableInstagram: false,
+      enableYoutube: false,
+      enableFacebook: false,
+      githubUrl: 'https://github.com',
+      linkedinUrl: 'https://linkedin.com',
+      twitterUrl: 'https://twitter.com',
+      instagramUrl: 'https://instagram.com',
+      youtubeUrl: 'https://youtube.com',
+      facebookUrl: 'https://facebook.com',
+    },
   });
 
-  const [activeTab, setActiveTab] = useState<'general' | 'appearance' | 'seo' | 'features'>('general');
+  const [activeTab, setActiveTab] = useState<'general' | 'appearance' | 'seo' | 'features' | 'socialMedia'>('general');
 
   const handleInputChange = (
     section: keyof SiteSettings, 
@@ -125,7 +153,7 @@ const SiteSettingsEditor = () => {
     icon: Icon, 
     label 
   }: { 
-    tab: 'general' | 'appearance' | 'seo' | 'features'; 
+    tab: 'general' | 'appearance' | 'seo' | 'features' | 'socialMedia'; 
     current: string; 
     icon: React.ElementType; 
     label: string 
@@ -153,6 +181,7 @@ const SiteSettingsEditor = () => {
           <TabButton tab="appearance" current={activeTab} icon={Palette} label="Appearance" />
           <TabButton tab="seo" current={activeTab} icon={Globe} label="SEO" />
           <TabButton tab="features" current={activeTab} icon={Bot} label="Features" />
+          <TabButton tab="socialMedia" current={activeTab} icon={Share2} label="Social Media" />
         </div>
         
         <div className="flex-1">
@@ -391,6 +420,158 @@ const SiteSettingsEditor = () => {
                     className="data-[state=checked]:bg-neu-accent"
                   />
                 </div>
+              </div>
+            </NeumorphicCard>
+          )}
+          
+          {activeTab === 'socialMedia' && (
+            <NeumorphicCard>
+              <h2 className="text-xl font-semibold mb-6">Social Media Settings</h2>
+              
+              <div className="space-y-6">
+                <div className="flex items-center justify-between p-4 neu-flat rounded-lg">
+                  <div>
+                    <h3 className="font-medium">GitHub</h3>
+                    <p className="text-sm text-neu-text-secondary">Show GitHub link in footer</p>
+                  </div>
+                  <Switch 
+                    checked={settings.socialMedia.enableGithub}
+                    onCheckedChange={() => handleToggleChange('socialMedia', 'enableGithub')}
+                    className="data-[state=checked]:bg-neu-accent"
+                  />
+                </div>
+                
+                {settings.socialMedia.enableGithub && (
+                  <div>
+                    <label className="block text-sm font-medium mb-2">GitHub URL</label>
+                    <input
+                      type="text"
+                      value={settings.socialMedia.githubUrl}
+                      onChange={(e) => handleInputChange('socialMedia', 'githubUrl', e.target.value)}
+                      className="w-full p-2 bg-neu-bg shadow-neu-pressed rounded-lg focus:outline-none"
+                    />
+                  </div>
+                )}
+                
+                <div className="flex items-center justify-between p-4 neu-flat rounded-lg">
+                  <div>
+                    <h3 className="font-medium">LinkedIn</h3>
+                    <p className="text-sm text-neu-text-secondary">Show LinkedIn link in footer</p>
+                  </div>
+                  <Switch 
+                    checked={settings.socialMedia.enableLinkedin}
+                    onCheckedChange={() => handleToggleChange('socialMedia', 'enableLinkedin')}
+                    className="data-[state=checked]:bg-neu-accent"
+                  />
+                </div>
+                
+                {settings.socialMedia.enableLinkedin && (
+                  <div>
+                    <label className="block text-sm font-medium mb-2">LinkedIn URL</label>
+                    <input
+                      type="text"
+                      value={settings.socialMedia.linkedinUrl}
+                      onChange={(e) => handleInputChange('socialMedia', 'linkedinUrl', e.target.value)}
+                      className="w-full p-2 bg-neu-bg shadow-neu-pressed rounded-lg focus:outline-none"
+                    />
+                  </div>
+                )}
+                
+                <div className="flex items-center justify-between p-4 neu-flat rounded-lg">
+                  <div>
+                    <h3 className="font-medium">Twitter</h3>
+                    <p className="text-sm text-neu-text-secondary">Show Twitter link in footer</p>
+                  </div>
+                  <Switch 
+                    checked={settings.socialMedia.enableTwitter}
+                    onCheckedChange={() => handleToggleChange('socialMedia', 'enableTwitter')}
+                    className="data-[state=checked]:bg-neu-accent"
+                  />
+                </div>
+                
+                {settings.socialMedia.enableTwitter && (
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Twitter URL</label>
+                    <input
+                      type="text"
+                      value={settings.socialMedia.twitterUrl}
+                      onChange={(e) => handleInputChange('socialMedia', 'twitterUrl', e.target.value)}
+                      className="w-full p-2 bg-neu-bg shadow-neu-pressed rounded-lg focus:outline-none"
+                    />
+                  </div>
+                )}
+                
+                <div className="flex items-center justify-between p-4 neu-flat rounded-lg">
+                  <div>
+                    <h3 className="font-medium">Instagram</h3>
+                    <p className="text-sm text-neu-text-secondary">Show Instagram link in footer</p>
+                  </div>
+                  <Switch 
+                    checked={settings.socialMedia.enableInstagram}
+                    onCheckedChange={() => handleToggleChange('socialMedia', 'enableInstagram')}
+                    className="data-[state=checked]:bg-neu-accent"
+                  />
+                </div>
+                
+                {settings.socialMedia.enableInstagram && (
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Instagram URL</label>
+                    <input
+                      type="text"
+                      value={settings.socialMedia.instagramUrl}
+                      onChange={(e) => handleInputChange('socialMedia', 'instagramUrl', e.target.value)}
+                      className="w-full p-2 bg-neu-bg shadow-neu-pressed rounded-lg focus:outline-none"
+                    />
+                  </div>
+                )}
+                
+                <div className="flex items-center justify-between p-4 neu-flat rounded-lg">
+                  <div>
+                    <h3 className="font-medium">YouTube</h3>
+                    <p className="text-sm text-neu-text-secondary">Show YouTube link in footer</p>
+                  </div>
+                  <Switch 
+                    checked={settings.socialMedia.enableYoutube}
+                    onCheckedChange={() => handleToggleChange('socialMedia', 'enableYoutube')}
+                    className="data-[state=checked]:bg-neu-accent"
+                  />
+                </div>
+                
+                {settings.socialMedia.enableYoutube && (
+                  <div>
+                    <label className="block text-sm font-medium mb-2">YouTube URL</label>
+                    <input
+                      type="text"
+                      value={settings.socialMedia.youtubeUrl}
+                      onChange={(e) => handleInputChange('socialMedia', 'youtubeUrl', e.target.value)}
+                      className="w-full p-2 bg-neu-bg shadow-neu-pressed rounded-lg focus:outline-none"
+                    />
+                  </div>
+                )}
+                
+                <div className="flex items-center justify-between p-4 neu-flat rounded-lg">
+                  <div>
+                    <h3 className="font-medium">Facebook</h3>
+                    <p className="text-sm text-neu-text-secondary">Show Facebook link in footer</p>
+                  </div>
+                  <Switch 
+                    checked={settings.socialMedia.enableFacebook}
+                    onCheckedChange={() => handleToggleChange('socialMedia', 'enableFacebook')}
+                    className="data-[state=checked]:bg-neu-accent"
+                  />
+                </div>
+                
+                {settings.socialMedia.enableFacebook && (
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Facebook URL</label>
+                    <input
+                      type="text"
+                      value={settings.socialMedia.facebookUrl}
+                      onChange={(e) => handleInputChange('socialMedia', 'facebookUrl', e.target.value)}
+                      className="w-full p-2 bg-neu-bg shadow-neu-pressed rounded-lg focus:outline-none"
+                    />
+                  </div>
+                )}
               </div>
             </NeumorphicCard>
           )}
