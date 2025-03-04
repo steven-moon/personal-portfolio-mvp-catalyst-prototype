@@ -1,0 +1,12 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Description: Project architecture guidelines for Personal Portfolio MVP
+# Globs: **/*
+
+## Architecture Guidelines
+- Follow the directory structure in README
+- Use React Router for navigation
+- Implement proper data fetching patterns

@@ -1,0 +1,12 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Description: React component guidelines for Personal Portfolio MVP
+# Globs: src/components/**/*.tsx, src/pages/**/*.tsx
+
+## Component Guidelines
+- Use functional components with TypeScript
+- Follow shadcn/ui component patterns
+- Implement proper prop typing

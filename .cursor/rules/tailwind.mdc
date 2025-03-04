@@ -1,0 +1,12 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Description: Tailwind CSS guidelines for Personal Portfolio MVP
+# Globs: **/*.tsx, **/*.css
+
+## Tailwind Guidelines
+- Use Tailwind utility classes for styling
+- Follow mobile-first responsive design approach
+- Implement neumorphic design with custom shadows

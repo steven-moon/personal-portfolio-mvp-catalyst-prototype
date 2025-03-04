@@ -1,69 +1,148 @@
-# Welcome to your Lovable project
+# Personal Portfolio Website MVP Catalyst by Clever Coding (Steve Moon)
 
-## Project info
+A modern, responsive personal portfolio website built with React, TypeScript, and Neumorphic design principles. This portfolio showcases your projects, blog posts, and personal information in an elegant, soft-touch interface.
 
-**URL**: https://lovable.dev/projects/3ac7de72-159c-4615-9bfd-37a1c99bf42d
+## 🌟 Features
 
-## How can I edit this code?
+- **Modern Design**: Clean, neumorphic UI with soft shadows and elegant transitions
+- **Responsive Layout**: Fully responsive design that works on all devices
+- **Portfolio Showcase**: Display your projects with detailed project pages
+- **Blog System**: Share your thoughts and expertise with a built-in blog feature
+- **Admin Dashboard**: Manage content through an intuitive admin interface
+- **Contact Form**: Allow visitors to get in touch with you
+- **SEO Friendly**: Optimized structure for better search engine visibility
 
-There are several ways of editing your application.
+## 📋 Pages
 
-**Use Lovable**
+- **Home**: Featuring a hero section, skills overview, and introduction
+- **About**: Detailed information about your experience, education, and skills
+- **Projects**: Gallery of your work with filterable categories
+- **Project Detail**: In-depth view of individual projects with image galleries
+- **Blog**: List of your articles and insights
+- **Blog Detail**: Full article view with related posts
+- **Contact**: Contact form and information
+- **Admin**: Protected area for content management (projects and blog posts)
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/3ac7de72-159c-4615-9bfd-37a1c99bf42d) and start prompting.
+## 🛠️ Technology Stack
 
-Changes made via Lovable will be committed automatically to this repo.
+- **Frontend**:
+  - React 18+
+  - TypeScript
+  - React Router for navigation
+  - TailwindCSS for styling
+  - shadcn/ui components
+  - Lucide React for icons
 
-**Use your preferred IDE**
+- **Build & Development**:
+  - Vite for fast builds and development
+  - SWC for compilation
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+- **UI/UX**:
+  - Custom neumorphic design system
+  - Responsive design principles
+  - Smooth animations and transitions
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+## 🚀 Getting Started
 
-Follow these steps:
+### Prerequisites
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+- Node.js 16+ 
+- npm or yarn
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+### Installation
 
-# Step 3: Install the necessary dependencies.
-npm i
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/yourusername/personal-portfolio.git
+   cd personal-portfolio
+   ```
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+2. Install dependencies:
+   ```bash
+   npm install
+   # or
+   yarn install
+   ```
+
+3. Start the development server:
+   ```bash
+   npm run dev
+   # or
+   yarn dev
+   ```
+
+4. Open your browser and navigate to `http://localhost:8080`
+
+## 🔧 Configuration
+
+- Update the personal information in `src/data/` directory
+- Replace placeholder images with your own in `public/`
+- Customize colors and styling in `tailwind.config.ts`
+
+## 📦 Deployment
+
+Build the project for production:
+
+```bash
+npm run build
+# or
+yarn build
 ```
 
-**Edit a file directly in GitHub**
+Deploy the `dist` directory to your hosting provider of choice.
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## 🧩 Project Structure
 
-**Use GitHub Codespaces**
+```
+├── public/               # Static assets
+├── src/
+│   ├── components/       # Reusable UI components
+│   │   ├── about/        # About page components
+│   │   ├── admin/        # Admin dashboard components
+│   │   ├── blog/         # Blog related components
+│   │   ├── contact/      # Contact form components
+│   │   ├── home/         # Homepage components
+│   │   ├── layout/       # Layout components (navbar, footer)
+│   │   ├── projects/     # Project related components
+│   │   └── ui/           # Generic UI components
+│   ├── data/             # Mock data and content
+│   ├── hooks/            # Custom React hooks
+│   ├── lib/              # Utility functions
+│   ├── pages/            # Page components
+│   ├── utils/            # Helper functions
+│   ├── App.tsx           # Main application component
+│   └── main.tsx          # Application entry point
+├── tailwind.config.ts    # Tailwind CSS configuration
+├── vite.config.ts        # Vite configuration
+└── tsconfig.json         # TypeScript configuration
+```
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## 💡 Customization
 
-## What technologies are used for this project?
+### Changing Content
 
-This project is built with .
+- Edit personal information in `src/data/` files
+- Update projects in the projects data file
+- Modify blog posts in the blog data file
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+### Styling Changes
 
-## How can I deploy this project?
+- The project uses a custom neumorphic design system
+- Adjust the color scheme in `tailwind.config.ts`
+- Modify the neumorphic shadows in `tailwind.config.ts`
 
-Simply open [Lovable](https://lovable.dev/projects/3ac7de72-159c-4615-9bfd-37a1c99bf42d) and click on Share -> Publish.
+## 📝 License
 
-## I want to use a custom domain - is that possible?
+This project is licensed under the MIT License - see the LICENSE file for details.
 
-We don't support custom domains (yet). If you want to deploy your project under your own domain then we recommend using Netlify. Visit our docs for more details: [Custom domains](https://docs.lovable.dev/tips-tricks/custom-domain/)
+## 🙏 Acknowledgements
+
+- [Lucide Icons](https://lucide.dev/)
+- [shadcn/ui](https://ui.shadcn.com/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [Vite](https://vitejs.dev/)
+- [React](https://react.dev/)
+
+---
+
+Created with ❤️ by [Your Name]

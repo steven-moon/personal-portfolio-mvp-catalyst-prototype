@@ -1,0 +1,12 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Description: General coding guidelines for Personal Portfolio MVP
+# Globs: *.*
+
+## Project Guidelines
+- This is a React TypeScript project with Vite and TailwindCSS
+- Follow modern React practices
+- Use TypeScript for type safety

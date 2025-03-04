@@ -1,0 +1,12 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Description: TypeScript best practices for Personal Portfolio MVP
+# Globs: **/*.ts, **/*.tsx
+
+## TypeScript Guidelines
+- Use strict TypeScript
+- Prefer interfaces over types for objects
+- Avoid using 'any' type

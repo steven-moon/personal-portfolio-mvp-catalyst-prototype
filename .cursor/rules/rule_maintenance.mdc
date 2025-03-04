@@ -1,0 +1,12 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Description: Guidelines for maintaining Cursor rules
+# Globs: .cursor/rules/**/*.mdc
+
+## Rule Maintenance Guidelines
+- Keep Cursor rules up to date with project changes
+- Review and update rules periodically
+- Update rules when adding new technologies or patterns
