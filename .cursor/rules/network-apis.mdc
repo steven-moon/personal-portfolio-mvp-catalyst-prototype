@@ -1,0 +1,19 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# Description: Guidelines for network API implementation and usage
+# Globs: src/**/*api*.ts,src/**/*Api*.ts,src/**/*service*.ts,src/**/*Service*.ts
+
+## Network API Guidelines
+- Use consistent error handling patterns across all API calls using the fetchWithError utility
+- Include proper request timeouts for all network requests (configure in api.ts)
+- Implement retry logic for transient failures
+- Cache responses where appropriate to minimize network calls
+- Ensure all API endpoints are properly authenticated
+- Follow the established pattern of separating entity-specific APIs (like blogApi, projectApi)
+- Always use typed responses with generics (Promise<T>)
+- Use the apiService for switching between mock and real APIs
+- Maintain consistent endpoint structure (/entity and /entity/:id)
+- For new entity types, create both real and mock API implementations
