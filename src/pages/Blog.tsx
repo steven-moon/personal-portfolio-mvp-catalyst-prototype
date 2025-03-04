@@ -1,47 +1,8 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Calendar, User, Tag, ChevronRight } from 'lucide-react';
 import NeumorphicCard from '@/components/ui/NeumorphicCard';
-
-const BLOG_POSTS = [
-  {
-    id: 1,
-    title: "Getting Started with React in 2023",
-    excerpt: "A comprehensive guide to modern React development practices, state management, and component patterns for beginners and experienced developers alike.",
-    date: "May 15, 2023",
-    author: "John Doe",
-    category: "Development",
-    imageUrl: "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?auto=format&fit=crop&q=80"
-  },
-  {
-    id: 2,
-    title: "The Future of UI Design: Neumorphism Explained",
-    excerpt: "Explore the evolution of Neumorphism as a design trend, its principles, best practices, and how to implement it in your web projects.",
-    date: "June 22, 2023",
-    author: "John Doe",
-    category: "Design",
-    imageUrl: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80"
-  },
-  {
-    id: 3,
-    title: "TypeScript Tips for Better Code Quality",
-    excerpt: "Learn advanced TypeScript techniques to improve your code quality, catch bugs early, and enhance developer experience in large-scale applications.",
-    date: "July 8, 2023",
-    author: "John Doe",
-    category: "Development",
-    imageUrl: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&q=80"
-  },
-  {
-    id: 4,
-    title: "Building Responsive Layouts with Tailwind CSS",
-    excerpt: "A deep dive into creating modern, responsive layouts using Tailwind CSS. From basic grids to complex components, all with minimal custom CSS.",
-    date: "August 14, 2023",
-    author: "John Doe",
-    category: "CSS",
-    imageUrl: "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?auto=format&fit=crop&q=80"
-  }
-];
+import { BLOG_POSTS } from '@/data/blogData';
 
 const BlogCard = ({ post }: { post: typeof BLOG_POSTS[0] }) => {
   return (
