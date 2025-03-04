@@ -1,9 +1,11 @@
 
 import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Routes, Route } from 'react-router-dom';
 import { toast } from "sonner";
 import NeumorphicButton from '@/components/ui/NeumorphicButton';
 import { FileEdit, Settings, BookOpen, FileText, User, LogOut } from 'lucide-react';
+import BlogPostsList from '@/components/admin/BlogPostsList';
+import BlogEditor from '@/components/admin/BlogEditor';
 
 const AdminCard = ({ title, description, icon: Icon, onClick }: { 
   title: string; 
@@ -25,17 +27,8 @@ const AdminCard = ({ title, description, icon: Icon, onClick }: {
   </div>
 );
 
-const Admin = () => {
+const AdminDashboard = () => {
   const navigate = useNavigate();
-  
-  useEffect(() => {
-    // Check if the user is authenticated
-    const isAuthenticated = localStorage.getItem('isAuthenticated');
-    if (!isAuthenticated) {
-      toast.error('Please login to access the admin dashboard');
-      navigate('/login');
-    }
-  }, [navigate]);
   
   const handleLogout = () => {
     localStorage.removeItem('isAuthenticated');
@@ -44,7 +37,11 @@ const Admin = () => {
   };
   
   const handleCardClick = (section: string) => {
-    toast.info(`${section} editor would open here`);
+    if (section === 'Blog Posts') {
+      navigate('/admin/blog');
+    } else {
+      toast.info(`${section} editor would open here`);
+    }
   };
 
   return (
@@ -98,6 +95,28 @@ const Admin = () => {
         />
       </div>
     </div>
+  );
+};
+
+const Admin = () => {
+  const navigate = useNavigate();
+  
+  useEffect(() => {
+    // Check if the user is authenticated
+    const isAuthenticated = localStorage.getItem('isAuthenticated');
+    if (!isAuthenticated) {
+      toast.error('Please login to access the admin dashboard');
+      navigate('/login');
+    }
+  }, [navigate]);
+  
+  return (
+    <Routes>
+      <Route path="/" element={<AdminDashboard />} />
+      <Route path="/blog" element={<BlogPostsList />} />
+      <Route path="/blog/new" element={<BlogEditor />} />
+      <Route path="/blog/edit/:id" element={<BlogEditor />} />
+    </Routes>
   );
 };
 
