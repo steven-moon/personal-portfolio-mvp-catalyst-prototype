@@ -1,4 +1,3 @@
-
 import React from 'react';
 import ProjectCard, { Project } from '@/components/projects/ProjectCard';
 
@@ -11,7 +10,12 @@ const Projects = () => {
       image: "/placeholder.svg",
       tags: ["React", "Node.js", "MongoDB", "Stripe"],
       link: "https://example.com",
-      fullDescription: "This comprehensive e-commerce solution features product browsing, cart management, secure checkout with Stripe integration, and a responsive design. The frontend is built with React and styled with Tailwind CSS, while the backend uses Node.js with Express and MongoDB for data storage. The site includes user authentication, order tracking, and an admin dashboard for product management."
+      fullDescription: "This comprehensive e-commerce solution features product browsing, cart management, secure checkout with Stripe integration, and a responsive design. The frontend is built with React and styled with Tailwind CSS, while the backend uses Node.js with Express and MongoDB for data storage. The site includes user authentication, order tracking, and an admin dashboard for product management.",
+      images: [
+        "/placeholder.svg",
+        "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b",
+        "https://images.unsplash.com/photo-1518770660439-4636190af475"
+      ]
     },
     {
       id: 2,
@@ -20,7 +24,11 @@ const Projects = () => {
       image: "/placeholder.svg",
       tags: ["React", "TypeScript", "Firebase", "TailwindCSS"],
       link: "https://example.com",
-      fullDescription: "This task management application helps teams organize and track their projects effectively. Users can create tasks, assign them to team members, set deadlines, and track progress. The app features real-time updates using Firebase, drag-and-drop task organization, and customizable project boards. Built with React and TypeScript, the application implements robust state management and ensures type safety throughout the codebase."
+      fullDescription: "This task management application helps teams organize and track their projects effectively. Users can create tasks, assign them to team members, set deadlines, and track progress. The app features real-time updates using Firebase, drag-and-drop task organization, and customizable project boards. Built with React and TypeScript, the application implements robust state management and ensures type safety throughout the codebase.",
+      images: [
+        "/placeholder.svg",
+        "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d"
+      ]
     },
     {
       id: 3,
@@ -29,7 +37,11 @@ const Projects = () => {
       image: "/placeholder.svg",
       tags: ["React", "Redux", "Recharts", "Express"],
       link: "https://example.com",
-      fullDescription: "This financial dashboard provides users with in-depth insights into their spending habits and financial health. The application visualizes data through interactive charts and graphs using Recharts, allowing users to understand their finances at a glance. Features include expense categorization, budget setting, goal tracking, and financial forecasting. The frontend is built with React and Redux, while the backend is powered by Express with secure authentication."
+      fullDescription: "This financial dashboard provides users with in-depth insights into their spending habits and financial health. The application visualizes data through interactive charts and graphs using Recharts, allowing users to understand their finances at a glance. Features include expense categorization, budget setting, goal tracking, and financial forecasting. The frontend is built with React and Redux, while the backend is powered by Express with secure authentication.",
+      images: [
+        "/placeholder.svg",
+        "https://images.unsplash.com/photo-1461749280684-dccba630e2f6"
+      ]
     },
     {
       id: 4,
@@ -38,7 +50,8 @@ const Projects = () => {
       image: "/placeholder.svg",
       tags: ["React", "OpenWeather API", "Framer Motion", "TailwindCSS"],
       link: "https://example.com",
-      fullDescription: "This weather application provides users with accurate forecasts and beautiful visualizations. The app features current conditions, hourly and weekly forecasts, precipitation maps, and customizable alerts. Using the OpenWeather API for data, the application presents information in an intuitive interface with smooth animations powered by Framer Motion. The responsive design ensures a great experience across devices, from desktop to mobile."
+      fullDescription: "This weather application provides users with accurate forecasts and beautiful visualizations. The app features current conditions, hourly and weekly forecasts, precipitation maps, and customizable alerts. Using the OpenWeather API for data, the application presents information in an intuitive interface with smooth animations powered by Framer Motion. The responsive design ensures a great experience across devices, from desktop to mobile.",
+      images: ["/placeholder.svg"]
     },
     {
       id: 5,
@@ -47,7 +60,8 @@ const Projects = () => {
       image: "/placeholder.svg",
       tags: ["React", "Next.js", "Social APIs", "ChartJS"],
       link: "https://example.com",
-      fullDescription: "This social media dashboard allows users to manage multiple social accounts from a single interface. The application integrates with various social media platforms, allowing users to schedule posts, monitor engagement, and analyze performance metrics. Features include content calendars, analytics with ChartJS visualizations, audience insights, and competitor analysis. Built with Next.js for optimal performance and SEO, the dashboard implements server-side rendering for faster page loads."
+      fullDescription: "This social media dashboard allows users to manage multiple social accounts from a single interface. The application integrates with various social media platforms, allowing users to schedule posts, monitor engagement, and analyze performance metrics. Features include content calendars, analytics with ChartJS visualizations, audience insights, and competitor analysis. Built with Next.js for optimal performance and SEO, the dashboard implements server-side rendering for faster page loads.",
+      images: ["/placeholder.svg"]
     },
     {
       id: 6,
@@ -56,7 +70,8 @@ const Projects = () => {
       image: "/placeholder.svg",
       tags: ["React", "Framer Motion", "TailwindCSS", "TypeScript"],
       link: "https://example.com",
-      fullDescription: "This portfolio website showcases creative work with a focus on visual impact and smooth user experience. The site features project galleries with filterable categories, detailed case studies, and interactive elements that engage visitors. Built with React and TypeScript, the portfolio implements elegant animations with Framer Motion and responsive layouts with TailwindCSS. The design emphasizes content presentation while maintaining fast load times and accessibility."
+      fullDescription: "This portfolio website showcases creative work with a focus on visual impact and smooth user experience. The site features project galleries with filterable categories, detailed case studies, and interactive elements that engage visitors. Built with React and TypeScript, the portfolio implements elegant animations with Framer Motion and responsive layouts with TailwindCSS. The design emphasizes content presentation while maintaining fast load times and accessibility.",
+      images: ["/placeholder.svg"]
     }
   ];
 

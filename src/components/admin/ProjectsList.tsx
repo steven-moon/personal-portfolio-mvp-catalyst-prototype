@@ -1,8 +1,7 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from "sonner";
-import { FilePlus, FileEdit, Trash, FileText, ExternalLink } from 'lucide-react';
+import { FilePlus, FileEdit, Trash, FileText, ExternalLink, Image } from 'lucide-react';
 import NeumorphicButton from '@/components/ui/NeumorphicButton';
 import NeumorphicCard from '@/components/ui/NeumorphicCard';
 import { Project } from '@/components/projects/ProjectCard';
@@ -16,7 +15,12 @@ const INITIAL_PROJECTS: Project[] = [
     image: "/placeholder.svg",
     tags: ["React", "Node.js", "MongoDB", "Stripe"],
     link: "https://example.com",
-    fullDescription: "This comprehensive e-commerce solution features product browsing, cart management, secure checkout with Stripe integration, and a responsive design. The frontend is built with React and styled with Tailwind CSS, while the backend uses Node.js with Express and MongoDB for data storage. The site includes user authentication, order tracking, and an admin dashboard for product management."
+    fullDescription: "This comprehensive e-commerce solution features product browsing, cart management, secure checkout with Stripe integration, and a responsive design. The frontend is built with React and styled with Tailwind CSS, while the backend uses Node.js with Express and MongoDB for data storage. The site includes user authentication, order tracking, and an admin dashboard for product management.",
+    images: [
+      "/placeholder.svg",
+      "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b",
+      "https://images.unsplash.com/photo-1518770660439-4636190af475"
+    ]
   },
   {
     id: 2,
@@ -25,7 +29,11 @@ const INITIAL_PROJECTS: Project[] = [
     image: "/placeholder.svg",
     tags: ["React", "TypeScript", "Firebase", "TailwindCSS"],
     link: "https://example.com",
-    fullDescription: "This task management application helps teams organize and track their projects effectively. Users can create tasks, assign them to team members, set deadlines, and track progress. The app features real-time updates using Firebase, drag-and-drop task organization, and customizable project boards. Built with React and TypeScript, the application implements robust state management and ensures type safety throughout the codebase."
+    fullDescription: "This task management application helps teams organize and track their projects effectively. Users can create tasks, assign them to team members, set deadlines, and track progress. The app features real-time updates using Firebase, drag-and-drop task organization, and customizable project boards. Built with React and TypeScript, the application implements robust state management and ensures type safety throughout the codebase.",
+    images: [
+      "/placeholder.svg",
+      "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d"
+    ]
   },
   {
     id: 3,
@@ -34,7 +42,11 @@ const INITIAL_PROJECTS: Project[] = [
     image: "/placeholder.svg",
     tags: ["React", "Redux", "Recharts", "Express"],
     link: "https://example.com",
-    fullDescription: "This financial dashboard provides users with in-depth insights into their spending habits and financial health. The application visualizes data through interactive charts and graphs using Recharts, allowing users to understand their finances at a glance. Features include expense categorization, budget setting, goal tracking, and financial forecasting. The frontend is built with React and Redux, while the backend is powered by Express with secure authentication."
+    fullDescription: "This financial dashboard provides users with in-depth insights into their spending habits and financial health. The application visualizes data through interactive charts and graphs using Recharts, allowing users to understand their finances at a glance. Features include expense categorization, budget setting, goal tracking, and financial forecasting. The frontend is built with React and Redux, while the backend is powered by Express with secure authentication.",
+    images: [
+      "/placeholder.svg",
+      "https://images.unsplash.com/photo-1461749280684-dccba630e2f6"
+    ]
   }
 ];
 
@@ -63,13 +75,20 @@ const ProjectItem = ({ project, onEdit, onDelete }: {
             )}
           </div>
           <p className="text-neu-text-secondary text-sm line-clamp-2">{project.description}</p>
+          
+          {project.images && project.images.length > 1 && (
+            <div className="mt-2 flex items-center text-neu-text-secondary text-sm">
+              <Image size={14} className="mr-1" />
+              {project.images.length} images
+            </div>
+          )}
         </div>
         
         <div className="flex justify-end mt-4 md:mt-0 md:w-1/3 gap-2">
           <NeumorphicButton 
             size="sm" 
             variant="secondary"
-            onClick={() => window.open(`/projects#${project.id}`, '_blank')}
+            onClick={() => window.open(`/project/${project.id}`, '_blank')}
             className="flex items-center gap-1"
           >
             <ExternalLink size={14} />
