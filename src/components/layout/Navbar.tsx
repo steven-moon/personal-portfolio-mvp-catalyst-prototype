@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, LogIn } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface NavLinkProps {
@@ -56,23 +56,34 @@ const Navbar = () => {
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center space-x-2">
-          <NavLink to="/" isActive={location.pathname === '/'}>
-            Home
-          </NavLink>
-          <NavLink to="/about" isActive={location.pathname === '/about'}>
-            About
-          </NavLink>
-          <NavLink to="/projects" isActive={location.pathname === '/projects'}>
-            Projects
-          </NavLink>
-          <NavLink to="/blog" isActive={location.pathname === '/blog' || location.pathname.startsWith('/blog/')}>
-            Blog
-          </NavLink>
-          <NavLink to="/contact" isActive={location.pathname === '/contact'}>
-            Contact
-          </NavLink>
-        </nav>
+        <div className="hidden md:flex items-center space-x-2">
+          <nav className="flex items-center space-x-2 mr-4">
+            <NavLink to="/" isActive={location.pathname === '/'}>
+              Home
+            </NavLink>
+            <NavLink to="/about" isActive={location.pathname === '/about'}>
+              About
+            </NavLink>
+            <NavLink to="/projects" isActive={location.pathname === '/projects'}>
+              Projects
+            </NavLink>
+            <NavLink to="/blog" isActive={location.pathname === '/blog' || location.pathname.startsWith('/blog/')}>
+              Blog
+            </NavLink>
+            <NavLink to="/contact" isActive={location.pathname === '/contact'}>
+              Contact
+            </NavLink>
+          </nav>
+
+          {/* Login Button - Desktop */}
+          <Link 
+            to="/login" 
+            className="flex items-center gap-1 neu-flat px-3 py-2 text-neu-accent hover:shadow-neu-convex transition-medium"
+          >
+            <LogIn size={18} />
+            <span>Login</span>
+          </Link>
+        </div>
 
         {/* Mobile Menu Button */}
         <button 
@@ -103,6 +114,15 @@ const Navbar = () => {
             <NavLink to="/contact" isActive={location.pathname === '/contact'}>
               Contact
             </NavLink>
+            
+            {/* Login Button - Mobile */}
+            <Link 
+              to="/login" 
+              className="flex items-center gap-1 neu-flat px-3 py-2 text-neu-accent mt-2"
+            >
+              <LogIn size={18} />
+              <span>Login</span>
+            </Link>
           </div>
         </nav>
       )}
