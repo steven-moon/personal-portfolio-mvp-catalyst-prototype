@@ -1,32 +1,28 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from "sonner";
 import NeumorphicButton from '@/components/ui/NeumorphicButton';
+import { useAuth } from '@/contexts/AuthContext';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     
-    // For demo purposes, we'll use a simple check
-    // In a real app, this would be an API call to your auth system
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Use the login function from auth context
+      const success = await login(email, password);
       
-      if (email === 'admin@example.com' && password === 'password') {
-        // Success login
+      if (success) {
         toast.success('Login successful!');
-        localStorage.setItem('isAuthenticated', 'true');
         navigate('/admin');
       } else {
-        // Failed login
         toast.error('Invalid credentials. Try admin@example.com / password');
       }
     } catch (error) {
