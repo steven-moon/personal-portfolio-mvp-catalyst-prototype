@@ -6,6 +6,8 @@ import NeumorphicButton from '@/components/ui/NeumorphicButton';
 import { FileEdit, Settings, BookOpen, FileText, User, LogOut } from 'lucide-react';
 import BlogPostsList from '@/components/admin/BlogPostsList';
 import BlogEditor from '@/components/admin/BlogEditor';
+import ProjectsList from '@/components/admin/ProjectsList';
+import ProjectEditor from '@/components/admin/ProjectEditor';
 
 const AdminCard = ({ title, description, icon: Icon, onClick }: { 
   title: string; 
@@ -39,6 +41,8 @@ const AdminDashboard = () => {
   const handleCardClick = (section: string) => {
     if (section === 'Blog Posts') {
       navigate('/admin/blog');
+    } else if (section === 'Projects') {
+      navigate('/admin/projects');
     } else {
       toast.info(`${section} editor would open here`);
     }
@@ -116,6 +120,9 @@ const Admin = () => {
       <Route path="/blog" element={<BlogPostsList />} />
       <Route path="/blog/new" element={<BlogEditor />} />
       <Route path="/blog/edit/:id" element={<BlogEditor />} />
+      <Route path="/projects" element={<ProjectsList />} />
+      <Route path="/projects/new" element={<ProjectEditor />} />
+      <Route path="/projects/edit/:id" element={<ProjectEditor />} />
     </Routes>
   );
 };
