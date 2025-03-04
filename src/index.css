@@ -51,6 +51,43 @@
   h1, h2, h3, h4, h5, h6 {
     @apply font-medium tracking-tight;
   }
+  
+  /* Blog prose styles */
+  .prose h2 {
+    @apply text-2xl font-semibold mt-8 mb-4;
+  }
+  
+  .prose h3 {
+    @apply text-xl font-semibold mt-6 mb-3;
+  }
+  
+  .prose p {
+    @apply mb-4 text-neu-text-secondary;
+  }
+  
+  .prose ul, .prose ol {
+    @apply mb-4 pl-5 text-neu-text-secondary;
+  }
+  
+  .prose li {
+    @apply mb-1;
+  }
+  
+  .prose a {
+    @apply text-neu-accent underline;
+  }
+  
+  .prose pre {
+    @apply my-4 p-4 rounded-lg bg-neu-bg shadow-neu-pressed overflow-auto;
+  }
+  
+  .prose code {
+    @apply font-mono text-sm;
+  }
+  
+  .prose blockquote {
+    @apply pl-4 border-l-4 border-neu-border italic my-4 text-neu-text-secondary;
+  }
 }
 
 @layer utilities {

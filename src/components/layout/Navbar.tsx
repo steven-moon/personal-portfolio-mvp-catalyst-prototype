@@ -66,6 +66,9 @@ const Navbar = () => {
           <NavLink to="/projects" isActive={location.pathname === '/projects'}>
             Projects
           </NavLink>
+          <NavLink to="/blog" isActive={location.pathname === '/blog' || location.pathname.startsWith('/blog/')}>
+            Blog
+          </NavLink>
           <NavLink to="/contact" isActive={location.pathname === '/contact'}>
             Contact
           </NavLink>
@@ -93,6 +96,9 @@ const Navbar = () => {
             </NavLink>
             <NavLink to="/projects" isActive={location.pathname === '/projects'}>
               Projects
+            </NavLink>
+            <NavLink to="/blog" isActive={location.pathname === '/blog' || location.pathname.startsWith('/blog/')}>
+              Blog
             </NavLink>
             <NavLink to="/contact" isActive={location.pathname === '/contact'}>
               Contact
