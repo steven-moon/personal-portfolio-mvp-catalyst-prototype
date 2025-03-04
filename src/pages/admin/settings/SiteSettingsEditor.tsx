@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { toast } from "sonner";
 import NeumorphicCard from '@/components/ui/NeumorphicCard';
@@ -100,13 +99,16 @@ const SiteSettingsEditor = () => {
     section: keyof SiteSettings, 
     field: string
   ) => {
-    setSettings(prev => ({
-      ...prev,
-      [section]: {
-        ...prev[section],
-        [field]: !prev[section][field as keyof typeof prev[section]]
-      }
-    }));
+    setSettings(prev => {
+      const sectionData = prev[section];
+      return {
+        ...prev,
+        [section]: {
+          ...sectionData,
+          [field]: !sectionData[field as keyof typeof sectionData]
+        }
+      };
+    });
   };
 
   const handleSave = () => {
