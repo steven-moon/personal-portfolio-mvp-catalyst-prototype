@@ -7,6 +7,9 @@ import { HomeService } from '@/lib/apiService';
 import { HomePage } from '@/data/homeData';
 import LocalImage from '@/components/ui/LocalImage';
 
+// Default profile image URL for when no image is provided
+const DEFAULT_PROFILE_IMAGE = "https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&auto=format";
+
 const Hero = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
@@ -103,12 +106,14 @@ const Hero = () => {
                 alt={heroData.title} 
                 className="w-full h-full object-cover"
                 isProfileImage={true}
-                fallbackSrc="https://placehold.co/800/333/fff?text=Photo"
+                fallbackSrc={DEFAULT_PROFILE_IMAGE}
               />
             ) : (
-              <div className="w-full h-full bg-gray-300 dark:bg-gray-700 rounded-full flex items-center justify-center text-gray-500 dark:text-gray-400">
-                <span className="text-lg">Your Photo</span>
-              </div>
+              <LocalImage 
+                src={DEFAULT_PROFILE_IMAGE} 
+                alt={heroData.title || "Profile"} 
+                className="w-full h-full object-cover"
+              />
             )}
           </NeumorphicCard>
         </div>

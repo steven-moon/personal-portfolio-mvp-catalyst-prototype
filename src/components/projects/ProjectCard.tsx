@@ -3,6 +3,14 @@ import { Link } from 'react-router-dom';
 import NeumorphicCard from '../ui/NeumorphicCard';
 import NeumorphicButton from '../ui/NeumorphicButton';
 
+// Default images to use when none are provided
+const DEFAULT_IMAGE = "https://images.unsplash.com/photo-1587620962725-abab7fe55159?q=80&auto=format";
+const DEFAULT_GALLERY_IMAGES = [
+  "https://images.unsplash.com/photo-1587620962725-abab7fe55159?q=80&auto=format",
+  "https://images.unsplash.com/photo-1516116216624-53e697fedbea?q=80&auto=format",
+  "https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&auto=format"
+];
+
 export interface Project {
   id: number;
   title: string;
@@ -19,13 +27,16 @@ interface ProjectCardProps {
 }
 
 const ProjectCard = ({ project }: ProjectCardProps) => {
+  // Use default image if project.image is empty or "/placeholder.svg"
+  const displayImage = (!project.image || project.image === "/placeholder.svg") ? DEFAULT_IMAGE : project.image;
+  
   return (
     <NeumorphicCard 
       className="h-full flex flex-col transition-medium hover:scale-[1.02]"
     >
       <div className="h-48 w-full bg-gray-200 dark:bg-gray-700 mb-4 rounded-lg overflow-hidden">
         <img 
-          src={project.image} 
+          src={displayImage} 
           alt={project.title}
           className="w-full h-full object-cover"
         />

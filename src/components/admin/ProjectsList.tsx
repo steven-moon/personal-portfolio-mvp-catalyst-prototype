@@ -6,18 +6,26 @@ import NeumorphicButton from '@/components/ui/NeumorphicButton';
 import NeumorphicCard from '@/components/ui/NeumorphicCard';
 import { Project } from '@/components/projects/ProjectCard';
 
+// Default images to use when none are provided
+const DEFAULT_IMAGE = "https://images.unsplash.com/photo-1587620962725-abab7fe55159?q=80&auto=format";
+const DEFAULT_GALLERY_IMAGES = [
+  "https://images.unsplash.com/photo-1587620962725-abab7fe55159?q=80&auto=format",
+  "https://images.unsplash.com/photo-1516116216624-53e697fedbea?q=80&auto=format",
+  "https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&auto=format"
+];
+
 // Import projects data from the Projects page
 const INITIAL_PROJECTS: Project[] = [
   {
     id: 1,
     title: "E-commerce Platform",
     description: "A modern e-commerce platform with seamless checkout experience.",
-    image: "/placeholder.svg",
+    image: DEFAULT_IMAGE,
     tags: ["React", "Node.js", "MongoDB", "Stripe"],
     link: "https://example.com",
     fullDescription: "This comprehensive e-commerce solution features product browsing, cart management, secure checkout with Stripe integration, and a responsive design. The frontend is built with React and styled with Tailwind CSS, while the backend uses Node.js with Express and MongoDB for data storage. The site includes user authentication, order tracking, and an admin dashboard for product management.",
     images: [
-      "/placeholder.svg",
+      DEFAULT_IMAGE,
       "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b",
       "https://images.unsplash.com/photo-1518770660439-4636190af475"
     ]
@@ -26,12 +34,12 @@ const INITIAL_PROJECTS: Project[] = [
     id: 2,
     title: "Task Management App",
     description: "A collaborative task management application for teams.",
-    image: "/placeholder.svg",
+    image: DEFAULT_IMAGE,
     tags: ["React", "TypeScript", "Firebase", "TailwindCSS"],
     link: "https://example.com",
     fullDescription: "This task management application helps teams organize and track their projects effectively. Users can create tasks, assign them to team members, set deadlines, and track progress. The app features real-time updates using Firebase, drag-and-drop task organization, and customizable project boards. Built with React and TypeScript, the application implements robust state management and ensures type safety throughout the codebase.",
     images: [
-      "/placeholder.svg",
+      DEFAULT_IMAGE,
       "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d"
     ]
   },
@@ -39,12 +47,12 @@ const INITIAL_PROJECTS: Project[] = [
     id: 3,
     title: "Finance Dashboard",
     description: "An interactive dashboard for personal finance tracking.",
-    image: "/placeholder.svg",
+    image: DEFAULT_IMAGE,
     tags: ["React", "Redux", "Recharts", "Express"],
     link: "https://example.com",
     fullDescription: "This financial dashboard provides users with in-depth insights into their spending habits and financial health. The application visualizes data through interactive charts and graphs using Recharts, allowing users to understand their finances at a glance. Features include expense categorization, budget setting, goal tracking, and financial forecasting. The frontend is built with React and Redux, while the backend is powered by Express with secure authentication.",
     images: [
-      "/placeholder.svg",
+      DEFAULT_IMAGE,
       "https://images.unsplash.com/photo-1461749280684-dccba630e2f6"
     ]
   }

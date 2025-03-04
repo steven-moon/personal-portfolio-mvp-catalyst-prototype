@@ -278,7 +278,7 @@ const HomeEditor = () => {
                   value={heroContent.title}
                   onChange={handleInputChange}
                   className="w-full px-4 py-2 rounded-lg neu-pressed dark:shadow-dark-neu-pressed bg-transparent text-foreground"
-                  placeholder="e.g., John Doe"
+                  placeholder="e.g., Jane Doe"
                 />
               </div>
               

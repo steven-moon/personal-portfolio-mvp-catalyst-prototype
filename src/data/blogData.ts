@@ -50,7 +50,7 @@ const MyComponent = ({ title }) => {
       <p>Modern React development is all about embracing functional programming concepts, leveraging the powerful Hook system, and using the right tools for state management. By following these principles, you can build maintainable and performant applications.</p>
     `,
     date: "May 15, 2023",
-    author: "John Doe",
+    author: "Jane Doe",
     category: "Development",
     imageUrl: "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?auto=format&fit=crop&q=80"
   },
@@ -90,7 +90,7 @@ const MyComponent = ({ title }) => {
       <p>As with any design trend, neumorphism continues to evolve. We're seeing it combined with other styles and adapted to improve accessibility while maintaining its distinct aesthetic appeal.</p>
     `,
     date: "June 22, 2023",
-    author: "John Doe",
+    author: "Jane Doe",
     category: "Design",
     imageUrl: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80"
   },
@@ -182,7 +182,7 @@ function findById<T extends Entity>(
       <p>By leveraging TypeScript's advanced features, you can significantly improve the reliability and maintainability of your codebase while enhancing the developer experience.</p>
     `,
     date: "July 8, 2023",
-    author: "John Doe",
+    author: "Jane Doe",
     category: "Development",
     imageUrl: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&q=80"
   },
@@ -259,7 +259,7 @@ module.exports = {
       <p>Tailwind CSS offers a powerful approach to styling that can dramatically improve your development workflow. By embracing its utility-first philosophy, you can build complex, responsive layouts more efficiently than ever before.</p>
     `,
     date: "August 14, 2023",
-    author: "John Doe",
+    author: "Jane Doe",
     category: "CSS",
     imageUrl: "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?auto=format&fit=crop&q=80"
   }

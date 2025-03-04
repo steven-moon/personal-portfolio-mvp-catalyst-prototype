@@ -46,7 +46,7 @@ const MyComponent = ({ title }) => {
       <p>Modern React development is all about embracing functional programming concepts, leveraging the powerful Hook system, and using the right tools for state management. By following these principles, you can build maintainable and performant applications.</p>
     `,
     date: "May 15, 2023",
-    author: "John Doe",
+    author: "Jane Doe",
     category: "Development",
     imageUrl: "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?auto=format&fit=crop&q=80"
   },
@@ -316,7 +316,7 @@ const BlogEditor = () => {
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
                 <span className="text-foreground">Author:</span>
-                <span className="font-medium">John Doe</span>
+                <span className="font-medium">Jane Doe</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-foreground">Date:</span>

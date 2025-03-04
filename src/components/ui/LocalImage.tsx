@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { getLocalImage, getProfileImage } from '@/lib/localStorageUtils';
 
+// Default images
+const DEFAULT_PROFILE_IMAGE = "https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&auto=format";
+const DEFAULT_IMAGE = "https://images.unsplash.com/photo-1587620962725-abab7fe55159?q=80&auto=format";
+
 interface LocalImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
   src: string;
   alt: string;
@@ -21,6 +25,10 @@ const LocalImage: React.FC<LocalImageProps> = ({
 }) => {
   const [imageSrc, setImageSrc] = useState<string>(src);
   const [isError, setIsError] = useState<boolean>(false);
+  
+  // Determine the appropriate fallback based on image type
+  const defaultFallback = isProfileImage ? DEFAULT_PROFILE_IMAGE : DEFAULT_IMAGE;
+  const effectiveFallback = fallbackSrc || defaultFallback;
 
   useEffect(() => {
     // Reset states when src changes
@@ -39,15 +47,16 @@ const LocalImage: React.FC<LocalImageProps> = ({
       } else {
         // If not found in local storage but it's a local path, set error state
         setIsError(true);
+        setImageSrc(effectiveFallback);
       }
     }
-  }, [src, isProfileImage]);
+  }, [src, isProfileImage, effectiveFallback]);
 
-  // Handle error case - use fallback or original src
+  // Handle error case - use fallback
   const handleError = () => {
-    if (!isError && fallbackSrc) {
+    if (!isError) {
       setIsError(true);
-      setImageSrc(fallbackSrc);
+      setImageSrc(effectiveFallback);
     }
   };
 

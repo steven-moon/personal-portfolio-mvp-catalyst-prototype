@@ -70,7 +70,7 @@ const SiteSettingsEditor = () => {
     general: {
       siteName: 'My Portfolio',
       siteDescription: 'A personal portfolio website showcasing my work and skills',
-      authorName: 'John Doe',
+      authorName: 'Jane Doe',
       favicon: '/favicon.ico',
     },
     appearance: {

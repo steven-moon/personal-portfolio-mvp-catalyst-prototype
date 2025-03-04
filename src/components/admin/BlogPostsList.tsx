@@ -12,7 +12,7 @@ const BLOG_POSTS = [
     title: "Getting Started with React in 2023",
     excerpt: "A comprehensive guide to modern React development practices...",
     date: "May 15, 2023",
-    author: "John Doe",
+    author: "Jane Doe",
     category: "Development",
     imageUrl: "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?auto=format&fit=crop&q=80"
   },
@@ -21,7 +21,7 @@ const BLOG_POSTS = [
     title: "The Future of UI Design: Neumorphism Explained",
     excerpt: "Explore the evolution of Neumorphism as a design trend...",
     date: "June 22, 2023",
-    author: "John Doe",
+    author: "Jane Doe",
     category: "Design",
     imageUrl: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80"
   },
@@ -30,7 +30,7 @@ const BLOG_POSTS = [
     title: "TypeScript Tips for Better Code Quality",
     excerpt: "Learn advanced TypeScript techniques to improve your code quality...",
     date: "July 8, 2023",
-    author: "John Doe",
+    author: "Jane Doe",
     category: "Development",
     imageUrl: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&q=80"
   },
@@ -39,7 +39,7 @@ const BLOG_POSTS = [
     title: "Building Responsive Layouts with Tailwind CSS",
     excerpt: "A deep dive into creating modern, responsive layouts using Tailwind CSS...",
     date: "August 14, 2023",
-    author: "John Doe",
+    author: "Jane Doe",
     category: "CSS",
     imageUrl: "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?auto=format&fit=crop&q=80"
   }

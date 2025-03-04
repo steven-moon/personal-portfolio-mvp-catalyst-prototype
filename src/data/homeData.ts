@@ -12,13 +12,16 @@ export interface HomePage {
   }
 }
 
+// Default profile image
+const DEFAULT_PROFILE_IMAGE = "https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&auto=format";
+
 // Home page data
 export const HOME_DATA: HomePage = {
   hero: {
-    title: "John Doe",
+    title: "Jane Doe",
     subtitle: "Creating beautiful digital experiences with attention to detail",
     profession: "Frontend Developer",
-    profileImage: "/images/profile.jpg",
+    profileImage: DEFAULT_PROFILE_IMAGE,
     services: [
       {
         id: "1",

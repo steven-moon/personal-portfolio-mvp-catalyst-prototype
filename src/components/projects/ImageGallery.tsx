@@ -1,6 +1,13 @@
 import React, { useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
+// Default gallery images to use when none are provided
+const DEFAULT_GALLERY_IMAGES = [
+  "https://images.unsplash.com/photo-1587620962725-abab7fe55159?q=80&auto=format",
+  "https://images.unsplash.com/photo-1516116216624-53e697fedbea?q=80&auto=format",
+  "https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&auto=format"
+];
+
 interface ImageGalleryProps {
   images: string[];
 }
@@ -8,15 +15,19 @@ interface ImageGalleryProps {
 const ImageGallery: React.FC<ImageGalleryProps> = ({ images }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   
+  // Check if we have valid images or need to use defaults
+  const hasValidImages = images && images.length > 0 && !images.every(img => img === "/placeholder.svg");
+  const displayImages = hasValidImages ? images : DEFAULT_GALLERY_IMAGES;
+  
   const handlePrevious = () => {
     setCurrentIndex(prevIndex => 
-      prevIndex === 0 ? images.length - 1 : prevIndex - 1
+      prevIndex === 0 ? displayImages.length - 1 : prevIndex - 1
     );
   };
   
   const handleNext = () => {
     setCurrentIndex(prevIndex => 
-      prevIndex === images.length - 1 ? 0 : prevIndex + 1
+      prevIndex === displayImages.length - 1 ? 0 : prevIndex + 1
     );
   };
   
@@ -24,24 +35,16 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images }) => {
     setCurrentIndex(index);
   };
   
-  if (!images || images.length === 0) {
-    return (
-      <div className="h-64 w-full bg-gray-200 dark:bg-gray-700 mb-6 rounded-lg flex items-center justify-center">
-        <span className="text-gray-500 dark:text-gray-300">No images available</span>
-      </div>
-    );
-  }
-  
   return (
     <div className="space-y-4">
       <div className="relative h-[400px] w-full rounded-xl overflow-hidden neu-pressed dark:shadow-dark-neu-pressed">
         <img 
-          src={images[currentIndex]} 
+          src={displayImages[currentIndex]} 
           alt={`Project image ${currentIndex + 1}`}
           className="w-full h-full object-cover"
         />
         
-        {images.length > 1 && (
+        {displayImages.length > 1 && (
           <>
             <button 
               onClick={handlePrevious}
@@ -59,7 +62,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images }) => {
             </button>
             
             <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
-              {images.map((_, index) => (
+              {displayImages.map((_, index) => (
                 <button
                   key={index}
                   onClick={() => handleThumbnailClick(index)}
@@ -74,9 +77,9 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images }) => {
         )}
       </div>
       
-      {images.length > 1 && (
+      {displayImages.length > 1 && (
         <div className="flex overflow-x-auto gap-2 py-2 px-1">
-          {images.map((image, index) => (
+          {displayImages.map((image, index) => (
             <button
               key={index}
               onClick={() => handleThumbnailClick(index)}
