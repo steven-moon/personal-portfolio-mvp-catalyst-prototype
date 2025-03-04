@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { toast } from "sonner";
 import NeumorphicCard from '@/components/ui/NeumorphicCard';
 import NeumorphicButton from '@/components/ui/NeumorphicButton';
-import { Save, Image, Trash, Upload } from 'lucide-react';
+import { Save, Image, Trash, Upload, Plus } from 'lucide-react';
 import { HomeService } from '@/lib/apiService';
 import { HomePage } from '@/data/homeData';
 import LocalImage from '@/components/ui/LocalImage';
@@ -240,107 +240,105 @@ const HomeEditor = () => {
   }
 
   return (
-    <div className="container py-12 mx-auto page-transition">
+    <div className="container py-12 mx-auto page-transition bg-background">
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold text-neu-accent">Home Page Editor</h1>
+        <h1 className="text-3xl font-bold text-primary">Home Page Editor</h1>
         <NeumorphicButton 
           onClick={handleSave}
           className="flex items-center gap-2"
-          disabled={isLoading}
         >
-          {isLoading ? 'Saving...' : (
-            <>
-              <Save size={18} />
-              Save Changes
-            </>
-          )}
+          <Save size={18} />
+          Save Changes
         </NeumorphicButton>
       </div>
       
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2">
           <NeumorphicCard className="mb-8">
-            <h2 className="text-xl font-semibold mb-4">Hero Section</h2>
+            <h2 className="text-xl font-semibold mb-6 text-foreground">Hero Content</h2>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div className="grid grid-cols-1 gap-6">
               <div>
-                <label className="block text-neu-text-secondary mb-2">Name / Title</label>
-                <input 
-                  type="text" 
-                  name="title"
-                  value={heroContent.title}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-2 rounded-lg neu-pressed"
-                />
-              </div>
-              
-              <div>
-                <label className="block text-neu-text-secondary mb-2">Profession</label>
+                <label className="block text-muted-foreground mb-2">Professional Title</label>
                 <input 
                   type="text" 
                   name="profession"
                   value={heroContent.profession}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2 rounded-lg neu-pressed"
+                  className="w-full px-4 py-2 rounded-lg neu-pressed dark:shadow-dark-neu-pressed bg-transparent text-foreground"
+                  placeholder="e.g., Frontend Developer"
                 />
               </div>
-            </div>
-            
-            <div className="mb-6">
-              <label className="block text-neu-text-secondary mb-2">Subtitle / Tagline</label>
-              <input 
-                type="text" 
-                name="subtitle"
-                value={heroContent.subtitle}
-                onChange={handleInputChange}
-                className="w-full px-4 py-2 rounded-lg neu-pressed"
-              />
+              
+              <div>
+                <label className="block text-muted-foreground mb-2">Headline</label>
+                <input 
+                  type="text" 
+                  name="title"
+                  value={heroContent.title}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-2 rounded-lg neu-pressed dark:shadow-dark-neu-pressed bg-transparent text-foreground"
+                  placeholder="e.g., John Doe"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-muted-foreground mb-2">Subheadline</label>
+                <input 
+                  type="text" 
+                  name="subtitle"
+                  value={heroContent.subtitle}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-2 rounded-lg neu-pressed dark:shadow-dark-neu-pressed bg-transparent text-foreground"
+                  placeholder="e.g., Building beautiful digital experiences"
+                />
+              </div>
             </div>
           </NeumorphicCard>
           
           <NeumorphicCard>
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-semibold">Services Section</h2>
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-xl font-semibold text-foreground">Services</h2>
               <NeumorphicButton 
                 variant="secondary" 
                 onClick={handleAddService}
                 size="sm"
-                disabled={isLoading}
+                className="flex items-center gap-2"
+                disabled={heroContent.services.length >= 6}
               >
+                <Plus size={16} />
                 Add Service
               </NeumorphicButton>
             </div>
             
             <div className="space-y-6">
               {heroContent.services.map((service, index) => (
-                <div key={service.id} className="neu-flat p-4 relative">
+                <div key={service.id} className="neu-flat dark:shadow-dark-neu-flat p-4 rounded-lg relative">
                   <button 
                     onClick={() => handleRemoveService(index)}
-                    className="absolute top-2 right-2 p-2 rounded-full hover:bg-red-100 text-red-500"
-                    disabled={isLoading}
+                    className="absolute top-2 right-2 p-2 rounded-full hover:bg-red-100 dark:hover:bg-red-900 text-red-500"
+                    disabled={heroContent.services.length <= 1}
                   >
                     <Trash size={16} />
                   </button>
                   
                   <div className="grid grid-cols-1 gap-4">
                     <div>
-                      <label className="block text-neu-text-secondary mb-2">Service Title</label>
+                      <label className="block text-muted-foreground mb-2">Service Title</label>
                       <input 
                         type="text" 
                         value={service.title}
                         onChange={(e) => handleServiceChange(index, 'title', e.target.value)}
-                        className="w-full px-4 py-2 rounded-lg neu-pressed"
-                        disabled={isLoading}
+                        className="w-full px-4 py-2 rounded-lg neu-pressed dark:shadow-dark-neu-pressed bg-transparent text-foreground"
                       />
                     </div>
                     
                     <div>
-                      <label className="block text-neu-text-secondary mb-2">Service Description</label>
+                      <label className="block text-muted-foreground mb-2">Description</label>
                       <textarea 
                         value={service.description}
                         onChange={(e) => handleServiceChange(index, 'description', e.target.value)}
-                        className="w-full px-4 py-2 rounded-lg neu-pressed min-h-[80px]"
-                        disabled={isLoading}
+                        className="w-full px-4 py-2 rounded-lg neu-pressed dark:shadow-dark-neu-pressed bg-transparent text-foreground min-h-[80px]"
                       />
                     </div>
                   </div>
@@ -352,72 +350,45 @@ const HomeEditor = () => {
         
         <div>
           <NeumorphicCard>
-            <h2 className="text-xl font-semibold mb-4">Profile Image</h2>
+            <h2 className="text-xl font-semibold mb-6 text-foreground">Profile Image</h2>
             
-            <div className="flex flex-col items-center">
-              <div 
-                className={`w-64 h-64 rounded-full overflow-hidden neu-pressed mb-4 flex items-center justify-center relative cursor-pointer ${isDragging ? 'border-4 border-dashed border-neu-accent bg-neu-accent/10' : ''}`}
-                onDragEnter={handleDragEnter}
-                onDragLeave={handleDragLeave}
-                onDragOver={handleDragOver}
-                onDrop={handleDrop}
-                onClick={triggerFileInput}
-              >
-                {profileImage ? (
+            <div 
+              className={`w-64 h-64 rounded-full mx-auto overflow-hidden mb-6 ${
+                isDragging ? 'border-2 border-dashed border-primary' : 'neu-pressed dark:shadow-dark-neu-pressed'
+              }`}
+              onDragOver={handleDragOver}
+              onDragEnter={handleDragEnter}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+            >
+              {profileImage ? (
+                <div className="relative w-full h-full group">
                   <LocalImage 
                     src={profileImage} 
                     alt="Profile" 
-                    className="w-full h-full object-cover" 
+                    className="w-full h-full object-cover"
                     isProfileImage={true}
-                    fallbackSrc="https://placehold.co/500x500/333/fff?text=Profile"
                   />
-                ) : (
-                  <div className="text-neu-text-secondary text-center p-4 pointer-events-none">
-                    <Upload size={48} className="mx-auto mb-2 opacity-50" />
-                    <p>Drop image here or click to upload</p>
+                  <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                    <button 
+                      onClick={() => {
+                        setProfileImage(null);
+                        clearProfileImage();
+                      }}
+                      className="p-2 rounded-full bg-red-500 text-white"
+                    >
+                      <Trash size={20} />
+                    </button>
                   </div>
-                )}
-              </div>
-              
-              <div className="flex gap-3">
-                {/* Hidden file input */}
-                <input 
-                  type="file" 
-                  accept="image/*" 
-                  className="hidden"
-                  onChange={handleImageChange}
-                  disabled={isLoading}
-                  ref={fileInputRef}
-                />
-                
-                {/* Upload button */}
-                <NeumorphicButton 
-                  type="button" 
-                  variant="secondary"
-                  size="sm"
-                  className="flex items-center gap-2"
-                  disabled={isLoading}
-                  onClick={triggerFileInput}
-                >
-                  <Image size={16} />
-                  Upload Image
-                </NeumorphicButton>
-                
-                {/* Remove button - only shown when an image exists */}
-                {profileImage && (
-                  <NeumorphicButton 
-                    type="button" 
-                    size="sm"
-                    variant="secondary"
-                    onClick={handleRemoveImage}
-                    className="flex items-center gap-2 text-red-500"
-                    disabled={isLoading}
-                  >
-                    <Trash size={16} />
-                    Remove
-                  </NeumorphicButton>
-                )}
-              </div>
+                </div>
+              ) : (
+                <div className="w-full h-full bg-gray-200 dark:bg-gray-700 flex flex-col items-center justify-center text-gray-400 dark:text-gray-500">
+                  <Image size={40} strokeWidth={1.5} />
+                  <p className="mt-2 text-sm text-muted-foreground text-center px-4">
+                    Drag & drop or click to upload
+                  </p>
+                </div>
+              )}
             </div>
             
             <div className="mt-8">

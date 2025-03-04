@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Calendar, User, Tag, ChevronRight } from 'lucide-react';
@@ -20,7 +19,7 @@ const BlogCard = ({ post }: BlogCardProps) => {
         />
       </div>
       <div className="p-6 flex-grow flex flex-col">
-        <div className="flex items-center space-x-4 text-neu-text-secondary text-sm mb-3">
+        <div className="flex items-center space-x-4 text-muted-foreground text-sm mb-3">
           <div className="flex items-center">
             <Calendar size={14} className="mr-1" />
             <span>{post.date}</span>
@@ -32,18 +31,18 @@ const BlogCard = ({ post }: BlogCardProps) => {
         </div>
         
         <div className="mb-2">
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-neu-bg shadow-neu-pressed text-neu-accent">
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-background shadow-neu-pressed dark:shadow-dark-neu-pressed text-primary">
             <Tag size={12} className="mr-1" />
             {post.category}
           </span>
         </div>
         
-        <h3 className="text-xl font-semibold mb-2">{post.title}</h3>
-        <p className="text-neu-text-secondary mb-4 flex-grow">{post.excerpt}</p>
+        <h3 className="text-xl font-semibold mb-2 text-foreground">{post.title}</h3>
+        <p className="text-muted-foreground mb-4 flex-grow">{post.excerpt}</p>
         
         <Link 
           to={`/blog/${post.id}`} 
-          className="inline-flex items-center text-neu-accent hover:underline mt-auto"
+          className="inline-flex items-center text-primary hover:underline mt-auto"
         >
           Read more <ChevronRight size={16} className="ml-1" />
         </Link>

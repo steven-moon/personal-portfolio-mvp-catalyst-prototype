@@ -154,7 +154,7 @@ const BlogEditor = () => {
   };
   
   return (
-    <div className="container py-8 mx-auto">
+    <div className="container py-8 mx-auto bg-background">
       <div className="flex items-center mb-6 space-x-4">
         <NeumorphicButton 
           variant="secondary" 
@@ -165,7 +165,7 @@ const BlogEditor = () => {
           <ArrowLeft size={16} />
           Back
         </NeumorphicButton>
-        <h1 className="text-2xl font-bold text-neu-accent">
+        <h1 className="text-2xl font-bold text-primary">
           {isEditMode ? 'Edit Blog Post' : 'Create New Blog Post'}
         </h1>
       </div>
@@ -174,59 +174,59 @@ const BlogEditor = () => {
         <div className="md:col-span-2">
           <NeumorphicCard className="mb-6">
             <div className="mb-4">
-              <label className="block mb-2 text-neu-text font-medium">Title</label>
+              <label className="block mb-2 text-foreground font-medium">Title</label>
               <input
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="w-full p-3 bg-neu-bg shadow-neu-pressed rounded-lg focus:outline-none"
+                className="w-full p-3 bg-background shadow-neu-pressed dark:shadow-dark-neu-pressed rounded-lg focus:outline-none text-foreground"
                 placeholder="Enter post title"
               />
             </div>
             
             <div className="mb-4">
-              <label className="block mb-2 text-neu-text font-medium">Excerpt</label>
+              <label className="block mb-2 text-foreground font-medium">Excerpt</label>
               <textarea
                 value={excerpt}
                 onChange={(e) => setExcerpt(e.target.value)}
-                className="w-full p-3 bg-neu-bg shadow-neu-pressed rounded-lg focus:outline-none h-24"
+                className="w-full p-3 bg-background shadow-neu-pressed dark:shadow-dark-neu-pressed rounded-lg focus:outline-none h-24 text-foreground"
                 placeholder="Brief summary of your post (shown in blog list)"
               />
             </div>
             
             <div>
-              <label className="block mb-2 text-neu-text font-medium">Content</label>
+              <label className="block mb-2 text-foreground font-medium">Content</label>
               <div className="mb-2 flex space-x-2">
                 <button 
-                  className="p-2 neu-pressed rounded-lg" 
+                  className="p-2 neu-pressed dark:shadow-dark-neu-pressed rounded-lg text-foreground" 
                   onClick={() => insertFormatting('bold')}
                   title="Bold"
                 >
                   <Bold size={18} />
                 </button>
                 <button 
-                  className="p-2 neu-pressed rounded-lg" 
+                  className="p-2 neu-pressed dark:shadow-dark-neu-pressed rounded-lg text-foreground" 
                   onClick={() => insertFormatting('italic')}
                   title="Italic"
                 >
                   <Italic size={18} />
                 </button>
                 <button 
-                  className="p-2 neu-pressed rounded-lg" 
+                  className="p-2 neu-pressed dark:shadow-dark-neu-pressed rounded-lg text-foreground" 
                   onClick={() => insertFormatting('heading')}
                   title="Heading"
                 >
                   <Heading size={18} />
                 </button>
                 <button 
-                  className="p-2 neu-pressed rounded-lg" 
+                  className="p-2 neu-pressed dark:shadow-dark-neu-pressed rounded-lg text-foreground" 
                   onClick={() => insertFormatting('list')}
                   title="List"
                 >
                   <List size={18} />
                 </button>
                 <button 
-                  className="p-2 neu-pressed rounded-lg" 
+                  className="p-2 neu-pressed dark:shadow-dark-neu-pressed rounded-lg text-foreground" 
                   onClick={() => insertFormatting('link')}
                   title="Link"
                 >
@@ -237,7 +237,7 @@ const BlogEditor = () => {
                 id="content-editor"
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
-                className="w-full p-3 bg-neu-bg shadow-neu-pressed rounded-lg focus:outline-none font-mono text-sm h-96"
+                className="w-full p-3 bg-background shadow-neu-pressed dark:shadow-dark-neu-pressed rounded-lg focus:outline-none font-mono text-sm h-96 text-foreground"
                 placeholder="Write your blog post content here (HTML supported)"
               />
             </div>
@@ -247,16 +247,16 @@ const BlogEditor = () => {
         <div>
           <NeumorphicCard className="mb-6">
             <div className="mb-4">
-              <label className="block mb-2 text-neu-text font-medium">Featured Image URL</label>
+              <label className="block mb-2 text-foreground font-medium">Featured Image URL</label>
               <div className="flex">
                 <input
                   type="text"
                   value={imageUrl}
                   onChange={(e) => setImageUrl(e.target.value)}
-                  className="w-full p-3 bg-neu-bg shadow-neu-pressed rounded-l-lg focus:outline-none"
+                  className="w-full p-3 bg-background shadow-neu-pressed dark:shadow-dark-neu-pressed rounded-l-lg focus:outline-none"
                   placeholder="Enter image URL"
                 />
-                <button className="p-3 bg-neu-accent text-white rounded-r-lg">
+                <button className="p-3 bg-primary text-primary-foreground rounded-r-lg">
                   <ImagePlus size={18} />
                 </button>
               </div>
@@ -264,8 +264,8 @@ const BlogEditor = () => {
             
             {imageUrl && (
               <div className="mb-4">
-                <label className="block mb-2 text-neu-text font-medium">Image Preview</label>
-                <div className="h-48 overflow-hidden rounded-lg bg-neu-bg shadow-neu-pressed">
+                <label className="block mb-2 text-foreground font-medium">Image Preview</label>
+                <div className="h-48 overflow-hidden rounded-lg bg-background shadow-neu-pressed dark:shadow-dark-neu-pressed">
                   <img 
                     src={imageUrl} 
                     alt="Preview" 
@@ -279,11 +279,11 @@ const BlogEditor = () => {
             )}
             
             <div className="mb-4">
-              <label className="block mb-2 text-neu-text font-medium">Category</label>
+              <label className="block mb-2 text-foreground font-medium">Category</label>
               <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-                className="w-full p-3 bg-neu-bg shadow-neu-pressed rounded-lg focus:outline-none"
+                className="w-full p-3 bg-background shadow-neu-pressed dark:shadow-dark-neu-pressed rounded-lg focus:outline-none"
               >
                 <option value="">Select a category</option>
                 <option value="Development">Development</option>
@@ -309,21 +309,21 @@ const BlogEditor = () => {
           
           <NeumorphicCard>
             <h3 className="text-lg font-semibold mb-2">Post Details</h3>
-            <p className="text-neu-text-secondary text-sm mb-4">
+            <p className="text-foreground text-sm mb-4">
               This post will be saved as a {isEditMode ? 'draft update' : 'new draft'}.
             </p>
             
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
-                <span className="text-neu-text-secondary">Author:</span>
+                <span className="text-foreground">Author:</span>
                 <span className="font-medium">John Doe</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-neu-text-secondary">Date:</span>
+                <span className="text-foreground">Date:</span>
                 <span className="font-medium">{new Date().toLocaleDateString()}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-neu-text-secondary">Status:</span>
+                <span className="text-foreground">Status:</span>
                 <span className="font-medium">Draft</span>
               </div>
             </div>
@@ -338,11 +338,11 @@ const BlogEditor = () => {
             <div>
               <h1 className="text-2xl font-bold mb-3">{title}</h1>
               <div className="mb-3">
-                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-neu-bg shadow-neu-pressed text-neu-accent">
+                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-background shadow-neu-pressed text-neu-accent">
                   {category || 'Uncategorized'}
                 </span>
               </div>
-              <p className="text-neu-text-secondary mb-4">{excerpt}</p>
+              <p className="text-foreground mb-4">{excerpt}</p>
               {content && (
                 <div 
                   className="prose prose-lg max-w-none"
@@ -351,7 +351,7 @@ const BlogEditor = () => {
               )}
             </div>
           ) : (
-            <p className="text-neu-text-secondary italic">Fill in the details above to see a preview</p>
+            <p className="text-foreground italic">Fill in the details above to see a preview</p>
           )}
         </NeumorphicCard>
       </div>

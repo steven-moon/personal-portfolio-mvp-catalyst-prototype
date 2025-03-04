@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { toast } from "sonner";
 import NeumorphicCard from '@/components/ui/NeumorphicCard';
@@ -302,9 +301,9 @@ const AboutEditor = () => {
   };
 
   return (
-    <div className="container py-12 mx-auto page-transition">
+    <div className="container py-12 mx-auto page-transition bg-background">
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold text-neu-accent">About Page Editor</h1>
+        <h1 className="text-3xl font-bold text-primary">About Page Editor</h1>
         <NeumorphicButton 
           onClick={handleSave}
           className="flex items-center gap-2"
@@ -317,26 +316,26 @@ const AboutEditor = () => {
       <div className="grid grid-cols-1 gap-8">
         {/* Introduction Section */}
         <NeumorphicCard>
-          <h2 className="text-xl font-semibold mb-4">Introduction</h2>
+          <h2 className="text-xl font-semibold mb-4 text-foreground">Introduction</h2>
           
           <div className="grid grid-cols-1 gap-6 mb-6">
             <div>
-              <label className="block text-neu-text-secondary mb-2">Headline</label>
+              <label className="block text-muted-foreground mb-2">Headline</label>
               <input 
                 type="text" 
                 value={aboutData.intro.headline}
                 onChange={(e) => handleIntroChange('headline', e.target.value)}
-                className="w-full px-4 py-2 rounded-lg neu-pressed"
+                className="w-full px-4 py-2 rounded-lg neu-pressed dark:shadow-dark-neu-pressed text-foreground bg-transparent"
               />
             </div>
             
             <div>
-              <label className="block text-neu-text-secondary mb-2">Subheadline</label>
+              <label className="block text-muted-foreground mb-2">Subheadline</label>
               <input 
                 type="text" 
                 value={aboutData.intro.subheadline}
                 onChange={(e) => handleIntroChange('subheadline', e.target.value)}
-                className="w-full px-4 py-2 rounded-lg neu-pressed"
+                className="w-full px-4 py-2 rounded-lg neu-pressed dark:shadow-dark-neu-pressed text-foreground bg-transparent"
               />
             </div>
           </div>
@@ -345,7 +344,7 @@ const AboutEditor = () => {
         {/* My Story Section */}
         <NeumorphicCard>
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-semibold">My Story</h2>
+            <h2 className="text-xl font-semibold text-foreground">My Story</h2>
             <NeumorphicButton 
               variant="secondary" 
               onClick={handleAddStoryParagraph}
@@ -359,21 +358,21 @@ const AboutEditor = () => {
           
           <div className="space-y-6">
             {aboutData.story.map((paragraph, index) => (
-              <div key={index} className="neu-flat p-4 relative">
+              <div key={index} className="neu-flat dark:shadow-dark-neu-flat p-4 relative">
                 <button 
                   onClick={() => handleRemoveStoryParagraph(index)}
-                  className="absolute top-2 right-2 p-2 rounded-full hover:bg-red-100 text-red-500"
+                  className="absolute top-2 right-2 p-2 rounded-full hover:bg-red-100 dark:hover:bg-red-900 text-red-500"
                   disabled={aboutData.story.length <= 1}
                 >
                   <Trash size={16} />
                 </button>
                 
                 <div>
-                  <label className="block text-neu-text-secondary mb-2">Paragraph {index + 1}</label>
+                  <label className="block text-muted-foreground mb-2">Paragraph {index + 1}</label>
                   <textarea 
                     value={paragraph}
                     onChange={(e) => handleStoryChange(index, e.target.value)}
-                    className="w-full px-4 py-2 rounded-lg neu-pressed min-h-[100px]"
+                    className="w-full px-4 py-2 rounded-lg neu-pressed dark:shadow-dark-neu-pressed text-foreground bg-transparent min-h-[100px]"
                   />
                 </div>
               </div>
@@ -384,11 +383,11 @@ const AboutEditor = () => {
         {/* Work Experience Section */}
         <NeumorphicCard>
           <div className="flex items-start mb-4">
-            <div className="p-3 neu-pressed rounded-lg mr-4">
-              <Briefcase className="text-neu-accent" size={24} />
+            <div className="p-3 neu-pressed dark:shadow-dark-neu-pressed rounded-lg mr-4">
+              <Briefcase className="text-primary" size={24} />
             </div>
             <div className="flex-grow flex justify-between items-center">
-              <h2 className="text-xl font-semibold">Work Experience</h2>
+              <h2 className="text-xl font-semibold text-foreground">Work Experience</h2>
               <NeumorphicButton 
                 variant="secondary" 
                 onClick={handleAddWorkExperience}
@@ -403,10 +402,10 @@ const AboutEditor = () => {
           
           <div className="space-y-6">
             {aboutData.workExperience.map((experience, index) => (
-              <div key={experience.id} className="neu-flat p-4 relative">
+              <div key={experience.id} className="neu-flat dark:shadow-dark-neu-flat p-4 relative">
                 <button 
                   onClick={() => handleRemoveWorkExperience(index)}
-                  className="absolute top-2 right-2 p-2 rounded-full hover:bg-red-100 text-red-500"
+                  className="absolute top-2 right-2 p-2 rounded-full hover:bg-red-100 dark:hover:bg-red-900 text-red-500"
                   disabled={aboutData.workExperience.length <= 1}
                 >
                   <Trash size={16} />
@@ -414,42 +413,42 @@ const AboutEditor = () => {
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-neu-text-secondary mb-2">Job Title</label>
+                    <label className="block text-muted-foreground mb-2">Job Title</label>
                     <input 
                       type="text" 
                       value={experience.title}
                       onChange={(e) => handleWorkExperienceChange(index, 'title', e.target.value)}
-                      className="w-full px-4 py-2 rounded-lg neu-pressed"
+                      className="w-full px-4 py-2 rounded-lg neu-pressed dark:shadow-dark-neu-pressed text-foreground bg-transparent"
                     />
                   </div>
                   
                   <div>
-                    <label className="block text-neu-text-secondary mb-2">Company</label>
+                    <label className="block text-muted-foreground mb-2">Company</label>
                     <input 
                       type="text" 
                       value={experience.company}
                       onChange={(e) => handleWorkExperienceChange(index, 'company', e.target.value)}
-                      className="w-full px-4 py-2 rounded-lg neu-pressed"
+                      className="w-full px-4 py-2 rounded-lg neu-pressed dark:shadow-dark-neu-pressed text-foreground bg-transparent"
                     />
                   </div>
                   
                   <div>
-                    <label className="block text-neu-text-secondary mb-2">Time Period</label>
+                    <label className="block text-muted-foreground mb-2">Time Period</label>
                     <input 
                       type="text" 
                       value={experience.period}
                       onChange={(e) => handleWorkExperienceChange(index, 'period', e.target.value)}
-                      className="w-full px-4 py-2 rounded-lg neu-pressed"
+                      className="w-full px-4 py-2 rounded-lg neu-pressed dark:shadow-dark-neu-pressed text-foreground bg-transparent"
                       placeholder="e.g., 2020 - Present"
                     />
                   </div>
                   
                   <div className="md:col-span-2">
-                    <label className="block text-neu-text-secondary mb-2">Description</label>
+                    <label className="block text-muted-foreground mb-2">Description</label>
                     <textarea 
                       value={experience.description}
                       onChange={(e) => handleWorkExperienceChange(index, 'description', e.target.value)}
-                      className="w-full px-4 py-2 rounded-lg neu-pressed min-h-[80px]"
+                      className="w-full px-4 py-2 rounded-lg neu-pressed dark:shadow-dark-neu-pressed text-foreground bg-transparent min-h-[80px]"
                     />
                   </div>
                 </div>
@@ -461,11 +460,11 @@ const AboutEditor = () => {
         {/* Education Section */}
         <NeumorphicCard>
           <div className="flex items-start mb-4">
-            <div className="p-3 neu-pressed rounded-lg mr-4">
-              <GraduationCap className="text-neu-accent" size={24} />
+            <div className="p-3 neu-pressed dark:shadow-dark-neu-pressed rounded-lg mr-4">
+              <GraduationCap className="text-primary" size={24} />
             </div>
             <div className="flex-grow flex justify-between items-center">
-              <h2 className="text-xl font-semibold">Education</h2>
+              <h2 className="text-xl font-semibold text-foreground">Education</h2>
               <NeumorphicButton 
                 variant="secondary" 
                 onClick={handleAddEducation}
@@ -480,10 +479,10 @@ const AboutEditor = () => {
           
           <div className="space-y-6">
             {aboutData.education.map((education, index) => (
-              <div key={education.id} className="neu-flat p-4 relative">
+              <div key={education.id} className="neu-flat dark:shadow-dark-neu-flat p-4 relative">
                 <button 
                   onClick={() => handleRemoveEducation(index)}
-                  className="absolute top-2 right-2 p-2 rounded-full hover:bg-red-100 text-red-500"
+                  className="absolute top-2 right-2 p-2 rounded-full hover:bg-red-100 dark:hover:bg-red-900 text-red-500"
                   disabled={aboutData.education.length <= 1}
                 >
                   <Trash size={16} />
@@ -491,42 +490,42 @@ const AboutEditor = () => {
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-neu-text-secondary mb-2">Degree</label>
+                    <label className="block text-muted-foreground mb-2">Degree</label>
                     <input 
                       type="text" 
                       value={education.degree}
                       onChange={(e) => handleEducationChange(index, 'degree', e.target.value)}
-                      className="w-full px-4 py-2 rounded-lg neu-pressed"
+                      className="w-full px-4 py-2 rounded-lg neu-pressed dark:shadow-dark-neu-pressed text-foreground bg-transparent"
                     />
                   </div>
                   
                   <div>
-                    <label className="block text-neu-text-secondary mb-2">Institution</label>
+                    <label className="block text-muted-foreground mb-2">Institution</label>
                     <input 
                       type="text" 
                       value={education.institution}
                       onChange={(e) => handleEducationChange(index, 'institution', e.target.value)}
-                      className="w-full px-4 py-2 rounded-lg neu-pressed"
+                      className="w-full px-4 py-2 rounded-lg neu-pressed dark:shadow-dark-neu-pressed text-foreground bg-transparent"
                     />
                   </div>
                   
                   <div>
-                    <label className="block text-neu-text-secondary mb-2">Time Period</label>
+                    <label className="block text-muted-foreground mb-2">Time Period</label>
                     <input 
                       type="text" 
                       value={education.period}
                       onChange={(e) => handleEducationChange(index, 'period', e.target.value)}
-                      className="w-full px-4 py-2 rounded-lg neu-pressed"
+                      className="w-full px-4 py-2 rounded-lg neu-pressed dark:shadow-dark-neu-pressed text-foreground bg-transparent"
                       placeholder="e.g., 2015 - 2017"
                     />
                   </div>
                   
                   <div className="md:col-span-2">
-                    <label className="block text-neu-text-secondary mb-2">Description</label>
+                    <label className="block text-muted-foreground mb-2">Description</label>
                     <textarea 
                       value={education.description}
                       onChange={(e) => handleEducationChange(index, 'description', e.target.value)}
-                      className="w-full px-4 py-2 rounded-lg neu-pressed min-h-[80px]"
+                      className="w-full px-4 py-2 rounded-lg neu-pressed dark:shadow-dark-neu-pressed text-foreground bg-transparent min-h-[80px]"
                     />
                   </div>
                 </div>
@@ -538,31 +537,31 @@ const AboutEditor = () => {
         {/* Skills Section */}
         <NeumorphicCard>
           <div className="flex items-start mb-4">
-            <div className="p-3 neu-pressed rounded-lg mr-4">
-              <Award className="text-neu-accent" size={24} />
+            <div className="p-3 neu-pressed dark:shadow-dark-neu-pressed rounded-lg mr-4">
+              <Award className="text-primary" size={24} />
             </div>
-            <h2 className="text-xl font-semibold">Skills</h2>
+            <h2 className="text-xl font-semibold text-foreground">Skills</h2>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-neu-text-secondary mb-2">Technical Skills</label>
-              <p className="text-xs text-neu-text-secondary mb-2">Enter skills separated by commas</p>
+              <label className="block text-muted-foreground mb-2">Technical Skills</label>
+              <p className="text-xs text-muted-foreground mb-2">Enter skills separated by commas</p>
               <textarea 
                 value={aboutData.skills.technical.join(", ")}
                 onChange={(e) => handleSkillsChange('technical', e.target.value)}
-                className="w-full px-4 py-2 rounded-lg neu-pressed min-h-[100px]"
+                className="w-full px-4 py-2 rounded-lg neu-pressed dark:shadow-dark-neu-pressed text-foreground bg-transparent min-h-[100px]"
                 placeholder="React, JavaScript, TypeScript, etc."
               />
             </div>
             
             <div>
-              <label className="block text-neu-text-secondary mb-2">Design Skills</label>
-              <p className="text-xs text-neu-text-secondary mb-2">Enter skills separated by commas</p>
+              <label className="block text-muted-foreground mb-2">Design Skills</label>
+              <p className="text-xs text-muted-foreground mb-2">Enter skills separated by commas</p>
               <textarea 
                 value={aboutData.skills.design.join(", ")}
                 onChange={(e) => handleSkillsChange('design', e.target.value)}
-                className="w-full px-4 py-2 rounded-lg neu-pressed min-h-[100px]"
+                className="w-full px-4 py-2 rounded-lg neu-pressed dark:shadow-dark-neu-pressed text-foreground bg-transparent min-h-[100px]"
                 placeholder="UI/UX, Figma, Wireframing, etc."
               />
             </div>
@@ -572,11 +571,11 @@ const AboutEditor = () => {
         {/* Personal Values Section */}
         <NeumorphicCard>
           <div className="flex items-start mb-4">
-            <div className="p-3 neu-pressed rounded-lg mr-4">
-              <Heart className="text-neu-accent" size={24} />
+            <div className="p-3 neu-pressed dark:shadow-dark-neu-pressed rounded-lg mr-4">
+              <Heart className="text-primary" size={24} />
             </div>
             <div className="flex-grow flex justify-between items-center">
-              <h2 className="text-xl font-semibold">Personal Values</h2>
+              <h2 className="text-xl font-semibold text-foreground">Personal Values</h2>
               <NeumorphicButton 
                 variant="secondary" 
                 onClick={handleAddValue}
@@ -591,10 +590,10 @@ const AboutEditor = () => {
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {aboutData.values.map((value, index) => (
-              <div key={value.id} className="neu-flat p-4 relative">
+              <div key={value.id} className="neu-flat dark:shadow-dark-neu-flat p-4 relative">
                 <button 
                   onClick={() => handleRemoveValue(index)}
-                  className="absolute top-2 right-2 p-2 rounded-full hover:bg-red-100 text-red-500"
+                  className="absolute top-2 right-2 p-2 rounded-full hover:bg-red-100 dark:hover:bg-red-900 text-red-500"
                   disabled={aboutData.values.length <= 1}
                 >
                   <Trash size={16} />
@@ -602,21 +601,21 @@ const AboutEditor = () => {
                 
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-neu-text-secondary mb-2">Value Title</label>
+                    <label className="block text-muted-foreground mb-2">Value Title</label>
                     <input 
                       type="text" 
                       value={value.title}
                       onChange={(e) => handleValueChange(index, 'title', e.target.value)}
-                      className="w-full px-4 py-2 rounded-lg neu-pressed"
+                      className="w-full px-4 py-2 rounded-lg neu-pressed dark:shadow-dark-neu-pressed text-foreground bg-transparent"
                     />
                   </div>
                   
                   <div>
-                    <label className="block text-neu-text-secondary mb-2">Description</label>
+                    <label className="block text-muted-foreground mb-2">Description</label>
                     <textarea 
                       value={value.description}
                       onChange={(e) => handleValueChange(index, 'description', e.target.value)}
-                      className="w-full px-4 py-2 rounded-lg neu-pressed min-h-[80px]"
+                      className="w-full px-4 py-2 rounded-lg neu-pressed dark:shadow-dark-neu-pressed text-foreground bg-transparent min-h-[80px]"
                     />
                   </div>
                 </div>

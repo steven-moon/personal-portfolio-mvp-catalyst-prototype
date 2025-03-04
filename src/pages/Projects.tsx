@@ -76,11 +76,11 @@ const Projects = () => {
   ];
 
   return (
-    <main className="page-transition py-20 px-6">
+    <main className="page-transition py-20 px-6 bg-background">
       <div className="max-w-5xl mx-auto">
         <div className="text-center mb-16 animate-slide-up">
-          <h1 className="text-4xl font-bold mb-4">My Projects</h1>
-          <p className="text-xl text-neu-text-secondary max-w-2xl mx-auto">
+          <h1 className="text-4xl font-bold mb-4 text-foreground">My Projects</h1>
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             Here's a selection of my recent work. Each project represents a unique challenge and solution.
           </p>
         </div>

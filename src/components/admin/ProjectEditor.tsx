@@ -160,9 +160,9 @@ const ProjectEditor = () => {
   };
 
   return (
-    <div className="container py-8 mx-auto">
+    <div className="container py-8 mx-auto bg-background">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-neu-accent">
+        <h1 className="text-2xl font-bold text-primary">
           {isEditMode ? 'Edit Project' : 'Create New Project'}
         </h1>
         <div className="flex gap-3">
@@ -187,10 +187,10 @@ const ProjectEditor = () => {
       <NeumorphicCard className="mb-6">
         <form onSubmit={(e) => e.preventDefault()} className="space-y-6">
           <div>
-            <label className="block text-neu-text mb-2 font-medium">Project Title</label>
+            <label className="block text-foreground mb-2 font-medium">Project Title</label>
             <input
               type="text"
-              className="w-full p-3 bg-neu-bg shadow-neu-pressed rounded-lg focus:outline-none"
+              className="w-full p-3 bg-background shadow-neu-pressed dark:shadow-dark-neu-pressed rounded-lg focus:outline-none"
               placeholder="Enter project title"
               value={project.title}
               onChange={(e) => setProject({ ...project, title: e.target.value })}
@@ -199,10 +199,10 @@ const ProjectEditor = () => {
           </div>
 
           <div>
-            <label className="block text-neu-text mb-2 font-medium">Short Description</label>
+            <label className="block text-foreground mb-2 font-medium">Short Description</label>
             <input
               type="text"
-              className="w-full p-3 bg-neu-bg shadow-neu-pressed rounded-lg focus:outline-none"
+              className="w-full p-3 bg-background shadow-neu-pressed dark:shadow-dark-neu-pressed rounded-lg focus:outline-none"
               placeholder="Brief description of your project"
               value={project.description}
               onChange={(e) => setProject({ ...project, description: e.target.value })}
@@ -211,10 +211,10 @@ const ProjectEditor = () => {
           </div>
 
           <div>
-            <label className="block text-neu-text mb-2 font-medium">Project URL</label>
+            <label className="block text-foreground mb-2 font-medium">Project URL</label>
             <input
               type="url"
-              className="w-full p-3 bg-neu-bg shadow-neu-pressed rounded-lg focus:outline-none"
+              className="w-full p-3 bg-background shadow-neu-pressed dark:shadow-dark-neu-pressed rounded-lg focus:outline-none"
               placeholder="https://your-project-url.com"
               value={project.link}
               onChange={(e) => setProject({ ...project, link: e.target.value })}
@@ -222,17 +222,17 @@ const ProjectEditor = () => {
           </div>
 
           <div>
-            <label className="block text-neu-text mb-2 font-medium">Tags</label>
+            <label className="block text-foreground mb-2 font-medium">Tags</label>
             <div className="flex flex-wrap gap-2 mb-2">
               {project.tags.map(tag => (
                 <div 
                   key={tag} 
-                  className="inline-flex items-center px-2.5 py-1 rounded-full text-sm font-medium bg-neu-bg shadow-neu-pressed"
+                  className="inline-flex items-center px-2.5 py-1 rounded-full text-sm font-medium bg-background shadow-neu-pressed dark:shadow-dark-neu-pressed"
                 >
                   {tag}
                   <button 
                     type="button"
-                    className="ml-1 text-neu-text-secondary hover:text-neu-accent"
+                    className="ml-1 text-muted-foreground hover:text-primary"
                     onClick={() => handleRemoveTag(tag)}
                   >
                     <X size={14} />
@@ -243,7 +243,7 @@ const ProjectEditor = () => {
             <div className="flex gap-2">
               <input
                 type="text"
-                className="flex-grow p-3 bg-neu-bg shadow-neu-pressed rounded-lg focus:outline-none"
+                className="flex-grow p-3 bg-background shadow-neu-pressed dark:shadow-dark-neu-pressed rounded-lg focus:outline-none"
                 placeholder="Add technology tag"
                 value={newTag}
                 onChange={(e) => setNewTag(e.target.value)}
@@ -262,9 +262,9 @@ const ProjectEditor = () => {
           </div>
 
           <div>
-            <label className="block text-neu-text mb-2 font-medium">Full Description</label>
+            <label className="block text-foreground mb-2 font-medium">Full Description</label>
             <textarea
-              className="w-full p-3 bg-neu-bg shadow-neu-pressed rounded-lg focus:outline-none min-h-[200px]"
+              className="w-full p-3 bg-background shadow-neu-pressed dark:shadow-dark-neu-pressed rounded-lg focus:outline-none min-h-[200px]"
               placeholder="Detailed description of your project"
               value={project.fullDescription}
               onChange={(e) => setProject({ ...project, fullDescription: e.target.value })}
@@ -273,15 +273,15 @@ const ProjectEditor = () => {
           </div>
 
           <div>
-            <label className="block text-neu-text mb-2 font-medium">Project Images</label>
-            <p className="text-neu-text-secondary text-sm mb-3">
+            <label className="block text-foreground mb-2 font-medium">Project Images</label>
+            <p className="text-muted-foreground text-sm mb-3">
               The first image will be used as the main project thumbnail. Click "Set as Main" to reorder.
             </p>
             
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mb-4">
               {project.images && project.images.map((image, index) => (
                 <div key={index} className="relative group">
-                  <div className={`h-24 w-full bg-gray-200 rounded-lg overflow-hidden ${index === 0 ? 'ring-2 ring-neu-accent' : ''}`}>
+                  <div className={`h-24 w-full bg-muted rounded-lg overflow-hidden ${index === 0 ? 'ring-2 ring-primary' : ''}`}>
                     <img 
                       src={image} 
                       alt={`Project image ${index + 1}`}
@@ -293,7 +293,7 @@ const ProjectEditor = () => {
                       <button
                         type="button"
                         onClick={() => handleSetMainImage(index)}
-                        className="p-1.5 bg-white rounded-full text-gray-800"
+                        className="p-1.5 bg-background rounded-full text-foreground"
                         title="Set as main image"
                       >
                         <FileImage size={14} />
@@ -302,14 +302,14 @@ const ProjectEditor = () => {
                     <button
                       type="button"
                       onClick={() => handleRemoveImage(index)}
-                      className="p-1.5 bg-white rounded-full text-red-500"
+                      className="p-1.5 bg-background rounded-full text-destructive"
                       title="Remove image"
                     >
                       <Trash size={14} />
                     </button>
                   </div>
                   {index === 0 && (
-                    <span className="absolute -top-2 -right-2 bg-neu-accent text-white text-xs py-0.5 px-2 rounded-full">
+                    <span className="absolute -top-2 -right-2 bg-primary text-primary-foreground text-xs py-0.5 px-2 rounded-full">
                       Main
                     </span>
                   )}
@@ -320,7 +320,7 @@ const ProjectEditor = () => {
             <div className="flex gap-2">
               <input
                 type="text"
-                className="flex-grow p-3 bg-neu-bg shadow-neu-pressed rounded-lg focus:outline-none"
+                className="flex-grow p-3 bg-background shadow-neu-pressed dark:shadow-dark-neu-pressed rounded-lg focus:outline-none"
                 placeholder="Enter image URL"
                 value={newImageUrl}
                 onChange={(e) => setNewImageUrl(e.target.value)}
@@ -336,7 +336,7 @@ const ProjectEditor = () => {
                 Add Image
               </NeumorphicButton>
             </div>
-            <p className="text-neu-text-secondary text-sm italic mt-2">
+            <p className="text-muted-foreground text-sm italic mt-2">
               Note: In a real application, you would have an image upload feature
             </p>
           </div>

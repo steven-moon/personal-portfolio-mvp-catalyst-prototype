@@ -2,7 +2,11 @@ import React from 'react';
 import BlogPostsList from '@/components/admin/BlogPostsList';
 
 const BlogList = () => {
-  return <BlogPostsList />;
+  return (
+    <div className="bg-background">
+      <BlogPostsList />
+    </div>
+  );
 };
 
 export default BlogList; 

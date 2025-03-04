@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from "sonner";
@@ -57,16 +56,16 @@ const BlogPostItem = ({ post, onEdit, onDelete }: {
     <NeumorphicCard className="mb-4 p-4">
       <div className="flex flex-col md:flex-row md:items-center">
         <div className="w-full md:w-2/3">
-          <h3 className="text-lg font-semibold mb-1">{post.title}</h3>
+          <h3 className="text-lg font-semibold mb-1 text-foreground">{post.title}</h3>
           <div className="flex flex-wrap gap-2 mb-2">
-            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-neu-bg shadow-neu-pressed text-neu-accent">
+            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-background shadow-neu-pressed dark:shadow-dark-neu-pressed text-primary">
               {post.category}
             </span>
-            <span className="text-neu-text-secondary text-sm">
+            <span className="text-muted-foreground text-sm">
               {post.date}
             </span>
           </div>
-          <p className="text-neu-text-secondary text-sm line-clamp-2">{post.excerpt}</p>
+          <p className="text-muted-foreground text-sm line-clamp-2">{post.excerpt}</p>
         </div>
         
         <div className="flex justify-end mt-4 md:mt-0 md:w-1/3 gap-2">
@@ -126,9 +125,9 @@ const BlogPostsList = () => {
   };
   
   return (
-    <div className="container py-8 mx-auto">
+    <div className="container py-8 mx-auto bg-background">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-neu-accent">Manage Blog Posts</h1>
+        <h1 className="text-2xl font-bold text-primary">Manage Blog Posts</h1>
         <NeumorphicButton 
           onClick={handleNewPost}
           className="flex items-center gap-2"
@@ -138,21 +137,21 @@ const BlogPostsList = () => {
         </NeumorphicButton>
       </div>
       
-      <div className="bg-neu-bg shadow-neu-pressed rounded-xl p-4 mb-6">
+      <div className="bg-background shadow-neu-pressed dark:shadow-dark-neu-pressed rounded-xl p-4 mb-6">
         <div className="flex flex-col md:flex-row md:items-center gap-3">
           <div className="relative flex-grow">
             <input
               type="text"
-              className="w-full p-3 bg-neu-bg shadow-neu-pressed rounded-lg focus:outline-none pl-10"
+              className="w-full p-3 bg-background shadow-neu-pressed dark:shadow-dark-neu-pressed rounded-lg focus:outline-none pl-10 text-foreground"
               placeholder="Search posts..."
             />
-            <span className="absolute left-3 top-3 text-neu-text-secondary">
+            <span className="absolute left-3 top-3 text-muted-foreground">
               <FileText size={18} />
             </span>
           </div>
           
           <select
-            className="p-3 bg-neu-bg shadow-neu-pressed rounded-lg focus:outline-none w-full md:w-48"
+            className="p-3 bg-background shadow-neu-pressed dark:shadow-dark-neu-pressed rounded-lg focus:outline-none w-full md:w-48 text-foreground"
           >
             <option value="">All Categories</option>
             <option value="Development">Development</option>
@@ -174,7 +173,7 @@ const BlogPostsList = () => {
           ))
         ) : (
           <div className="text-center py-12">
-            <p className="text-neu-text-secondary mb-4">No blog posts found</p>
+            <p className="text-muted-foreground mb-4">No blog posts found</p>
             <NeumorphicButton 
               onClick={handleNewPost}
               className="flex items-center gap-2 mx-auto"

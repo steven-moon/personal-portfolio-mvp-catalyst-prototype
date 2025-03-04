@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import NeumorphicCard from '../ui/NeumorphicCard';
@@ -24,18 +23,18 @@ const ProjectCard = ({ project }: ProjectCardProps) => {
     <NeumorphicCard 
       className="h-full flex flex-col transition-medium hover:scale-[1.02]"
     >
-      <div className="h-48 w-full bg-gray-200 mb-4 rounded-lg overflow-hidden">
+      <div className="h-48 w-full bg-gray-200 dark:bg-gray-700 mb-4 rounded-lg overflow-hidden">
         <img 
           src={project.image} 
           alt={project.title}
           className="w-full h-full object-cover"
         />
       </div>
-      <h3 className="text-xl font-semibold mb-2">{project.title}</h3>
-      <p className="text-neu-text-secondary mb-4 flex-grow">{project.description}</p>
+      <h3 className="text-xl font-semibold mb-2 text-foreground">{project.title}</h3>
+      <p className="text-muted-foreground mb-4 flex-grow">{project.description}</p>
       <div className="flex flex-wrap gap-2 mb-4">
         {project.tags.map((tag) => (
-          <span key={tag} className="py-1 px-2 neu-pressed rounded-md text-xs">
+          <span key={tag} className="py-1 px-2 neu-pressed dark:shadow-dark-neu-pressed rounded-md text-xs text-foreground bg-background">
             {tag}
           </span>
         ))}

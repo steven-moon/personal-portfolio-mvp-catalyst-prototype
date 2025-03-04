@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { cn } from '@/lib/utils';
 
@@ -14,12 +13,12 @@ const NeumorphicCard = ({
   className,
   ...props
 }: NeumorphicCardProps) => {
-  const baseStyles = "p-6 rounded-xl transition-medium";
+  const baseStyles = "p-6 rounded-xl transition-medium bg-background";
   
   const variantStyles = {
-    flat: "neu-flat hover:scale-[1.01]",
-    pressed: "neu-pressed",
-    convex: "neu-convex hover:scale-[1.01]"
+    flat: "neu-flat dark:shadow-dark-neu-flat hover:scale-[1.01]",
+    pressed: "neu-pressed dark:shadow-dark-neu-pressed",
+    convex: "neu-convex dark:shadow-dark-neu-convex hover:scale-[1.01]"
   };
 
   return (

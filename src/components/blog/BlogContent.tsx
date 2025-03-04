@@ -1,4 +1,3 @@
-
 import React from 'react';
 
 interface BlogContentProps {
@@ -8,7 +7,7 @@ interface BlogContentProps {
 const BlogContent = ({ content }: BlogContentProps) => {
   return (
     <div 
-      className="prose prose-lg prose-headings:font-semibold prose-a:text-neu-accent max-w-none"
+      className="prose prose-lg dark:prose-invert prose-headings:font-semibold prose-headings:text-foreground prose-a:text-primary max-w-none"
       dangerouslySetInnerHTML={{ __html: content }}
     />
   );

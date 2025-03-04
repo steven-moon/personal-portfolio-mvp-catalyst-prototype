@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import NeumorphicCard from '../ui/NeumorphicCard';
 import NeumorphicButton from '../ui/NeumorphicButton';
@@ -42,11 +41,11 @@ const MessageForm = () => {
 
   return (
     <NeumorphicCard>
-      <h2 className="text-2xl font-semibold mb-6">Send Me a Message</h2>
+      <h2 className="text-2xl font-semibold mb-6 text-foreground">Send Me a Message</h2>
       <form onSubmit={handleSubmit}>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
           <div>
-            <label htmlFor="name" className="block text-sm font-medium mb-2">
+            <label htmlFor="name" className="block text-sm font-medium mb-2 text-foreground">
               Name
             </label>
             <input
@@ -56,12 +55,12 @@ const MessageForm = () => {
               value={formData.name}
               onChange={handleChange}
               required
-              className="w-full px-4 py-3 rounded-xl neu-pressed bg-transparent focus:outline-none focus:ring-2 focus:ring-neu-accent"
+              className="w-full px-4 py-3 rounded-xl neu-pressed dark:shadow-dark-neu-pressed bg-transparent focus:outline-none focus:ring-2 focus:ring-primary text-foreground"
               placeholder="Your name"
             />
           </div>
           <div>
-            <label htmlFor="email" className="block text-sm font-medium mb-2">
+            <label htmlFor="email" className="block text-sm font-medium mb-2 text-foreground">
               Email
             </label>
             <input
@@ -71,14 +70,14 @@ const MessageForm = () => {
               value={formData.email}
               onChange={handleChange}
               required
-              className="w-full px-4 py-3 rounded-xl neu-pressed bg-transparent focus:outline-none focus:ring-2 focus:ring-neu-accent"
+              className="w-full px-4 py-3 rounded-xl neu-pressed dark:shadow-dark-neu-pressed bg-transparent focus:outline-none focus:ring-2 focus:ring-primary text-foreground"
               placeholder="Your email"
             />
           </div>
         </div>
         
         <div className="mb-6">
-          <label htmlFor="subject" className="block text-sm font-medium mb-2">
+          <label htmlFor="subject" className="block text-sm font-medium mb-2 text-foreground">
             Subject
           </label>
           <input
@@ -88,13 +87,13 @@ const MessageForm = () => {
             value={formData.subject}
             onChange={handleChange}
             required
-            className="w-full px-4 py-3 rounded-xl neu-pressed bg-transparent focus:outline-none focus:ring-2 focus:ring-neu-accent"
+            className="w-full px-4 py-3 rounded-xl neu-pressed dark:shadow-dark-neu-pressed bg-transparent focus:outline-none focus:ring-2 focus:ring-primary text-foreground"
             placeholder="What is this regarding?"
           />
         </div>
         
         <div className="mb-6">
-          <label htmlFor="message" className="block text-sm font-medium mb-2">
+          <label htmlFor="message" className="block text-sm font-medium mb-2 text-foreground">
             Message
           </label>
           <textarea
@@ -104,7 +103,7 @@ const MessageForm = () => {
             value={formData.message}
             onChange={handleChange}
             required
-            className="w-full px-4 py-3 rounded-xl neu-pressed bg-transparent focus:outline-none focus:ring-2 focus:ring-neu-accent resize-none"
+            className="w-full px-4 py-3 rounded-xl neu-pressed dark:shadow-dark-neu-pressed bg-transparent focus:outline-none focus:ring-2 focus:ring-primary text-foreground"
             placeholder="Your message here..."
           />
         </div>

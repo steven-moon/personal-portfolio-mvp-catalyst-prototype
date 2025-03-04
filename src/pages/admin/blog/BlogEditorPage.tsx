@@ -2,7 +2,11 @@ import React from 'react';
 import BlogEditor from '@/components/admin/BlogEditor';
 
 const BlogEditorPage = () => {
-  return <BlogEditor />;
+  return (
+    <div className="bg-background">
+      <BlogEditor />
+    </div>
+  );
 };
 
 export default BlogEditorPage; 

@@ -1,4 +1,3 @@
-
 import React from 'react';
 import NeumorphicCard from '@/components/ui/NeumorphicCard';
 import BlogDetailHeader from '@/components/blog/BlogDetailHeader';
@@ -16,7 +15,7 @@ const BlogDetail = () => {
   }
 
   return (
-    <div className="page-transition container mx-auto px-6 py-12">
+    <div className="page-transition container mx-auto px-6 py-12 bg-background">
       <BlogDetailHeader />
       
       <div className="max-w-4xl mx-auto">
@@ -36,7 +35,7 @@ const BlogDetail = () => {
               category={post.category}
             />
             
-            <h1 className="text-3xl md:text-4xl font-bold mb-4">{post.title}</h1>
+            <h1 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">{post.title}</h1>
             
             <BlogContent content={post.content} />
             

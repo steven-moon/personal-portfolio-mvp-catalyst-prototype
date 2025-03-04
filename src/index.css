@@ -1,4 +1,3 @@
-
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
@@ -7,6 +6,7 @@
 
 @layer base {
   :root {
+    /* Light mode variables */
     --background: 0 0% 95%;
     --foreground: 222.2 84% 4.9%;
 
@@ -37,6 +37,37 @@
 
     --radius: 0.75rem;
   }
+
+  .dark {
+    /* Dark mode variables */
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 84% 9.9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 84% 9.9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 224.3 76.5% 48%;
+  }
 }
 
 @layer base {
@@ -45,7 +76,7 @@
   }
 
   body {
-    @apply bg-neu-bg text-neu-text font-[Inter] antialiased;
+    @apply bg-background text-foreground font-[Inter] antialiased;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -62,11 +93,11 @@
   }
   
   .prose p {
-    @apply mb-4 text-neu-text-secondary;
+    @apply mb-4 text-muted-foreground;
   }
   
   .prose ul, .prose ol {
-    @apply mb-4 pl-5 text-neu-text-secondary;
+    @apply mb-4 pl-5 text-muted-foreground;
   }
   
   .prose li {
@@ -74,11 +105,11 @@
   }
   
   .prose a {
-    @apply text-neu-accent underline;
+    @apply text-primary underline;
   }
   
   .prose pre {
-    @apply my-4 p-4 rounded-lg bg-neu-bg shadow-neu-pressed overflow-auto;
+    @apply my-4 p-4 rounded-lg bg-muted shadow-neu-pressed overflow-auto;
   }
   
   .prose code {
@@ -86,21 +117,35 @@
   }
   
   .prose blockquote {
-    @apply pl-4 border-l-4 border-neu-border italic my-4 text-neu-text-secondary;
+    @apply pl-4 border-l-4 border-muted italic my-4 text-muted-foreground;
   }
 }
 
 @layer utilities {
+  /* Neumorphic light mode styles */
   .neu-flat {
-    @apply bg-neu-bg shadow-neu-flat rounded-xl;
+    @apply bg-background shadow-neu-flat rounded-xl;
   }
   
   .neu-pressed {
-    @apply bg-neu-bg shadow-neu-pressed rounded-xl;
+    @apply bg-background shadow-neu-pressed rounded-xl;
   }
   
   .neu-convex {
-    @apply bg-neu-bg shadow-neu-convex rounded-xl;
+    @apply bg-background shadow-neu-convex rounded-xl;
+  }
+
+  /* Dark mode versions of neumorphic styles */
+  .dark .neu-flat {
+    @apply bg-card shadow-dark-neu-flat rounded-xl;
+  }
+  
+  .dark .neu-pressed {
+    @apply bg-card shadow-dark-neu-pressed rounded-xl;
+  }
+  
+  .dark .neu-convex {
+    @apply bg-card shadow-dark-neu-convex rounded-xl;
   }
 
   .page-transition {

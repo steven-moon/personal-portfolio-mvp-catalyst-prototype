@@ -117,87 +117,9 @@ const ContactEditor = () => {
   }
 
   return (
-    <div className="container py-12 mx-auto page-transition">
-      <h1 className="text-3xl font-bold mb-8 text-neu-accent">Contact Page Editor</h1>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-        <NeumorphicCard>
-          <h2 className="text-xl font-semibold mb-6">Contact Information</h2>
-          
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium mb-2">Email Address</label>
-              <div className="flex">
-                <div className="p-2 neu-pressed rounded-l-lg">
-                  <Mail className="text-neu-accent" size={20} />
-                </div>
-                <input
-                  type="email"
-                  name="email"
-                  value={contactInfo.email}
-                  onChange={handleInfoChange}
-                  className="flex-1 p-2 bg-neu-bg shadow-neu-pressed rounded-r-lg focus:outline-none"
-                />
-              </div>
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium mb-2">Location</label>
-              <div className="flex">
-                <div className="p-2 neu-pressed rounded-l-lg">
-                  <MapPin className="text-neu-accent" size={20} />
-                </div>
-                <input
-                  type="text"
-                  name="location"
-                  value={contactInfo.location}
-                  onChange={handleInfoChange}
-                  className="flex-1 p-2 bg-neu-bg shadow-neu-pressed rounded-r-lg focus:outline-none"
-                />
-              </div>
-            </div>
-          </div>
-        </NeumorphicCard>
-        
-        <NeumorphicCard>
-          <h2 className="text-xl font-semibold mb-6">Social Media</h2>
-          <p className="text-neu-text-secondary mb-4">Toggle which social media links to display on your contact page.</p>
-          
-          <div className="space-y-4">
-            {socialMedia.map((social) => {
-              const Icon = social.icon;
-              return (
-                <div key={social.id} className="p-4 neu-flat rounded-lg">
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 neu-pressed rounded-lg">
-                        <Icon className="text-neu-accent" size={18} />
-                      </div>
-                      <span className="font-medium">{social.name}</span>
-                    </div>
-                    
-                    <Switch 
-                      checked={social.enabled}
-                      onCheckedChange={() => handleSocialMediaToggle(social.id)}
-                      className="data-[state=checked]:bg-neu-accent"
-                    />
-                  </div>
-                  
-                  <input
-                    type="url"
-                    value={social.url}
-                    onChange={(e) => handleSocialMediaUrlChange(social.id, e.target.value)}
-                    className={`w-full p-2 bg-neu-bg rounded-lg transition-all ${social.enabled ? 'shadow-neu-pressed opacity-100' : 'shadow-none opacity-50'}`}
-                    disabled={!social.enabled}
-                  />
-                </div>
-              );
-            })}
-          </div>
-        </NeumorphicCard>
-      </div>
-      
-      <div className="flex justify-end">
+    <div className="container py-12 mx-auto page-transition bg-background">
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-3xl font-bold text-primary">Contact Page Editor</h1>
         <NeumorphicButton 
           onClick={handleSave}
           className="flex items-center gap-2"
@@ -205,6 +127,79 @@ const ContactEditor = () => {
           <Save size={18} />
           Save Changes
         </NeumorphicButton>
+      </div>
+      
+      <div className="grid grid-cols-1 gap-8">
+        <NeumorphicCard>
+          <h2 className="text-xl font-semibold mb-6 text-foreground">Contact Information</h2>
+          
+          <div className="grid grid-cols-1 gap-6 mb-6">
+            <div className="flex items-start">
+              <div className="p-3 neu-pressed dark:shadow-dark-neu-pressed rounded-lg mr-4">
+                <Mail className="text-primary" size={20} />
+              </div>
+              <div className="flex-grow">
+                <label className="block text-muted-foreground mb-2">Email Address</label>
+                <input 
+                  type="email" 
+                  name="email"
+                  value={contactInfo.email}
+                  onChange={handleInfoChange}
+                  className="w-full px-4 py-2 rounded-lg neu-pressed dark:shadow-dark-neu-pressed text-foreground bg-transparent"
+                  placeholder="your@email.com"
+                />
+              </div>
+            </div>
+            
+            <div className="flex items-start">
+              <div className="p-3 neu-pressed dark:shadow-dark-neu-pressed rounded-lg mr-4">
+                <MapPin className="text-primary" size={20} />
+              </div>
+              <div className="flex-grow">
+                <label className="block text-muted-foreground mb-2">Location</label>
+                <input 
+                  type="text" 
+                  name="location"
+                  value={contactInfo.location}
+                  onChange={handleInfoChange}
+                  className="w-full px-4 py-2 rounded-lg neu-pressed dark:shadow-dark-neu-pressed text-foreground bg-transparent"
+                  placeholder="City, Country"
+                />
+              </div>
+            </div>
+          </div>
+        </NeumorphicCard>
+        
+        <NeumorphicCard>
+          <h2 className="text-xl font-semibold mb-6 text-foreground">Social Media Links</h2>
+          
+          <div className="space-y-6">
+            {socialMedia.map((social) => (
+              <div key={social.id} className="flex items-start neu-flat dark:shadow-dark-neu-flat p-4 rounded-lg">
+                <div className="p-3 neu-pressed dark:shadow-dark-neu-pressed rounded-lg mr-4">
+                  <social.icon className="text-primary" size={20} />
+                </div>
+                <div className="flex-grow">
+                  <div className="flex justify-between items-center mb-2">
+                    <label className="text-foreground font-medium">{social.name}</label>
+                    <Switch 
+                      checked={social.enabled} 
+                      onCheckedChange={() => handleSocialMediaToggle(social.id)} 
+                    />
+                  </div>
+                  <input 
+                    type="url" 
+                    value={social.url}
+                    onChange={(e) => handleSocialMediaUrlChange(social.id, e.target.value)}
+                    className="w-full px-4 py-2 rounded-lg neu-pressed dark:shadow-dark-neu-pressed text-foreground bg-transparent"
+                    placeholder={`https://${social.name.toLowerCase()}.com/username`}
+                    disabled={!social.enabled}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        </NeumorphicCard>
       </div>
     </div>
   );

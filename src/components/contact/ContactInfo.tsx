@@ -42,10 +42,10 @@ const ContactInfo = () => {
     return (
       <NeumorphicCard className="h-full">
         <div className="animate-pulse space-y-4">
-          <div className="h-8 bg-neu-pressed rounded w-2/3"></div>
-          <div className="h-16 bg-neu-pressed rounded w-full"></div>
-          <div className="h-16 bg-neu-pressed rounded w-full"></div>
-          <div className="h-16 bg-neu-pressed rounded w-full"></div>
+          <div className="h-8 bg-neu-pressed dark:bg-zinc-700 rounded w-2/3"></div>
+          <div className="h-16 bg-neu-pressed dark:bg-zinc-700 rounded w-full"></div>
+          <div className="h-16 bg-neu-pressed dark:bg-zinc-700 rounded w-full"></div>
+          <div className="h-16 bg-neu-pressed dark:bg-zinc-700 rounded w-full"></div>
         </div>
       </NeumorphicCard>
     );
@@ -55,13 +55,13 @@ const ContactInfo = () => {
   
   return (
     <NeumorphicCard className="h-full">
-      <h2 className="text-2xl font-semibold mb-6">Contact Information</h2>
+      <h2 className="text-2xl font-semibold mb-6 text-foreground">Contact Information</h2>
       <div className="space-y-6">
         <ContactInfoItem
           icon={Mail}
           title="Email"
           content={
-            <a href={`mailto:${email}`} className="text-neu-text-secondary hover:text-neu-accent transition-medium">
+            <a href={`mailto:${email}`} className="text-muted-foreground hover:text-primary transition-medium">
               {email}
             </a>
           }
@@ -70,7 +70,7 @@ const ContactInfo = () => {
         <ContactInfoItem
           icon={MapPin}
           title="Location"
-          content={<p className="text-neu-text-secondary">{location}</p>}
+          content={<p className="text-muted-foreground">{location}</p>}
         />
         
         {socialMedia.filter(item => item.enabled).map(social => {
@@ -86,7 +86,7 @@ const ContactInfo = () => {
                   href={social.url} 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="text-neu-text-secondary hover:text-neu-accent transition-medium"
+                  className="text-muted-foreground hover:text-primary transition-medium"
                 >
                   {social.url.replace(/(https?:\/\/)?(www\.)?/, '')}
                 </a>

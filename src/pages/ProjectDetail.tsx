@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ExternalLink, ArrowLeft } from 'lucide-react';
@@ -86,9 +85,9 @@ const ProjectDetail = () => {
   
   if (!project) {
     return (
-      <div className="container py-20 px-6 mx-auto text-center">
-        <h1 className="text-3xl font-bold mb-4">Project Not Found</h1>
-        <p className="mb-8">The project you're looking for doesn't exist or has been removed.</p>
+      <div className="container py-20 px-6 mx-auto text-center bg-background">
+        <h1 className="text-3xl font-bold mb-4 text-foreground">Project Not Found</h1>
+        <p className="mb-8 text-muted-foreground">The project you're looking for doesn't exist or has been removed.</p>
         <Link to="/projects">
           <NeumorphicButton>
             Return to Projects
@@ -99,19 +98,19 @@ const ProjectDetail = () => {
   }
 
   return (
-    <main className="page-transition py-20 px-6">
+    <main className="page-transition py-20 px-6 bg-background">
       <div className="max-w-4xl mx-auto">
-        <Link to="/projects" className="inline-flex items-center mb-8 text-neu-accent hover:underline">
+        <Link to="/projects" className="inline-flex items-center mb-8 text-primary hover:underline">
           <ArrowLeft className="mr-2" size={18} />
           Back to all projects
         </Link>
         
         <div className="mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold mb-4">{project.title}</h1>
+          <h1 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">{project.title}</h1>
           
           <div className="flex flex-wrap gap-2 mb-6">
             {project.tags.map((tag) => (
-              <span key={tag} className="py-1 px-3 neu-flat rounded-full text-sm">
+              <span key={tag} className="py-1 px-3 neu-flat dark:shadow-dark-neu-flat rounded-full text-sm text-foreground bg-background">
                 {tag}
               </span>
             ))}
@@ -120,9 +119,9 @@ const ProjectDetail = () => {
         
         <ImageGallery images={project.images || [project.image]} />
         
-        <div className="neu-flat p-6 rounded-xl my-8">
-          <h2 className="text-xl font-semibold mb-4">Project Overview</h2>
-          <div className="text-neu-text-secondary space-y-4">
+        <div className="neu-flat dark:shadow-dark-neu-flat p-6 rounded-xl my-8 bg-background">
+          <h2 className="text-xl font-semibold mb-4 text-foreground">Project Overview</h2>
+          <div className="text-muted-foreground space-y-4">
             <p>{project.fullDescription}</p>
           </div>
         </div>

@@ -61,23 +61,23 @@ const ProjectItem = ({ project, onEdit, onDelete }: {
     <NeumorphicCard className="mb-4 p-4">
       <div className="flex flex-col md:flex-row md:items-center">
         <div className="w-full md:w-2/3">
-          <h3 className="text-lg font-semibold mb-1">{project.title}</h3>
+          <h3 className="text-lg font-semibold mb-1 text-foreground">{project.title}</h3>
           <div className="flex flex-wrap gap-2 mb-2">
             {project.tags.slice(0, 3).map(tag => (
-              <span key={tag} className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-neu-bg shadow-neu-pressed text-neu-accent">
+              <span key={tag} className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-background shadow-neu-pressed dark:shadow-dark-neu-pressed text-primary">
                 {tag}
               </span>
             ))}
             {project.tags.length > 3 && (
-              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-neu-bg shadow-neu-pressed text-neu-text-secondary">
+              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-background shadow-neu-pressed dark:shadow-dark-neu-pressed text-muted-foreground">
                 +{project.tags.length - 3} more
               </span>
             )}
           </div>
-          <p className="text-neu-text-secondary text-sm line-clamp-2">{project.description}</p>
+          <p className="text-muted-foreground text-sm line-clamp-2">{project.description}</p>
           
           {project.images && project.images.length > 1 && (
-            <div className="mt-2 flex items-center text-neu-text-secondary text-sm">
+            <div className="mt-2 flex items-center text-muted-foreground text-sm">
               <Image size={14} className="mr-1" />
               {project.images.length} images
             </div>
@@ -141,9 +141,9 @@ const ProjectsList = () => {
   };
   
   return (
-    <div className="container py-8 mx-auto">
+    <div className="container py-8 mx-auto bg-background">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-neu-accent">Manage Projects</h1>
+        <h1 className="text-2xl font-bold text-primary">Manage Projects</h1>
         <NeumorphicButton 
           onClick={handleNewProject}
           className="flex items-center gap-2"
@@ -153,21 +153,21 @@ const ProjectsList = () => {
         </NeumorphicButton>
       </div>
       
-      <div className="bg-neu-bg shadow-neu-pressed rounded-xl p-4 mb-6">
+      <div className="bg-background shadow-neu-pressed dark:shadow-dark-neu-pressed rounded-xl p-4 mb-6">
         <div className="flex flex-col md:flex-row md:items-center gap-3">
           <div className="relative flex-grow">
             <input
               type="text"
-              className="w-full p-3 bg-neu-bg shadow-neu-pressed rounded-lg focus:outline-none pl-10"
+              className="w-full p-3 bg-background shadow-neu-pressed dark:shadow-dark-neu-pressed rounded-lg focus:outline-none pl-10 text-foreground"
               placeholder="Search projects..."
             />
-            <span className="absolute left-3 top-3 text-neu-text-secondary">
+            <span className="absolute left-3 top-3 text-muted-foreground">
               <FileText size={18} />
             </span>
           </div>
           
           <select
-            className="p-3 bg-neu-bg shadow-neu-pressed rounded-lg focus:outline-none w-full md:w-48"
+            className="p-3 bg-background shadow-neu-pressed dark:shadow-dark-neu-pressed rounded-lg focus:outline-none w-full md:w-48 text-foreground"
           >
             <option value="">All Tags</option>
             <option value="React">React</option>
@@ -189,7 +189,7 @@ const ProjectsList = () => {
           ))
         ) : (
           <div className="text-center py-12">
-            <p className="text-neu-text-secondary mb-4">No projects found</p>
+            <p className="text-muted-foreground mb-4">No projects found</p>
             <NeumorphicButton 
               onClick={handleNewProject}
               className="flex items-center gap-2 mx-auto"

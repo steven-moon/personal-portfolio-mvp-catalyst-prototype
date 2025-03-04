@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { cn } from '@/lib/utils';
 
@@ -16,11 +15,11 @@ const NeumorphicButton = ({
   className,
   ...props
 }: NeumorphicButtonProps) => {
-  const baseStyles = "rounded-xl font-medium transition-medium active:shadow-neu-pressed";
+  const baseStyles = "rounded-xl font-medium transition-medium active:shadow-neu-pressed active:dark:shadow-dark-neu-pressed";
   
   const variantStyles = {
-    primary: "bg-neu-accent text-white hover:bg-neu-accent-hover",
-    secondary: "bg-neu-bg text-neu-text shadow-neu-flat hover:shadow-neu-convex"
+    primary: "bg-primary text-primary-foreground hover:opacity-90",
+    secondary: "bg-background text-foreground shadow-neu-flat dark:shadow-dark-neu-flat hover:shadow-neu-convex hover:dark:shadow-dark-neu-convex"
   };
   
   const sizeStyles = {

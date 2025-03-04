@@ -34,29 +34,29 @@ const Login = () => {
 
   return (
     <div className="container py-12 max-w-md mx-auto page-transition">
-      <div className="neu-flat p-8">
-        <h1 className="text-3xl font-bold mb-6 text-center text-neu-accent">Login</h1>
+      <div className="neu-flat dark:bg-card p-8">
+        <h1 className="text-3xl font-bold mb-6 text-center text-primary">Login</h1>
         
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block mb-2 text-neu-text">Email</label>
+            <label className="block mb-2 text-foreground">Email</label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full p-3 bg-neu-bg shadow-neu-pressed rounded-lg focus:outline-none"
+              className="w-full p-3 bg-background shadow-neu-pressed dark:shadow-dark-neu-pressed rounded-lg focus:outline-none"
               placeholder="admin@example.com"
               required
             />
           </div>
           
           <div>
-            <label className="block mb-2 text-neu-text">Password</label>
+            <label className="block mb-2 text-foreground">Password</label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full p-3 bg-neu-bg shadow-neu-pressed rounded-lg focus:outline-none"
+              className="w-full p-3 bg-background shadow-neu-pressed dark:shadow-dark-neu-pressed rounded-lg focus:outline-none"
               placeholder="password"
               required
             />
@@ -71,7 +71,7 @@ const Login = () => {
           </NeumorphicButton>
         </form>
         
-        <div className="mt-6 text-center text-sm text-neu-text-secondary">
+        <div className="mt-6 text-center text-sm text-muted-foreground">
           <p>For demo purposes, use:</p>
           <p className="font-mono mt-1">admin@example.com / password</p>
         </div>

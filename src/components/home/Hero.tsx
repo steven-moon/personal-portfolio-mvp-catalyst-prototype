@@ -38,21 +38,21 @@ const Hero = () => {
   // Show skeleton loading state
   if (isLoading) {
     return (
-      <section className="min-h-screen flex flex-col items-center justify-center px-6 pt-20">
+      <section className="min-h-screen flex flex-col items-center justify-center px-6 pt-20 bg-background">
         <div className="w-full max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
           <div className="order-2 md:order-1 animate-pulse">
             <div className="mb-6">
-              <div className="h-8 w-40 bg-neu-pressed rounded-full mb-4"></div>
-              <div className="h-16 bg-neu-pressed rounded mb-4"></div>
-              <div className="h-10 w-3/4 bg-neu-pressed rounded mb-6"></div>
+              <div className="h-8 w-40 bg-neu-pressed dark:bg-zinc-700 rounded-full mb-4"></div>
+              <div className="h-16 bg-neu-pressed dark:bg-zinc-700 rounded mb-4"></div>
+              <div className="h-10 w-3/4 bg-neu-pressed dark:bg-zinc-700 rounded mb-6"></div>
             </div>
             <div className="flex gap-4">
-              <div className="h-12 w-36 bg-neu-pressed rounded"></div>
-              <div className="h-12 w-36 bg-neu-pressed rounded"></div>
+              <div className="h-12 w-36 bg-neu-pressed dark:bg-zinc-700 rounded"></div>
+              <div className="h-12 w-36 bg-neu-pressed dark:bg-zinc-700 rounded"></div>
             </div>
           </div>
           <div className="order-1 md:order-2 flex justify-center">
-            <div className="w-64 h-64 sm:w-80 sm:h-80 bg-neu-pressed rounded-full"></div>
+            <div className="w-64 h-64 sm:w-80 sm:h-80 bg-neu-pressed dark:bg-zinc-700 rounded-full"></div>
           </div>
         </div>
       </section>
@@ -60,17 +60,17 @@ const Hero = () => {
   }
 
   return (
-    <section className="min-h-screen flex flex-col items-center justify-center px-6 pt-20">
+    <section className="min-h-screen flex flex-col items-center justify-center px-6 pt-20 bg-background">
       <div className="w-full max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
         <div className="order-2 md:order-1 animate-slide-up">
           <div className="mb-6">
-            <div className="inline-block py-1 px-3 rounded-full text-sm mb-2 neu-flat">
-              <span className="text-neu-accent font-medium">{heroData.profession}</span>
+            <div className="inline-block py-1 px-3 rounded-full text-sm mb-2 neu-flat dark:shadow-dark-neu-flat">
+              <span className="text-primary font-medium">{heroData.profession}</span>
             </div>
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4 text-foreground">
               {heroData.title}
             </h1>
-            <p className="text-xl sm:text-2xl text-neu-text-secondary mb-6">
+            <p className="text-xl sm:text-2xl text-muted-foreground mb-6">
               {heroData.subtitle}
             </p>
           </div>
@@ -106,7 +106,7 @@ const Hero = () => {
                 fallbackSrc="https://placehold.co/800/333/fff?text=Photo"
               />
             ) : (
-              <div className="w-full h-full bg-gray-300 rounded-full flex items-center justify-center text-gray-500">
+              <div className="w-full h-full bg-gray-300 dark:bg-gray-700 rounded-full flex items-center justify-center text-gray-500 dark:text-gray-400">
                 <span className="text-lg">Your Photo</span>
               </div>
             )}
@@ -117,8 +117,8 @@ const Hero = () => {
       <div className="w-full max-w-4xl mx-auto mt-20 md:mt-32 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 animate-fade-in" style={{ animationDelay: '0.3s' }}>
         {heroData.services.map((service) => (
           <NeumorphicCard key={service.id}>
-            <h3 className="text-xl font-semibold mb-2">{service.title}</h3>
-            <p className="text-neu-text-secondary">{service.description}</p>
+            <h3 className="text-xl font-semibold mb-2 text-foreground">{service.title}</h3>
+            <p className="text-muted-foreground">{service.description}</p>
           </NeumorphicCard>
         ))}
       </div>

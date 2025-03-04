@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -107,9 +106,14 @@ export default {
 				'slide-in-right': 'slide-in-right 0.5s ease-out'
 			},
 			boxShadow: {
+				// Light mode neumorphic shadows
 				'neu-flat': '5px 5px 10px #d1d1d4, -5px -5px 10px #ffffff',
 				'neu-pressed': 'inset 3px 3px 7px #d1d1d4, inset -3px -3px 7px #ffffff',
-				'neu-convex': '5px 5px 10px #d1d1d4, -5px -5px 10px #ffffff, inset 1px 1px 1px #ffffff, inset -1px -1px 1px #d1d1d4'
+				'neu-convex': '5px 5px 10px #d1d1d4, -5px -5px 10px #ffffff, inset 1px 1px 1px #ffffff, inset -1px -1px 1px #d1d1d4',
+				// Dark mode neumorphic shadows - toned down
+				'dark-neu-flat': '3px 3px 6px #181825, -3px -3px 6px #252533',
+				'dark-neu-pressed': 'inset 2px 2px 5px #181825, inset -2px -2px 5px #252533',
+				'dark-neu-convex': '3px 3px 6px #181825, -3px -3px 6px #252533, inset 1px 1px 1px #252533, inset -1px -1px 1px #181825'
 			}
 		}
 	},
