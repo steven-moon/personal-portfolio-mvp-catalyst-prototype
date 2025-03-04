@@ -1,3 +1,4 @@
+
 import React, { useEffect } from 'react';
 import { useNavigate, Routes, Route } from 'react-router-dom';
 import { toast } from "sonner";
@@ -12,6 +13,7 @@ import ProjectEditorPage from './projects/ProjectEditorPage';
 import AboutEditor from './about/AboutEditor';
 import ContactEditor from './contact/ContactEditor';
 import HomeEditor from './home/HomeEditor';
+import SiteSettingsEditor from './settings/SiteSettingsEditor';
 
 const Admin = () => {
   const navigate = useNavigate();
@@ -42,6 +44,7 @@ const Admin = () => {
       <Route path="/about" element={<AboutEditor />} />
       <Route path="/contact" element={<ContactEditor />} />
       <Route path="/home" element={<HomeEditor />} />
+      <Route path="/settings" element={<SiteSettingsEditor />} />
     </Routes>
   );
 };

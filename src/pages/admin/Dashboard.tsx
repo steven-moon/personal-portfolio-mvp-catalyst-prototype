@@ -40,6 +40,8 @@ const Dashboard = () => {
       navigate('/admin/contact');
     } else if (section === 'Home Page') {
       navigate('/admin/home');
+    } else if (section === 'Site Settings') {
+      navigate('/admin/settings');
     } else {
       toast.info(`${section} editor would open here`);
     }
