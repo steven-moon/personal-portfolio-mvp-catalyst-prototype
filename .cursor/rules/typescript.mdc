@@ -1,3 +1,8 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
 # Description: TypeScript best practices for the Personal Portfolio MVP
 # Globs: **/*.ts, **/*.tsx
 

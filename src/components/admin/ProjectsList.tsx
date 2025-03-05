@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from "sonner";
 import { FilePlus, FileEdit, Trash, FileText, ExternalLink, Image } from 'lucide-react';
 import NeumorphicButton from '@/components/ui/NeumorphicButton';
 import NeumorphicCard from '@/components/ui/NeumorphicCard';
-import { Project } from '@/components/projects/ProjectCard';
+import { ProjectService } from '@/lib/apiService';
+import { Project } from '@/data/projectData';
+import LocalImage from '@/components/ui/LocalImage';
 
 // Default images to use when none are provided
 const DEFAULT_IMAGE = "https://images.unsplash.com/photo-1587620962725-abab7fe55159?q=80&auto=format";
@@ -14,50 +16,6 @@ const DEFAULT_GALLERY_IMAGES = [
   "https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&auto=format"
 ];
 
-// Import projects data from the Projects page
-const INITIAL_PROJECTS: Project[] = [
-  {
-    id: 1,
-    title: "E-commerce Platform",
-    description: "A modern e-commerce platform with seamless checkout experience.",
-    image: DEFAULT_IMAGE,
-    tags: ["React", "Node.js", "MongoDB", "Stripe"],
-    link: "https://example.com",
-    fullDescription: "This comprehensive e-commerce solution features product browsing, cart management, secure checkout with Stripe integration, and a responsive design. The frontend is built with React and styled with Tailwind CSS, while the backend uses Node.js with Express and MongoDB for data storage. The site includes user authentication, order tracking, and an admin dashboard for product management.",
-    images: [
-      DEFAULT_IMAGE,
-      "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b",
-      "https://images.unsplash.com/photo-1518770660439-4636190af475"
-    ]
-  },
-  {
-    id: 2,
-    title: "Task Management App",
-    description: "A collaborative task management application for teams.",
-    image: DEFAULT_IMAGE,
-    tags: ["React", "TypeScript", "Firebase", "TailwindCSS"],
-    link: "https://example.com",
-    fullDescription: "This task management application helps teams organize and track their projects effectively. Users can create tasks, assign them to team members, set deadlines, and track progress. The app features real-time updates using Firebase, drag-and-drop task organization, and customizable project boards. Built with React and TypeScript, the application implements robust state management and ensures type safety throughout the codebase.",
-    images: [
-      DEFAULT_IMAGE,
-      "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d"
-    ]
-  },
-  {
-    id: 3,
-    title: "Finance Dashboard",
-    description: "An interactive dashboard for personal finance tracking.",
-    image: DEFAULT_IMAGE,
-    tags: ["React", "Redux", "Recharts", "Express"],
-    link: "https://example.com",
-    fullDescription: "This financial dashboard provides users with in-depth insights into their spending habits and financial health. The application visualizes data through interactive charts and graphs using Recharts, allowing users to understand their finances at a glance. Features include expense categorization, budget setting, goal tracking, and financial forecasting. The frontend is built with React and Redux, while the backend is powered by Express with secure authentication.",
-    images: [
-      DEFAULT_IMAGE,
-      "https://images.unsplash.com/photo-1461749280684-dccba630e2f6"
-    ]
-  }
-];
-
 const ProjectItem = ({ project, onEdit, onDelete }: { 
   project: Project; 
   onEdit: (id: number) => void;
@@ -65,38 +23,43 @@ const ProjectItem = ({ project, onEdit, onDelete }: {
 }) => {
   const navigate = useNavigate();
   
+  // Get the first image or a default
+  const mainImage = project.images && project.images.length > 0 
+    ? project.images[0] 
+    : project.image || DEFAULT_IMAGE;
+  
   return (
     <NeumorphicCard className="mb-4 p-4">
       <div className="flex flex-col md:flex-row md:items-center">
-        <div className="w-full md:w-2/3">
+        <div className="w-24 h-24 flex-shrink-0 rounded-lg overflow-hidden mr-4 mb-4 md:mb-0">
+          <LocalImage 
+            src={mainImage} 
+            alt={project.title}
+            className="w-full h-full object-cover"
+            fallbackSrc={DEFAULT_IMAGE}
+          />
+        </div>
+        
+        <div className="flex-grow">
           <h3 className="text-lg font-semibold mb-1 text-foreground">{project.title}</h3>
           <div className="flex flex-wrap gap-2 mb-2">
-            {project.tags.slice(0, 3).map(tag => (
-              <span key={tag} className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-background shadow-neu-pressed dark:shadow-dark-neu-pressed text-primary">
+            {project.tags.map((tag, index) => (
+              <span 
+                key={index}
+                className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-background shadow-neu-pressed dark:shadow-dark-neu-pressed text-primary"
+              >
                 {tag}
               </span>
             ))}
-            {project.tags.length > 3 && (
-              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-background shadow-neu-pressed dark:shadow-dark-neu-pressed text-muted-foreground">
-                +{project.tags.length - 3} more
-              </span>
-            )}
           </div>
           <p className="text-muted-foreground text-sm line-clamp-2">{project.description}</p>
-          
-          {project.images && project.images.length > 1 && (
-            <div className="mt-2 flex items-center text-muted-foreground text-sm">
-              <Image size={14} className="mr-1" />
-              {project.images.length} images
-            </div>
-          )}
         </div>
         
-        <div className="flex justify-end mt-4 md:mt-0 md:w-1/3 gap-2">
+        <div className="flex mt-4 md:mt-0 gap-2 justify-end">
           <NeumorphicButton 
             size="sm" 
             variant="secondary"
-            onClick={() => window.open(`/project/${project.id}`, '_blank')}
+            onClick={() => navigate(`/project/${project.id}`)}
             className="flex items-center gap-1"
           >
             <ExternalLink size={14} />
@@ -130,17 +93,43 @@ const ProjectItem = ({ project, onEdit, onDelete }: {
 
 const ProjectsList = () => {
   const navigate = useNavigate();
-  const [projects, setProjects] = useState<Project[]>(INITIAL_PROJECTS);
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  
+  // Fetch projects when component mounts
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        setIsLoading(true);
+        const data = await ProjectService.getAllProjects();
+        setProjects(data);
+        setError(null);
+      } catch (err) {
+        console.error('Error fetching projects:', err);
+        setError('Failed to load projects. Please try again later.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    fetchProjects();
+  }, []);
   
   const handleEdit = (id: number) => {
     navigate(`/admin/projects/edit/${id}`);
   };
   
-  const handleDelete = (id: number) => {
-    // In a real app, this would be an API call to delete the project
+  const handleDelete = async (id: number) => {
     if (confirm('Are you sure you want to delete this project?')) {
-      setProjects(projects.filter(project => project.id !== id));
-      toast.success('Project deleted successfully');
+      try {
+        await ProjectService.deleteProject(id);
+        setProjects(projects.filter(project => project.id !== id));
+        toast.success('Project deleted successfully');
+      } catch (err) {
+        console.error('Error deleting project:', err);
+        toast.error('Failed to delete project. Please try again.');
+      }
     }
   };
   
@@ -185,29 +174,39 @@ const ProjectsList = () => {
         </div>
       </div>
       
-      <div>
-        {projects.length > 0 ? (
-          projects.map(project => (
-            <ProjectItem 
-              key={project.id} 
-              project={project} 
-              onEdit={handleEdit} 
-              onDelete={handleDelete} 
-            />
-          ))
-        ) : (
-          <div className="text-center py-12">
-            <p className="text-muted-foreground mb-4">No projects found</p>
-            <NeumorphicButton 
-              onClick={handleNewProject}
-              className="flex items-center gap-2 mx-auto"
-            >
-              <FilePlus size={18} />
-              Create Your First Project
-            </NeumorphicButton>
-          </div>
-        )}
-      </div>
+      {isLoading ? (
+        <div className="text-center py-12">
+          <p className="text-lg">Loading projects...</p>
+        </div>
+      ) : error ? (
+        <div className="text-center py-12">
+          <p className="text-lg text-red-500">{error}</p>
+        </div>
+      ) : (
+        <div>
+          {projects.length > 0 ? (
+            projects.map(project => (
+              <ProjectItem 
+                key={project.id} 
+                project={project} 
+                onEdit={handleEdit} 
+                onDelete={handleDelete} 
+              />
+            ))
+          ) : (
+            <div className="text-center py-12">
+              <p className="text-muted-foreground mb-4">No projects found</p>
+              <NeumorphicButton 
+                onClick={handleNewProject}
+                className="flex items-center gap-2 mx-auto"
+              >
+                <FilePlus size={18} />
+                Create Your First Project
+              </NeumorphicButton>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };

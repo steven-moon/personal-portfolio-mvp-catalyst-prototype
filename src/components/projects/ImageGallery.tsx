@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import LocalImage from '@/components/ui/LocalImage';
 
 // Default gallery images to use when none are provided
 const DEFAULT_GALLERY_IMAGES = [
@@ -38,10 +39,11 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images }) => {
   return (
     <div className="space-y-4">
       <div className="relative h-[400px] w-full rounded-xl overflow-hidden neu-pressed dark:shadow-dark-neu-pressed">
-        <img 
+        <LocalImage 
           src={displayImages[currentIndex]} 
           alt={`Project image ${currentIndex + 1}`}
           className="w-full h-full object-cover"
+          fallbackSrc="/placeholder.svg"
         />
         
         {displayImages.length > 1 && (
@@ -87,10 +89,11 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images }) => {
                 index === currentIndex ? 'ring-2 ring-primary' : 'opacity-80'
               }`}
             >
-              <img 
+              <LocalImage 
                 src={image} 
                 alt={`Thumbnail ${index + 1}`}
                 className="w-full h-full object-cover"
+                fallbackSrc="/placeholder.svg"
               />
             </button>
           ))}

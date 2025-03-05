@@ -4,15 +4,15 @@
  */
 
 // Keys used in localStorage
-const STORAGE_KEYS = {
+export const STORAGE_KEYS = {
   PROFILE_IMAGE: 'portfolio_profile_image',
   PROFILE_IMAGE_PATH: 'portfolio_profile_image_path',
   IMAGES: 'portfolio_images'
 };
 
 // Maximum dimensions for stored images to reduce storage size
-const MAX_IMAGE_DIMENSION = 800;
-const IMAGE_QUALITY = 0.7; // 70% quality for JPEG compression
+const MAX_IMAGE_DIMENSION = 1200;
+const IMAGE_QUALITY = 0.85; // Increased from 0.7 for better quality JPEG compression
 
 /**
  * Resize and compress an image file to reduce its size
@@ -28,37 +28,53 @@ const compressImage = async (file: File): Promise<Blob> => {
       img.src = e.target?.result as string;
       
       img.onload = () => {
-        // Determine the new dimensions while maintaining aspect ratio
-        let width = img.width;
-        let height = img.height;
+        // Get original dimensions
+        const originalWidth = img.width;
+        const originalHeight = img.height;
+        const aspectRatio = originalWidth / originalHeight;
         
-        if (width > height && width > MAX_IMAGE_DIMENSION) {
-          height = (height / width) * MAX_IMAGE_DIMENSION;
-          width = MAX_IMAGE_DIMENSION;
-        } else if (height > MAX_IMAGE_DIMENSION) {
-          width = (width / height) * MAX_IMAGE_DIMENSION;
-          height = MAX_IMAGE_DIMENSION;
+        // Calculate new dimensions while preserving aspect ratio
+        let newWidth = originalWidth;
+        let newHeight = originalHeight;
+        
+        // Only resize if the image exceeds our maximum dimension
+        if (originalWidth > MAX_IMAGE_DIMENSION || originalHeight > MAX_IMAGE_DIMENSION) {
+          if (originalWidth > originalHeight) {
+            // Landscape orientation
+            newWidth = Math.min(originalWidth, MAX_IMAGE_DIMENSION);
+            newHeight = Math.round(newWidth / aspectRatio);
+          } else {
+            // Portrait or square orientation
+            newHeight = Math.min(originalHeight, MAX_IMAGE_DIMENSION);
+            newWidth = Math.round(newHeight * aspectRatio);
+          }
         }
         
-        // Create a canvas to resize the image
+        // Create a canvas with the desired dimensions
         const canvas = document.createElement('canvas');
-        canvas.width = width;
-        canvas.height = height;
+        canvas.width = newWidth;
+        canvas.height = newHeight;
         
-        // Draw the resized image on the canvas
+        // Draw the image on the canvas with the new dimensions
         const ctx = canvas.getContext('2d');
         if (!ctx) {
           reject(new Error('Failed to get canvas context'));
           return;
         }
         
-        ctx.drawImage(img, 0, 0, width, height);
+        // Use high-quality image rendering
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = 'high';
+        
+        // Draw the image
+        ctx.drawImage(img, 0, 0, newWidth, newHeight);
         
         // Convert to blob with compression
         canvas.toBlob(
           (blob) => {
             if (blob) {
               console.log(`Image compressed from ${file.size} to ${blob.size} bytes`);
+              console.log(`Original dimensions: ${originalWidth}x${originalHeight}, New dimensions: ${newWidth}x${newHeight}`);
               resolve(blob);
             } else {
               reject(new Error('Failed to compress image'));

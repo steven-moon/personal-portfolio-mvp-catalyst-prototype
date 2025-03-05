@@ -6,9 +6,30 @@ import BlogContent from '@/components/blog/BlogContent';
 import BlogShareSection from '@/components/blog/BlogShareSection';
 import BlogPostNotFound from '@/components/blog/BlogPostNotFound';
 import { useBlogPost } from '@/hooks/useBlogPost';
+import LocalImage from '@/components/ui/LocalImage';
 
 const BlogDetail = () => {
-  const { post } = useBlogPost();
+  const { post, isLoading, error } = useBlogPost();
+  
+  if (isLoading) {
+    return (
+      <div className="page-transition container mx-auto px-6 py-12 bg-background">
+        <div className="text-center py-12">
+          <p className="text-lg">Loading blog post...</p>
+        </div>
+      </div>
+    );
+  }
+  
+  if (error) {
+    return (
+      <div className="page-transition container mx-auto px-6 py-12 bg-background">
+        <div className="text-center py-12">
+          <p className="text-lg text-red-500">{error}</p>
+        </div>
+      </div>
+    );
+  }
   
   if (!post) {
     return <BlogPostNotFound />;
@@ -20,11 +41,13 @@ const BlogDetail = () => {
       
       <div className="max-w-4xl mx-auto">
         <NeumorphicCard className="overflow-hidden">
-          <div className="relative h-64 md:h-80 overflow-hidden rounded-t-xl">
-            <img 
+          <div className="relative h-64 md:h-80 lg:h-96 overflow-hidden rounded-t-xl">
+            <LocalImage 
               src={post.imageUrl} 
               alt={post.title} 
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover object-center"
+              fallbackSrc="https://via.placeholder.com/800x400?text=Featured+Image"
+              style={{ maxWidth: '100%' }}
             />
           </div>
           

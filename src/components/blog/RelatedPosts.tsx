@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Calendar, ChevronRight } from 'lucide-react';
 import NeumorphicCard from '@/components/ui/NeumorphicCard';
+import LocalImage from '@/components/ui/LocalImage';
 
 interface BlogPost {
   id: number;
@@ -34,10 +35,12 @@ const RelatedPosts = ({ posts, currentPostId }: RelatedPostsProps) => {
         {relatedPosts.map(post => (
           <NeumorphicCard key={post.id} className="overflow-hidden h-full flex flex-col">
             <div className="relative h-40 overflow-hidden rounded-t-xl">
-              <img 
+              <LocalImage 
                 src={post.imageUrl} 
                 alt={post.title} 
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover object-center"
+                fallbackSrc="https://via.placeholder.com/400x300?text=Related+Post"
+                style={{ maxWidth: '100%' }}
               />
             </div>
             

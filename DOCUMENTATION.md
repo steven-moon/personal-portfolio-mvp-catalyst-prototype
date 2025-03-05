@@ -185,6 +185,45 @@ export interface ContactInfo {
 }
 ```
 
+### About
+
+```typescript
+export interface WorkExperience {
+  id: string;
+  title: string;
+  company: string;
+  period: string;
+  description: string;
+}
+
+export interface Education {
+  id: string;
+  degree: string;
+  institution: string;
+  period: string;
+  description: string;
+}
+
+export interface AboutMeData {
+  intro: {
+    headline: string;
+    subheadline: string;
+  };
+  story: string[];
+  workExperience: WorkExperience[];
+  education: Education[];
+  skills: {
+    technical: string[];
+    design: string[];
+  };
+  values: {
+    id: string;
+    title: string;
+    description: string;
+  }[];
+}
+```
+
 In a production environment, these would typically be fetched from an API.
 
 ## Admin Dashboard

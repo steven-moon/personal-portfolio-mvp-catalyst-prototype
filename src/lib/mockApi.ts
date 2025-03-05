@@ -2,6 +2,7 @@ import { BlogPost, BLOG_POSTS } from '../data/blogData';
 import { Project, PROJECTS } from '../data/projectData';
 import { HomePage, HOME_DATA } from '../data/homeData';
 import { ContactInfo, CONTACT_DATA } from '../data/contactData';
+import { AboutMeData, ABOUT_DATA } from '../data/aboutData';
 import { storeProfileImage } from './localStorageUtils';
 
 // Storage keys for persisting mock data
@@ -9,7 +10,8 @@ const STORAGE_KEYS = {
   BLOGS: 'mock_blog_posts',
   PROJECTS: 'mock_projects',
   HOME: 'mock_home_data',
-  CONTACT: 'mock_contact_data'
+  CONTACT: 'mock_contact_data',
+  ABOUT: 'mock_about_data'
 };
 
 // Load or initialize in-memory store for the mock data
@@ -47,12 +49,21 @@ const loadOrInitializeData = () => {
       contactDataObj = JSON.parse(storedContact);
       console.log('Loaded contact data from localStorage');
     }
+    
+    // About
+    const storedAbout = localStorage.getItem(STORAGE_KEYS.ABOUT);
+    let aboutDataObj = { ...ABOUT_DATA };
+    if (storedAbout) {
+      aboutDataObj = JSON.parse(storedAbout);
+      console.log('Loaded about data from localStorage');
+    }
 
     return {
       blogPosts: blogPostsData,
       projects: projectsData,
       homeData: homeDataObj,
-      contactData: contactDataObj
+      contactData: contactDataObj,
+      aboutData: aboutDataObj
     };
   } catch (error) {
     console.error('Error loading data from localStorage, using defaults:', error);
@@ -61,13 +72,14 @@ const loadOrInitializeData = () => {
       blogPosts: [...BLOG_POSTS],
       projects: [...PROJECTS],
       homeData: { ...HOME_DATA },
-      contactData: { ...CONTACT_DATA }
+      contactData: { ...CONTACT_DATA },
+      aboutData: { ...ABOUT_DATA }
     };
   }
 };
 
 // Initialize data
-const { blogPosts, projects, homeData, contactData } = loadOrInitializeData();
+const { blogPosts, projects, homeData, contactData, aboutData } = loadOrInitializeData();
 
 // Helper to save data to localStorage
 const persistData = (key: string, data: any) => {
@@ -326,7 +338,24 @@ export const mockContactApi = {
     persistData(STORAGE_KEYS.CONTACT, contactData);
     return { ...contactData };
   }
-}; 
+};
+
+// Mock implementation for About API
+export const mockAboutApi = {
+  // Get about page content
+  async getAboutContent(): Promise<AboutMeData> {
+    await delay();
+    return { ...aboutData };
+  },
+
+  // Update about page content
+  async updateAboutContent(updatedContent: AboutMeData): Promise<AboutMeData> {
+    await delay();
+    Object.assign(aboutData, updatedContent);
+    persistData(STORAGE_KEYS.ABOUT, aboutData);
+    return { ...aboutData };
+  }
+};
 
 // For debugging purposes
 export const _debugMockData = {
@@ -340,6 +369,7 @@ export const _debugMockData = {
     blogPosts,
     projects,
     homeData,
-    contactData
+    contactData,
+    aboutData
   })
 }; 

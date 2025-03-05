@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import NeumorphicCard from '../ui/NeumorphicCard';
 import NeumorphicButton from '../ui/NeumorphicButton';
+import LocalImage from '../ui/LocalImage';
 
 // Default images to use when none are provided
 const DEFAULT_IMAGE = "https://images.unsplash.com/photo-1587620962725-abab7fe55159?q=80&auto=format";
@@ -35,10 +36,11 @@ const ProjectCard = ({ project }: ProjectCardProps) => {
       className="h-full flex flex-col transition-medium hover:scale-[1.02]"
     >
       <div className="h-48 w-full bg-gray-200 dark:bg-gray-700 mb-4 rounded-lg overflow-hidden">
-        <img 
-          src={displayImage} 
+        <LocalImage 
+          src={project.image} 
           alt={project.title}
           className="w-full h-full object-cover"
+          fallbackSrc={DEFAULT_IMAGE}
         />
       </div>
       <h3 className="text-xl font-semibold mb-2 text-foreground">{project.title}</h3>

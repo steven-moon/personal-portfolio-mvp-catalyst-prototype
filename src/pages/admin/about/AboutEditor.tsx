@@ -3,6 +3,8 @@ import { toast } from "sonner";
 import NeumorphicCard from '@/components/ui/NeumorphicCard';
 import NeumorphicButton from '@/components/ui/NeumorphicButton';
 import { Save, Plus, Trash, Briefcase, GraduationCap, Award, Heart } from 'lucide-react';
+import { AboutService } from '@/lib/apiService';
+import { AboutMeData } from '@/data/aboutData';
 
 interface WorkExperience {
   id: string;
@@ -18,25 +20,6 @@ interface Education {
   institution: string;
   period: string;
   description: string;
-}
-
-interface AboutMeData {
-  intro: {
-    headline: string;
-    subheadline: string;
-  };
-  story: string[];
-  workExperience: WorkExperience[];
-  education: Education[];
-  skills: {
-    technical: string[];
-    design: string[];
-  };
-  values: {
-    id: string;
-    title: string;
-    description: string;
-  }[];
 }
 
 const AboutEditor = () => {
@@ -110,16 +93,37 @@ const AboutEditor = () => {
     ]
   });
 
-  // This effect would typically fetch the current about page content from an API
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Fetch the current about page content from the API
   useEffect(() => {
-    // In a real implementation, we would fetch the content from an API
-    // For now, we're using the initial state defined above
+    const fetchAboutContent = async () => {
+      try {
+        setIsLoading(true);
+        const data = await AboutService.getAboutContent();
+        setAboutData(data);
+      } catch (error) {
+        console.error('Error fetching about content:', error);
+        toast.error('Failed to load about page content');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchAboutContent();
   }, []);
 
-  const handleSave = () => {
-    // In a real implementation, we would save the content to an API
-    console.log("Saving About Me content:", aboutData);
-    toast.success("About page content saved successfully");
+  const handleSave = async () => {
+    try {
+      setIsLoading(true);
+      await AboutService.updateAboutContent(aboutData);
+      toast.success("About page content saved successfully");
+    } catch (error) {
+      console.error('Error saving about content:', error);
+      toast.error('Failed to save about page content');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   // Introduction section handlers
