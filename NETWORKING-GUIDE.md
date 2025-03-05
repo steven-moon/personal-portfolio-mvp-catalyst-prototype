@@ -2,12 +2,19 @@
 
 This guide explains how to use and extend the network API architecture in our application.
 
+> **Related Documentation**:
+> - [Main README](./README.md) - Project overview and features
+> - [Developer Guide](./DEVELOPER-GUIDE.md) - Quick start guide for developers
+> - [Technical Documentation](./DOCUMENTATION.md) - Detailed technical specifications
+> - [Development Log](./documents/FRONTEND-DEV-LOG.md) - Ongoing development log
+
 ## Table of Contents
 - [Architecture Overview](#architecture-overview)
 - [Using Existing APIs](#using-existing-apis)
 - [Adding New Data Objects](#adding-new-data-objects)
 - [API Configuration](#api-configuration)
 - [Mock API Development](#mock-api-development)
+- [API Change Documentation](#api-change-documentation)
 - [Best Practices](#best-practices)
 
 ## Architecture Overview
@@ -366,6 +373,44 @@ async getAllProjects(): Promise<Project[]> {
   }
   return [...projects];
 }
+```
+
+## API Change Documentation
+
+**IMPORTANT**: All API changes must be documented in the [Development Log](./documents/FRONTEND-DEV-LOG.md). This includes:
+
+- New API endpoints added
+- Changes to existing endpoint parameters or responses
+- Breaking changes to API interfaces
+- Mock API implementation updates
+- Performance improvements or optimizations
+- Error handling strategy changes
+
+When documenting API changes, include:
+
+1. Date of change
+2. Description of what was changed
+3. Reason for the change
+4. Example usage if applicable
+5. Migration path for any breaking changes
+
+Example entry:
+
+```md
+## 2023-06-22: Updated Blog API to support pagination
+
+Added pagination support to the `getAllBlogPosts` API:
+- Added optional `page` and `limit` parameters
+- Response now includes `total`, `page`, and `totalPages` metadata
+- Updated type definitions to include pagination information
+
+Reason: Improved performance for large blog collections by limiting result set size
+
+Example usage:
+```typescript
+const { posts, metadata } = await BlogService.getAllBlogPosts({ page: 2, limit: 10 });
+console.log(`Showing page ${metadata.page} of ${metadata.totalPages}`);
+```
 ```
 
 ## Best Practices

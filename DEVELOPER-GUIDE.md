@@ -2,6 +2,11 @@
 
 Welcome to the Personal Portfolio Website project! This guide will help you get up and running quickly with development.
 
+> **Related Documentation**:
+> - [Main README](./README.md) - Project overview and features
+> - [Technical Documentation](./DOCUMENTATION.md) - Detailed technical specifications
+> - [Networking Guide](./NETWORKING-GUIDE.md) - API architecture guide
+
 ## 📋 Prerequisites
 
 - Node.js (v16 or higher)
@@ -36,6 +41,30 @@ yarn dev
 
 The development server will start at http://localhost:8080.
 
+## 📝 Development Logging
+
+**IMPORTANT**: All developers must maintain the [development log](./documents/FRONTEND-DEV-LOG.md) as you work. This practice is critical for:
+
+- Documenting implementation decisions
+- Tracking architectural changes
+- Recording bug fixes and workarounds
+- Noting API integrations
+- Sharing knowledge with team members
+
+When adding to the log, create a new dated entry with a brief title describing the change or decision, then provide relevant details and reasoning. For example:
+
+```md
+## 2023-05-15: Implemented Neumorphic Button Component
+
+Created a reusable neumorphic button component with three variants:
+- Primary
+- Secondary
+- Outline
+
+Decision: Used compound components pattern to allow for flexible content and icons
+Challenge: Fixed accessibility contrast issues by adjusting shadow intensity
+```
+
 ## 📁 Project Structure Overview
 
 ```
@@ -47,6 +76,8 @@ src/
 ├── lib/          # Utility functions
 └── utils/        # Additional utilities
 ```
+
+For more detailed architecture information, see the [Technical Documentation](./DOCUMENTATION.md#architecture-overview).
 
 ### Key Files
 
@@ -63,6 +94,8 @@ src/
 2. **Pages**: Assemble components into full pages
 3. **Data**: Mock data is in `src/data/` directory
 
+For API integration, refer to the [Networking Guide](./NETWORKING-GUIDE.md).
+
 ### Design System
 
 - The project uses a neumorphic design system
@@ -72,12 +105,15 @@ src/
   - `neu-pressed`
   - `neu-convex`
 
+For more details on the design system, see the [Technical Documentation](./DOCUMENTATION.md#design-system).
+
 ### Adding New Features
 
 1. Create needed components in the appropriate directories
 2. Update or add pages if needed
 3. Add routes in App.tsx if creating new pages
 4. Update mock data if necessary
+5. **Document your changes** in the [development log](./documents/FRONTEND-DEV-LOG.md)
 
 ## 🧪 Testing
 
@@ -154,6 +190,7 @@ The production build will be in the `dist` directory.
 3. Test thoroughly
 4. Submit a pull request
 5. Get approval from at least one other team member
+6. **Document your contribution** in the [development log](./documents/FRONTEND-DEV-LOG.md)
 
 ---
 

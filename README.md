@@ -45,42 +45,39 @@ A modern, responsive personal portfolio website built with React, TypeScript, an
   - Responsive design principles
   - Smooth animations and transitions
 
+## 📚 Documentation
+
+This project includes comprehensive documentation to help you get started and understand the codebase:
+
+- [Developer Guide](./DEVELOPER-GUIDE.md) - Quick start guide for developers
+- [Technical Documentation](./DOCUMENTATION.md) - Detailed technical documentation
+- [Networking Guide](./NETWORKING-GUIDE.md) - Guide for using and extending the API architecture
+- [Development Log](./documents/FRONTEND-DEV-LOG.md) - Ongoing development log
+
+## 📝 Development Logging
+
+**IMPORTANT**: All developers must maintain the development log in [FRONTEND-DEV-LOG.md](./documents/FRONTEND-DEV-LOG.md). This log serves as a critical record of:
+
+- Key implementation decisions
+- Major changes to architecture or design
+- Bug fixes and their root causes
+- Feature additions or modifications
+- Problems encountered and their solutions
+- Performance improvements
+
+Update the log with dated entries as you make changes. This practice helps with knowledge sharing, onboarding new developers, and troubleshooting.
+
 ## 🚀 Getting Started
 
-### Prerequisites
-
-- Node.js 16+ 
-- npm or yarn
-
-### Installation
-
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/yourusername/personal-portfolio.git
-   cd personal-portfolio
-   ```
-
-2. Install dependencies:
-   ```bash
-   npm install
-   # or
-   yarn install
-   ```
-
-3. Start the development server:
-   ```bash
-   npm run dev
-   # or
-   yarn dev
-   ```
-
-4. Open your browser and navigate to `http://localhost:8080`
+For installation instructions and development workflow, see the [Developer Guide](./DEVELOPER-GUIDE.md).
 
 ## 🔧 Configuration
 
 - Update the personal information in `src/data/` directory
 - Replace placeholder images with your own in `public/`
 - Customize colors and styling in `tailwind.config.ts`
+
+For detailed customization options, refer to the [Technical Documentation](./DOCUMENTATION.md#customization-guide).
 
 ## 📦 Deployment
 
@@ -94,45 +91,9 @@ yarn build
 
 Deploy the `dist` directory to your hosting provider of choice.
 
-## 🧩 Project Structure
-
-```
-├── public/               # Static assets
-├── src/
-│   ├── components/       # Reusable UI components
-│   │   ├── about/        # About page components
-│   │   ├── admin/        # Admin dashboard components
-│   │   ├── blog/         # Blog related components
-│   │   ├── contact/      # Contact form components
-│   │   ├── home/         # Homepage components
-│   │   ├── layout/       # Layout components (navbar, footer)
-│   │   ├── projects/     # Project related components
-│   │   └── ui/           # Generic UI components
-│   ├── data/             # Mock data and content
-│   ├── hooks/            # Custom React hooks
-│   ├── lib/              # Utility functions
-│   ├── pages/            # Page components
-│   ├── utils/            # Helper functions
-│   ├── App.tsx           # Main application component
-│   └── main.tsx          # Application entry point
-├── tailwind.config.ts    # Tailwind CSS configuration
-├── vite.config.ts        # Vite configuration
-└── tsconfig.json         # TypeScript configuration
-```
-
 ## 💡 Customization
 
-### Changing Content
-
-- Edit personal information in `src/data/` files
-- Update projects in the projects data file
-- Modify blog posts in the blog data file
-
-### Styling Changes
-
-- The project uses a custom neumorphic design system
-- Adjust the color scheme in `tailwind.config.ts`
-- Modify the neumorphic shadows in `tailwind.config.ts`
+For detailed customization options, see the [Technical Documentation](./DOCUMENTATION.md#customization-guide).
 
 ## 📝 License
 
@@ -146,58 +107,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## 🤖 Cursor Rules for AI
 
-This project uses Cursor's Rules for AI feature to maintain consistent coding standards, architecture, and development practices. The rules are structured in the following way:
-
-- Root-level `.cursor` file: Contains high-level project guidelines and references to component-specific rules
-- `/frontend/.cursor`: Contains detailed frontend development rules
-- `/backend/.cursor`: Contains detailed backend development rules
-
-These rules help guide AI assistants to follow project-specific conventions and ensure consistency across the codebase.
-
-### How Cursor Rules Work
-
-Rules for AI contain guidelines, patterns, and instructions for AI to follow when generating or modifying code. These rules help ensure:
-
-- Consistent code style and formatting
-- Adherence to project architecture
-- Following best practices for specific technologies
-- Implementing proper design patterns
-
-### Frontend-Specific Rules
-
-The frontend rules in this project cover:
-
-- React component structure and organization
-- TypeScript best practices
-- Neumorphic design implementation with Tailwind CSS
-- Performance optimization
-- Accessibility compliance
-- API integration patterns
-- Error handling strategies
-
-### Backend-Specific Rules
-
-The backend rules cover:
-
-- Express.js and Node.js best practices
-- Sequelize ORM usage
-- API endpoint design
-- Authentication and security
-- Error handling
-- Database interactions
-
-### Project-Wide Rules
-
-The root-level rules address:
-
-- Cross-cutting concerns
-- API integration between frontend and backend
-- Deployment considerations
-- Security guidelines
-- Performance considerations
-- Git workflow guidelines
-
-For more information, check out the [Cursor Rules for AI Documentation](https://docs.cursor.com/context/rules-for-ai).
+This project uses Cursor's Rules for AI feature to maintain consistent coding standards. For details, see the [.cursor file](./.cursor).
 
 ## 🙏 Acknowledgements
 - [Lucide Icons](https://lucide.dev/)
