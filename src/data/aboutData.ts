@@ -14,6 +14,12 @@ export interface Education {
   description: string;
 }
 
+export interface SkillCategory {
+  id?: string;
+  title: string;
+  skills: string[];
+}
+
 export interface AboutMeData {
   intro: {
     headline: string;
@@ -22,10 +28,7 @@ export interface AboutMeData {
   story: string[];
   workExperience: WorkExperience[];
   education: Education[];
-  skills: {
-    technical: string[];
-    design: string[];
-  };
+  skillCategories: SkillCategory[];
   values: {
     id: string;
     title: string;
@@ -76,10 +79,23 @@ export const ABOUT_DATA: AboutMeData = {
       description: "Foundation in programming, software design, and development methodologies."
     }
   ],
-  skills: {
-    technical: ["React", "TypeScript", "Next.js", "HTML/CSS", "JavaScript", "Node.js", "Git", "TailwindCSS"],
-    design: ["UI/UX Design", "Figma", "Responsive Design", "Design Systems", "Wireframing"]
-  },
+  skillCategories: [
+    {
+      id: "1",
+      title: "Technical Skills",
+      skills: ["React", "TypeScript", "Next.js", "HTML/CSS", "JavaScript", "Node.js", "Git", "TailwindCSS"]
+    },
+    {
+      id: "2",
+      title: "Design Skills",
+      skills: ["UI/UX Design", "Figma", "Responsive Design", "Design Systems", "Wireframing"]
+    },
+    {
+      id: "3",
+      title: "Soft Skills",
+      skills: ["Communication", "Team Leadership", "Project Management", "Problem Solving"]
+    }
+  ],
   values: [
     {
       id: "1",

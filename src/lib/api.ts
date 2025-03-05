@@ -59,13 +59,12 @@ async function fetchWithError<T>(
       clearTimeout(timeoutId);
 
       if (!response.ok) {
-        // Handle 401 Unauthorized by logging out
+        // Handle 401 Unauthorized - DON'T automatically clear auth data
+        // This could cause unnecessary redirects on page refresh
         if (response.status === 401) {
-          // Clear authentication data
-          localStorage.removeItem(API_CONFIG.STORAGE_KEYS.TOKEN);
-          localStorage.removeItem(API_CONFIG.STORAGE_KEYS.USER);
-          // Redirect to login page if needed
-          // window.location.href = '/login';
+          console.warn('Received 401 unauthorized response');
+          // We won't automatically clear auth data here
+          // Let the auth context handle authentication state
         }
         
         const errorData = await response.json().catch(() => ({}));

@@ -31,31 +31,18 @@ const compressImage = async (file: File): Promise<Blob> => {
         // Get original dimensions
         const originalWidth = img.width;
         const originalHeight = img.height;
-        const aspectRatio = originalWidth / originalHeight;
         
-        // Calculate new dimensions while preserving aspect ratio
-        let newWidth = originalWidth;
-        let newHeight = originalHeight;
+        console.log(`Original image dimensions: ${originalWidth}x${originalHeight}`);
         
-        // Only resize if the image exceeds our maximum dimension
-        if (originalWidth > MAX_IMAGE_DIMENSION || originalHeight > MAX_IMAGE_DIMENSION) {
-          if (originalWidth > originalHeight) {
-            // Landscape orientation
-            newWidth = Math.min(originalWidth, MAX_IMAGE_DIMENSION);
-            newHeight = Math.round(newWidth / aspectRatio);
-          } else {
-            // Portrait or square orientation
-            newHeight = Math.min(originalHeight, MAX_IMAGE_DIMENSION);
-            newWidth = Math.round(newHeight * aspectRatio);
-          }
-        }
+        // Determine target dimensions - profile images should be 500x500 for consistency
+        const targetSize = 500;
         
-        // Create a canvas with the desired dimensions
+        // Create a square canvas
         const canvas = document.createElement('canvas');
-        canvas.width = newWidth;
-        canvas.height = newHeight;
+        canvas.width = targetSize;
+        canvas.height = targetSize;
         
-        // Draw the image on the canvas with the new dimensions
+        // Get the context for drawing
         const ctx = canvas.getContext('2d');
         if (!ctx) {
           reject(new Error('Failed to get canvas context'));
@@ -66,22 +53,52 @@ const compressImage = async (file: File): Promise<Blob> => {
         ctx.imageSmoothingEnabled = true;
         ctx.imageSmoothingQuality = 'high';
         
-        // Draw the image
-        ctx.drawImage(img, 0, 0, newWidth, newHeight);
+        // Fill with white background
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillRect(0, 0, targetSize, targetSize);
         
-        // Convert to blob with compression
+        // Calculate dimensions to maintain aspect ratio
+        let drawWidth, drawHeight, offsetX = 0, offsetY = 0;
+
+        // Determine how to fit the image into the square canvas
+        const aspectRatio = originalWidth / originalHeight;
+        
+        if (aspectRatio > 1) {
+          // Landscape image - fit to height, center horizontally
+          drawHeight = targetSize;
+          drawWidth = targetSize * aspectRatio;
+          offsetX = (targetSize - drawWidth) / 2;
+          offsetY = 0;
+        } else {
+          // Portrait or square image - fit to width, center vertically  
+          drawWidth = targetSize;
+          drawHeight = targetSize / aspectRatio;
+          offsetX = 0;
+          offsetY = (targetSize - drawHeight) / 2;
+        }
+        
+        console.log(`Drawing at: x=${offsetX}, y=${offsetY}, width=${drawWidth}, height=${drawHeight}`);
+        
+        // Draw the image centered
+        ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
+        
+        // Convert to data URL for debugging
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.95);
+        console.log(`Generated data URL length: ${dataUrl.length}`);
+        
+        // Convert to blob with JPEG format
         canvas.toBlob(
           (blob) => {
             if (blob) {
               console.log(`Image compressed from ${file.size} to ${blob.size} bytes`);
-              console.log(`Original dimensions: ${originalWidth}x${originalHeight}, New dimensions: ${newWidth}x${newHeight}`);
+              console.log(`Output dimensions: ${targetSize}x${targetSize}`);
               resolve(blob);
             } else {
               reject(new Error('Failed to compress image'));
             }
           },
           'image/jpeg',
-          IMAGE_QUALITY
+          0.95 // High quality
         );
       };
       
@@ -149,8 +166,11 @@ const storeCompressedImage = async (
     
     reader.onload = () => {
       try {
-        // Get the base64 data
+        // Get the base64 data - ensure we're getting a clean base64 string
         const base64Data = reader.result as string;
+        
+        // Logging for debugging
+        console.log(`Base64 data length: ${base64Data.length}`);
         
         // Check the size of the data before attempting to store it
         const estimatedSize = base64Data.length * 2; // Rough estimate of storage size in bytes
@@ -169,8 +189,14 @@ const storeCompressedImage = async (
             imageStorage = JSON.parse(existingStorage);
           }
           
-          // Add the new image
+          // Add the new image - ensure we're storing the full base64 data including the MIME type
           imageStorage[filename] = base64Data;
+          
+          // Validate data before saving
+          if (!base64Data.startsWith('data:')) {
+            console.warn('Base64 data does not have expected format, adding prefix');
+            imageStorage[filename] = `data:${imageBlob.type};base64,${base64Data.split(',')[1] || base64Data}`;
+          }
           
           // Save back to localStorage
           localStorage.setItem(key, JSON.stringify(imageStorage));
@@ -230,7 +256,7 @@ const storeCompressedImage = async (
       reject(new Error('Failed to read compressed image'));
     };
     
-    // Start the reading process
+    // Start the reading process with proper encoding
     reader.readAsDataURL(imageBlob);
   });
 };
@@ -287,7 +313,28 @@ export const getLocalImage = (
   
   try {
     const storage = JSON.parse(storageString) as Record<string, string>;
-    return storage[filename] || null;
+    const imageData = storage[filename];
+    
+    if (!imageData) {
+      console.error(`Image '${filename}' not found in storage`);
+      return null;
+    }
+    
+    // Validate image data format
+    if (!imageData.startsWith('data:')) {
+      console.warn(`Image data for '${filename}' missing data URL prefix, adding prefix`);
+      
+      // Try to determine MIME type (default to jpeg if unknown)
+      const mimeType = 'image/jpeg';
+      
+      // Ensure data is correctly formatted as a data URL
+      return `data:${mimeType};base64,${imageData.split(',')[1] || imageData}`;
+    }
+    
+    // Log successful retrieval
+    console.log(`Successfully retrieved image '${filename}' from storage (${imageData.substring(0, 40)}...)`);
+    
+    return imageData;
   } catch (e) {
     console.error('Failed to parse image storage', e);
     return null;
@@ -332,7 +379,22 @@ export const clearProfileImage = (): void => {
  * @returns The base64 data of the profile image, or null if not found
  */
 export const getProfileImage = (path: string): string | null => {
-  return getLocalImage(path, STORAGE_KEYS.PROFILE_IMAGE);
+  console.log(`Retrieving profile image from path: ${path}`);
+  const result = getLocalImage(path, STORAGE_KEYS.PROFILE_IMAGE);
+  
+  if (result) {
+    console.log(`Retrieved profile image with data length: ${result.length}`);
+    
+    // Extra validation for profile images
+    if (!result.startsWith('data:')) {
+      console.warn('Profile image data missing data URL prefix, attempting to fix');
+      return `data:image/jpeg;base64,${result.split(',')[1] || result}`;
+    }
+  } else {
+    console.warn(`Failed to retrieve profile image from path: ${path}`);
+  }
+  
+  return result;
 };
 
 /**

@@ -7,7 +7,7 @@ import 'react-image-crop/dist/ReactCrop.css';
 import NeumorphicButton from '@/components/ui/NeumorphicButton';
 import NeumorphicCard from '@/components/ui/NeumorphicCard';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
-import { Project } from '@/data/projectData';
+import { Project, Tag } from '@/data/projectData';
 import { ProjectService } from '@/lib/apiService';
 import LocalImage from '@/components/ui/LocalImage';
 import { storeImageLocally, STORAGE_KEYS } from '@/lib/localStorageUtils';
@@ -321,6 +321,31 @@ const ImageUploader = ({
   );
 };
 
+// Helper function to get tag name regardless of tag format (string or object)
+const getTagName = (tag: string | Tag): string => {
+  if (typeof tag === 'string') {
+    return tag;
+  }
+  return tag.name;
+};
+
+// Helper function to handle tag comparison (either by string value or object id)
+const isSameTag = (tag1: string | Tag, tag2: string | Tag): boolean => {
+  if (typeof tag1 === 'string' && typeof tag2 === 'string') {
+    return tag1 === tag2;
+  }
+  if (typeof tag1 === 'object' && typeof tag2 === 'object') {
+    return tag1.id === tag2.id;
+  }
+  if (typeof tag1 === 'string' && typeof tag2 === 'object') {
+    return tag1 === tag2.name;
+  }
+  if (typeof tag1 === 'object' && typeof tag2 === 'string') {
+    return tag1.name === tag2;
+  }
+  return false;
+};
+
 const ProjectEditor = () => {
   const navigate = useNavigate();
   const { id } = useParams();
@@ -412,19 +437,45 @@ const ProjectEditor = () => {
   };
 
   const handleAddTag = () => {
-    if (newTag.trim() && !project.tags.includes(newTag.trim())) {
-      setProject({
-        ...project,
-        tags: [...project.tags, newTag.trim()]
-      });
-      setNewTag("");
+    if (newTag.trim()) {
+      // Check if the tag already exists
+      const tagExists = project.tags.some(tag => 
+        typeof tag === 'string' 
+          ? tag === newTag.trim() 
+          : tag.name === newTag.trim()
+      );
+      
+      if (!tagExists) {
+        // Convert existing tags to strings if they're objects
+        const currentTags = project.tags.map(tag => 
+          typeof tag === 'string' ? tag : tag.name
+        );
+        
+        setProject({
+          ...project,
+          tags: [...currentTags, newTag.trim()] as string[]
+        });
+        setNewTag("");
+      }
     }
   };
 
-  const handleRemoveTag = (tagToRemove: string) => {
+  const handleRemoveTag = (tagToRemove: string | Tag) => {
+    const tagNameToRemove = typeof tagToRemove === 'string' 
+      ? tagToRemove 
+      : tagToRemove.name;
+    
+    // Convert all tags to strings for consistent handling
+    const updatedTags = project.tags
+      .filter(tag => {
+        const currentTagName = typeof tag === 'string' ? tag : tag.name;
+        return currentTagName !== tagNameToRemove;
+      })
+      .map(tag => typeof tag === 'string' ? tag : tag.name);
+    
     setProject({
       ...project,
-      tags: project.tags.filter(tag => tag !== tagToRemove)
+      tags: updatedTags as string[]
     });
   };
 
@@ -523,10 +574,10 @@ const ProjectEditor = () => {
               <div className="flex flex-wrap gap-2 mb-2">
                 {project.tags.map(tag => (
                   <div 
-                    key={tag} 
+                    key={typeof tag === 'string' ? tag : tag.id} 
                     className="inline-flex items-center px-2.5 py-1 rounded-full text-sm font-medium bg-background shadow-neu-pressed dark:shadow-dark-neu-pressed"
                   >
-                    {tag}
+                    {getTagName(tag)}
                     <button 
                       type="button"
                       className="ml-1 text-muted-foreground hover:text-primary"

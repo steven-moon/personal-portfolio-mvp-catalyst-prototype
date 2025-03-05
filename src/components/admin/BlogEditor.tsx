@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from "sonner";
 import { Save, ArrowLeft, ImagePlus, Bold, Italic, List, Heading, Link as LinkIcon, Calendar as CalendarIcon, Trash, Upload, X, Check, Crop as CropIcon } from 'lucide-react';
-import { format, parse } from 'date-fns';
+import { format, parse, parseISO, isValid } from 'date-fns';
 import ReactCrop, { type Crop, type PixelCrop } from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 import NeumorphicButton from '@/components/ui/NeumorphicButton';
@@ -10,11 +10,14 @@ import NeumorphicCard from '@/components/ui/NeumorphicCard';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
-import { BlogService } from '@/lib/apiService';
+import { BlogService, configureApi } from '@/lib/apiService';
 import { BlogPost } from '@/data/blogData';
 import { cn } from '@/lib/utils';
 import { storeImageLocally, STORAGE_KEYS } from '@/lib/localStorageUtils';
 import LocalImage from '@/components/ui/LocalImage';
+import { Button } from "@/components/ui/button";
+import { UserService } from '@/lib/apiService';
+import { formatDate, toISODate } from '@/lib/dateUtils';
 
 // Types
 interface BlogFormData extends Omit<BlogPost, 'id'> {}
@@ -30,6 +33,14 @@ const BLANK_POST: BlogFormData = {
   imageUrl: ""
 };
 
+// Add this placeholder URL constant near the top of the file
+const PLACEHOLDER_IMAGE_URLS = [
+  'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?auto=format&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1488229297570-58520851e868?auto=format&fit=crop&q=80'
+];
+
 // Date picker component
 const DatePickerDemo = ({ 
   date,
@@ -38,13 +49,27 @@ const DatePickerDemo = ({
   date: string,
   onDateChange: (value: string) => void
 }) => {
-  // Parse the string date to a Date object for the calendar
+  // Parse the string date to a Date object for the calendar using our utility
   const parseDate = (dateStr: string): Date | undefined => {
+    if (!dateStr) return new Date();
+    
     try {
-      // Try to parse the date from the format "Month day, year"
-      return parse(dateStr, 'MMMM d, yyyy', new Date());
+      // If it's an ISO date
+      if (dateStr.includes('T')) {
+        const parsedDate = parseISO(dateStr);
+        if (isValid(parsedDate)) return parsedDate;
+      }
+      
+      // Try to parse from 'MMMM d, yyyy' format
+      const parsedDate = parse(dateStr, 'MMMM d, yyyy', new Date());
+      if (isValid(parsedDate)) return parsedDate;
+      
+      // Last resort - try to make a date from whatever we have
+      const fallbackDate = new Date(dateStr);
+      return isValid(fallbackDate) ? fallbackDate : new Date();
     } catch (error) {
-      return undefined;
+      console.error('Error parsing date:', error);
+      return new Date();
     }
   };
 
@@ -53,9 +78,15 @@ const DatePickerDemo = ({
   const handleDateSelect = (date: Date | undefined) => {
     setSelectedDate(date);
     if (date) {
-      const formattedDate = format(date, 'MMMM d, yyyy');
-      onDateChange(formattedDate);
+      // Use our formatDate utility to ensure consistent formatting
+      onDateChange(formatDate(date));
     }
+  };
+  
+  const getDisplayDate = (): string => {
+    if (!selectedDate) return 'Select a date';
+    // Use our formatDate utility here too
+    return formatDate(selectedDate);
   };
 
   return (
@@ -66,7 +97,7 @@ const DatePickerDemo = ({
           type="button"
         >
           <span className={cn("text-left", !date && "text-muted-foreground")}>
-            {date || "Select a date"}
+            {getDisplayDate()}
           </span>
           <CalendarIcon className="h-4 w-4 text-muted-foreground" />
         </button>
@@ -272,19 +303,41 @@ const ImageUploader = ({
         { type: 'image/jpeg' }
       );
       
-      // Store the image locally
-      const localPath = await storeImageLocally(croppedFile, STORAGE_KEYS.IMAGES);
-      
-      // Update the image URL
-      onImageChange(localPath);
-      
-      // Close the dialog
-      setIsDialogOpen(false);
-      setImageSrc(null);
-      
-      toast.success('Image uploaded successfully');
+      try {
+        // First save locally for offline/demo mode
+        const localPath = await storeImageLocally(croppedFile, STORAGE_KEYS.IMAGES);
+        
+        // Then try to upload to server if we're using the real API
+        const { useMockApi } = configureApi();
+        let finalImageUrl = localPath;
+        
+        if (!useMockApi && window.navigator.onLine) {
+          try {
+            // Upload to server
+            finalImageUrl = await BlogService.uploadBlogImage(croppedFile);
+            console.log("Image uploaded to server:", finalImageUrl);
+          } catch (uploadError) {
+            console.error("Server upload failed, using local path:", uploadError);
+            // Continue with local path if server upload fails
+          }
+        } else {
+          console.log("Using local image path:", localPath);
+        }
+        
+        // Update the form with the image URL
+        onImageChange(finalImageUrl);
+        
+        // Close the dialog
+        setIsDialogOpen(false);
+        setImageSrc(null);
+        
+        toast.success('Image uploaded successfully');
+      } catch (error) {
+        console.error('Failed to save image:', error);
+        toast.error('Failed to save image');
+      }
     } catch (error) {
-      console.error('Failed to save cropped image:', error);
+      console.error('Failed to process cropped image:', error);
       toast.error('Failed to process image');
     } finally {
       setIsLoading(false);
@@ -438,58 +491,190 @@ const ImageUploader = ({
 
 // Custom hook for blog form state management
 const useBlogForm = (postId: number, isEditMode: boolean) => {
-  const [formData, setFormData] = useState<BlogFormData>(BLANK_POST);
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState<BlogFormData>({
+    title: '',
+    excerpt: '',
+    content: '',
+    date: formatDate(new Date()),
+    author: '',
+    category: '',
+    imageUrl: ''
+  });
   const [isSaving, setIsSaving] = useState(false);
   const [isLoading, setIsLoading] = useState(isEditMode);
   const [error, setError] = useState<string | null>(null);
 
   // Handle form field changes
-  const handleChange = (field: keyof BlogFormData, value: string) => {
+  const handleChange = (field: keyof BlogFormData, value: string | any) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  // Load post data in edit mode
+  // Fetch post data when editing
   useEffect(() => {
     const fetchPost = async () => {
-      if (!isEditMode) return;
-      
-      try {
-        setIsLoading(true);
-        const post = await BlogService.getBlogPostById(postId);
-        setFormData(post);
-      } catch (err) {
-        console.error('Error fetching blog post:', err);
-        setError('Failed to load blog post data.');
-      } finally {
-        setIsLoading(false);
+      if (isEditMode && postId) {
+        try {
+          setIsLoading(true);
+          const data = await BlogService.getBlogPostById(postId);
+          
+          // Create a properly formatted form data object
+          setFormData({
+            ...data,
+            // Format the date using our utility
+            date: formatDate(data.date),
+            // Make sure category and author are preserved as objects if they came from the API that way
+            category: data.category || '',
+            author: data.author || ''
+          });
+          
+          setIsLoading(false);
+        } catch (err) {
+          console.error('Error fetching blog post:', err);
+          setError('Failed to load blog post. Please try again.');
+          setIsLoading(false);
+        }
       }
     };
-    
+
     fetchPost();
   }, [isEditMode, postId]);
 
   // Save the blog post
   const savePost = async () => {
-    // Validate required fields
-    if (!formData.title || !formData.excerpt || !formData.content || !formData.category || !formData.imageUrl) {
-      toast.error('Please fill out all fields');
-      return false;
-    }
-    
-    setIsSaving(true);
     try {
+      setIsSaving(true);
+      
+      // Create a copy of the form data for processing
+      const postData: BlogFormData & {
+        categoryId?: number;
+        authorId?: number;
+      } = { ...formData };
+      
+      // Handle category data
+      if (typeof postData.category === 'object' && postData.category !== null) {
+        // If it's an object with id, use the id
+        if ('id' in postData.category && postData.category.id) {
+          console.log('Using category ID from object:', postData.category.id);
+          postData.categoryId = postData.category.id;
+        }
+        // Remove the category object to avoid confusion
+        delete postData.category;
+      } else if (typeof postData.category === 'string' && postData.category.trim() !== '') {
+        // If it's just a string, look for a matching category
+        console.log('Category is a string:', postData.category);
+        
+        try {
+          // Get all categories and try to find a match
+          const categories = await BlogService.getAllCategories();
+          const matchingCategory = categories.find(
+            cat => typeof cat.name === 'string' && 
+                  cat.name.toLowerCase() === postData.category.toString().toLowerCase()
+          );
+          
+          if (matchingCategory) {
+            console.log('Found matching category:', matchingCategory);
+            postData.categoryId = matchingCategory.id;
+          } else {
+            // Default to first category if no match
+            console.log('No matching category found, using default');
+            postData.categoryId = 1;
+          }
+        } catch (err) {
+          console.error('Error finding category:', err);
+          postData.categoryId = 1;
+        }
+        
+        delete postData.category;
+      }
+      
+      // Handle author data
+      if (typeof postData.author === 'object' && postData.author !== null) {
+        // If it's an object with id, use the id
+        if ('id' in postData.author && postData.author.id) {
+          console.log('Using author ID from object:', postData.author.id);
+          postData.authorId = postData.author.id;
+        }
+        // Remove the author object to avoid confusion
+        delete postData.author;
+      } else if (typeof postData.author === 'string' && postData.author.trim() !== '') {
+        console.log('Author is a string:', postData.author);
+        // Get the current user from auth context or localStorage
+        const userData = localStorage.getItem('auth_user');
+        if (userData) {
+          try {
+            const user = JSON.parse(userData);
+            postData.authorId = user.id;
+            console.log('Using current user as author:', user.id);
+          } catch (err) {
+            console.error('Error parsing user data:', err);
+            postData.authorId = 1;
+          }
+        } else {
+          postData.authorId = 1; // Default to first user
+        }
+        delete postData.author;
+      }
+      
+      // Handle date formatting
+      if (postData.date) {
+        // Convert the date to ISO format using our utility
+        postData.date = toISODate(postData.date);
+        console.log('Formatted date for API:', postData.date);
+      } else {
+        // If no date is provided, use the current date
+        postData.date = new Date().toISOString();
+      }
+      
+      // Final check for required fields
+      if (!postData.categoryId) {
+        console.warn('No categoryId set, using default');
+        postData.categoryId = 1;
+      }
+      
+      if (!postData.authorId) {
+        console.warn('No authorId set, using default');
+        postData.authorId = 1;
+      }
+      
+      // Ensure these fields are included in the final data
+      console.log('Final post data:', {
+        title: postData.title,
+        excerpt: postData.excerpt,
+        content: postData.content,
+        date: postData.date,
+        imageUrl: postData.imageUrl,
+        categoryId: postData.categoryId,
+        authorId: postData.authorId
+      });
+      
+      // Handle image URL based on network status and mock API settings
+      const isOnline = window.navigator.onLine;
+      const { useMockApi } = configureApi();
+      
+      // Only validate the image URL, but don't replace it with placeholders
+      // We're now handling proper image uploads
+      if (!postData.imageUrl) {
+        toast.error('Please upload a featured image');
+        setIsSaving(false);
+        return;
+      }
+      
+      console.log('Saving blog post with data:', postData);
+      
+      // Save to the API
       if (isEditMode) {
-        await BlogService.updateBlogPost(postId, formData);
+        await BlogService.updateBlogPost(postId, postData);
         toast.success('Blog post updated successfully');
       } else {
-        await BlogService.createBlogPost(formData);
+        await BlogService.createBlogPost(postData);
         toast.success('Blog post created successfully');
       }
-      return true;
-    } catch (error) {
-      console.error('Error saving blog post:', error);
-      toast.error('Failed to save blog post');
-      return false;
+      
+      navigate('/admin/blog');
+    } catch (err: any) {
+      console.error('Error saving blog post:', err);
+      toast.error(`Failed to save blog post. ${err.message || 'Please try again.'}`);
     } finally {
       setIsSaving(false);
     }
@@ -498,10 +683,10 @@ const useBlogForm = (postId: number, isEditMode: boolean) => {
   return {
     formData,
     handleChange,
+    savePost,
     isSaving,
     isLoading,
-    error,
-    savePost
+    error
   };
 };
 
@@ -559,7 +744,7 @@ const PostContentEditor = ({
   handleChange 
 }: { 
   formData: BlogFormData, 
-  handleChange: (field: keyof BlogFormData, value: string) => void 
+  handleChange: (field: keyof BlogFormData, value: string | any) => void 
 }) => {
   const insertFormatting = (type: string) => {
     const textarea = document.getElementById('content') as HTMLTextAreaElement;
@@ -658,21 +843,182 @@ const PostSettings = ({
   handleChange 
 }: { 
   formData: BlogFormData, 
-  handleChange: (field: keyof BlogFormData, value: string) => void 
+  handleChange: (field: keyof BlogFormData, value: string | any) => void 
 }) => {
+  const [categories, setCategories] = useState<any[]>([]);
+  const [authors, setAuthors] = useState<any[]>([]);
+  const [isNewCategoryDialogOpen, setIsNewCategoryDialogOpen] = useState(false);
+  const [newCategoryName, setNewCategoryName] = useState('');
+  const [loadingCategories, setLoadingCategories] = useState(false);
+  const [loadingAuthors, setLoadingAuthors] = useState(false);
+  
+  // Fetch categories and authors on component mount
+  useEffect(() => {
+    fetchCategories();
+    fetchAuthors();
+  }, []);
+  
+  // Fetch all categories
+  const fetchCategories = async () => {
+    try {
+      setLoadingCategories(true);
+      const fetchedCategories = await BlogService.getAllCategories();
+      setCategories(fetchedCategories);
+    } catch (err) {
+      console.error('Error fetching categories:', err);
+      toast.error('Failed to load categories');
+    } finally {
+      setLoadingCategories(false);
+    }
+  };
+  
+  // Fetch all users for author selection
+  const fetchAuthors = async () => {
+    try {
+      setLoadingAuthors(true);
+      // Use the UserService to get all users
+      const fetchedAuthors = await UserService.getAllUsers();
+      setAuthors(fetchedAuthors);
+    } catch (err) {
+      console.error('Error fetching authors:', err);
+      toast.error('Failed to load authors');
+    } finally {
+      setLoadingAuthors(false);
+    }
+  };
+  
+  // Handle category selection
+  const handleCategoryChange = (categoryId: string) => {
+    if (categoryId === 'new') {
+      setIsNewCategoryDialogOpen(true);
+    } else if (categoryId) {
+      const selectedCategory = categories.find(cat => cat.id.toString() === categoryId);
+      if (selectedCategory) {
+        // Pass the category object directly to the parent component
+        handleChange('category', selectedCategory);
+      }
+    } else {
+      handleChange('category', '');
+    }
+  };
+  
+  // Handle author selection
+  const handleAuthorChange = (authorId: string) => {
+    if (authorId) {
+      const selectedAuthor = authors.find(author => author.id.toString() === authorId);
+      if (selectedAuthor) {
+        // Pass the author object directly to the parent component
+        handleChange('author', selectedAuthor);
+      }
+    } else {
+      handleChange('author', '');
+    }
+  };
+  
+  // Handle creating a new category
+  const handleCreateNewCategory = async () => {
+    if (!newCategoryName.trim()) {
+      toast.error('Please enter a category name');
+      return;
+    }
+    
+    try {
+      // In a real app, this would call an API to create the category
+      // For now, we'll just add it to the UI and use a dummy ID
+      const newCategory = {
+        id: Math.max(0, ...categories.map(c => c.id)) + 1,
+        name: newCategoryName.trim()
+      };
+      
+      // Add to local state
+      setCategories([...categories, newCategory]);
+      
+      // Set as selected category - passing the object directly
+      handleChange('category', newCategory);
+      
+      // Close dialog and reset input
+      setIsNewCategoryDialogOpen(false);
+      setNewCategoryName('');
+      
+      toast.success('New category created');
+    } catch (err) {
+      console.error('Error creating category:', err);
+      toast.error('Failed to create category');
+    }
+  };
+  
+  // Get category display text
+  const getCategoryDisplay = () => {
+    if (!formData.category) return '';
+    
+    if (typeof formData.category === 'string') {
+      return formData.category;
+    }
+    
+    return formData.category.name || '';
+  };
+  
+  // Get author display text
+  const getAuthorDisplay = () => {
+    if (!formData.author) return '';
+    
+    if (typeof formData.author === 'string') {
+      return formData.author;
+    }
+    
+    return formData.author.username || '';
+  };
+  
+  // Get selected category ID or empty string
+  const getSelectedCategoryId = () => {
+    if (typeof formData.category === 'object' && formData.category && 'id' in formData.category) {
+      return formData.category.id.toString();
+    }
+    return '';
+  };
+  
+  // Get selected author ID or empty string
+  const getSelectedAuthorId = () => {
+    if (typeof formData.author === 'object' && formData.author && 'id' in formData.author) {
+      return formData.author.id.toString();
+    }
+    return '';
+  };
+  
   return (
     <NeumorphicCard className="mb-6">
       <h3 className="font-medium mb-4 text-foreground">Post Settings</h3>
       
       <div className="mb-4">
-        <label className="block mb-2 text-sm text-foreground">Category</label>
-        <input
-          type="text"
-          value={formData.category}
-          onChange={(e) => handleChange('category', e.target.value)}
-          className="w-full p-3 bg-background shadow-neu-pressed dark:shadow-dark-neu-pressed rounded-lg focus:outline-none text-foreground"
-          placeholder="e.g. Development, Design, etc."
-        />
+        <label className="block text-foreground font-medium mb-2">
+          Category *
+        </label>
+        {loadingCategories ? (
+          <div className="w-full p-3 bg-background shadow-neu-pressed dark:shadow-dark-neu-pressed rounded-lg text-muted-foreground">
+            Loading categories...
+          </div>
+        ) : (
+          <>
+            <select
+              value={getSelectedCategoryId()}
+              onChange={(e) => handleCategoryChange(e.target.value)}
+              className="w-full p-3 bg-background shadow-neu-pressed dark:shadow-dark-neu-pressed rounded-lg focus:outline-none text-foreground"
+            >
+              <option value="">Select a category</option>
+              {categories.map(category => (
+                <option key={category.id} value={category.id.toString()}>
+                  {category.name}
+                </option>
+              ))}
+              <option value="new" className="font-semibold text-primary">+ Create new category</option>
+            </select>
+            {typeof formData.category === 'string' && formData.category && (
+              <p className="mt-1 text-xs text-yellow-500">
+                Using custom category name. Consider creating a proper category.
+              </p>
+            )}
+          </>
+        )}
       </div>
       
       <div className="mb-4">
@@ -685,14 +1031,34 @@ const PostSettings = ({
       </div>
       
       <div className="mb-4">
-        <label className="block mb-2 text-sm text-foreground">Author</label>
-        <input
-          type="text"
-          value={formData.author}
-          onChange={(e) => handleChange('author', e.target.value)}
-          className="w-full p-3 bg-background shadow-neu-pressed dark:shadow-dark-neu-pressed rounded-lg focus:outline-none text-foreground"
-          placeholder="e.g. Jane Doe"
-        />
+        <label className="block text-foreground font-medium mb-2">
+          Author *
+        </label>
+        {loadingAuthors ? (
+          <div className="w-full p-3 bg-background shadow-neu-pressed dark:shadow-dark-neu-pressed rounded-lg text-muted-foreground">
+            Loading authors...
+          </div>
+        ) : (
+          <>
+            <select
+              value={getSelectedAuthorId()}
+              onChange={(e) => handleAuthorChange(e.target.value)}
+              className="w-full p-3 bg-background shadow-neu-pressed dark:shadow-dark-neu-pressed rounded-lg focus:outline-none text-foreground"
+            >
+              <option value="">Select an author</option>
+              {authors.map(author => (
+                <option key={author.id} value={author.id.toString()}>
+                  {author.username}
+                </option>
+              ))}
+            </select>
+            {typeof formData.author === 'string' && formData.author && (
+              <p className="mt-1 text-xs text-yellow-500">
+                Using custom author name. Consider selecting a user account.
+              </p>
+            )}
+          </>
+        )}
       </div>
       
       <div className="mb-4">
@@ -702,31 +1068,63 @@ const PostSettings = ({
           onImageChange={(url) => handleChange('imageUrl', url)}
         />
       </div>
+      
+      {/* Dialog for creating a new category */}
+      <Dialog open={isNewCategoryDialogOpen} onOpenChange={setIsNewCategoryDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Create New Category</DialogTitle>
+          </DialogHeader>
+          <div className="py-4">
+            <label className="block text-sm font-medium mb-2">
+              Category Name
+            </label>
+            <input
+              type="text"
+              value={newCategoryName}
+              onChange={(e) => setNewCategoryName(e.target.value)}
+              className="w-full p-3 bg-background shadow-neu-pressed dark:shadow-dark-neu-pressed rounded-lg focus:outline-none text-foreground"
+              placeholder="e.g. Development, Design, etc."
+            />
+          </div>
+          <DialogFooter>
+            <button
+              onClick={() => setIsNewCategoryDialogOpen(false)}
+              className="px-4 py-2 rounded-lg shadow-neu dark:shadow-dark-neu hover:shadow-neu-pressed dark:hover:shadow-dark-neu-pressed transition-shadow duration-200 bg-background"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleCreateNewCategory}
+              className="px-4 py-2 rounded-lg shadow-neu dark:shadow-dark-neu hover:shadow-neu-pressed dark:hover:shadow-dark-neu-pressed transition-shadow duration-200 bg-primary text-white"
+            >
+              Create
+            </button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </NeumorphicCard>
   );
 };
 
 // Main BlogEditor Component
 const BlogEditor = () => {
-  const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-  const isEditMode = id !== 'new' && id !== undefined;
-  const postId = isEditMode ? parseInt(id || '0') : 0;
+  const navigate = useNavigate();
+  const postId = parseInt(id || '0', 10);
+  const isEditMode = !!id;
   
   const { 
     formData, 
     handleChange, 
+    savePost, 
     isSaving, 
     isLoading, 
-    error, 
-    savePost 
+    error
   } = useBlogForm(postId, isEditMode);
   
   const handleSave = async () => {
-    const success = await savePost();
-    if (success) {
-      navigate('/admin/blog');
-    }
+    await savePost();
   };
   
   // Loading state

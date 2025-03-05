@@ -1,4 +1,3 @@
-
 import React, { useEffect } from 'react';
 import { useNavigate, Routes, Route } from 'react-router-dom';
 import { toast } from "sonner";
@@ -17,17 +16,22 @@ import SiteSettingsEditor from './settings/SiteSettingsEditor';
 
 const Admin = () => {
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isLoading } = useAuth();
   
   useEffect(() => {
-    // Check if the user is authenticated using the auth context
-    if (!isAuthenticated) {
+    // Only redirect if not loading and not authenticated
+    if (!isLoading && !isAuthenticated) {
       toast.error('Please login to access the admin dashboard');
       navigate('/login');
     }
-  }, [isAuthenticated, navigate]);
+  }, [isAuthenticated, navigate, isLoading]);
   
-  // If not authenticated, don't render admin routes
+  // Show nothing while authentication is being checked
+  if (isLoading) {
+    return <div className="flex justify-center items-center h-full">Loading...</div>;
+  }
+  
+  // If not authenticated and not loading, don't render admin routes
   if (!isAuthenticated) {
     return null;
   }

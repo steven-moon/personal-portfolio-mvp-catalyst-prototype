@@ -138,6 +138,11 @@
   .neu-convex {
     @apply bg-background shadow-neu-convex rounded-xl;
   }
+  
+  /* Enhanced tag styles with better 3D effect */
+  .neu-tag {
+    @apply bg-background shadow-neu-tag rounded-md;
+  }
 
   /* Dark mode versions of neumorphic styles */
   .dark .neu-flat {
@@ -150,6 +155,11 @@
   
   .dark .neu-convex {
     @apply bg-card shadow-dark-neu-convex rounded-xl;
+  }
+  
+  /* Enhanced dark mode tag styles */
+  .dark .neu-tag {
+    @apply bg-card shadow-dark-neu-tag rounded-md;
   }
 
   .page-transition {

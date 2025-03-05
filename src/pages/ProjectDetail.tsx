@@ -3,7 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { ExternalLink, ArrowLeft, X, Image } from 'lucide-react';
 import NeumorphicButton from '@/components/ui/NeumorphicButton';
 import ImageGallery from '@/components/projects/ImageGallery';
-import { Project } from '@/data/projectData';
+import { Project, Tag } from '@/data/projectData';
 import { ProjectService } from '@/lib/apiService';
 import NeumorphicCard from '@/components/ui/NeumorphicCard';
 import LocalImage from '@/components/ui/LocalImage';
@@ -16,6 +16,14 @@ const DEFAULT_GALLERY_IMAGES = [
   "https://images.unsplash.com/photo-1516116216624-53e697fedbea?q=80&auto=format",
   "https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&auto=format"
 ];
+
+// Helper function to get tag name regardless of tag format (string or object)
+const getTagName = (tag: string | Tag): string => {
+  if (typeof tag === 'string') {
+    return tag;
+  }
+  return tag.name;
+};
 
 const ProjectDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -86,8 +94,10 @@ const ProjectDetail = () => {
   }
 
   // Check if we have valid images or need to use defaults
-  const hasImages = project.images && project.images.length > 0 && !project.images.every(img => img === "/placeholder.svg");
-  const displayImages = hasImages ? project.images : DEFAULT_GALLERY_IMAGES;
+  const hasImages = project.images && project.images.length > 0;
+  const displayImages = hasImages 
+    ? project.images.map((img: any) => typeof img === 'string' ? img : img.imageUrl) 
+    : DEFAULT_GALLERY_IMAGES;
 
   return (
     <div className="max-w-5xl mx-auto py-8 px-6 bg-background animate-fade-in">
@@ -108,10 +118,10 @@ const ProjectDetail = () => {
         <div className="flex flex-wrap gap-2 mb-6">
           {project.tags.map((tag, index) => (
             <span 
-              key={index}
+              key={typeof tag === 'string' ? `tag-${index}` : tag.id}
               className="px-3 py-1 bg-background shadow-neu-pressed dark:shadow-dark-neu-pressed rounded-full text-sm font-medium text-primary"
             >
-              {tag}
+              {getTagName(tag)}
             </span>
           ))}
         </div>

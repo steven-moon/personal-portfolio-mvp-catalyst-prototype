@@ -146,69 +146,56 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## 🤖 Cursor Rules for AI
 
-This project uses Cursor's Rules for AI feature to maintain consistent coding standards, architecture, and development practices. Rules are located in the `.cursor/rules` directory and help guide AI assistants to follow project-specific conventions.
+This project uses Cursor's Rules for AI feature to maintain consistent coding standards, architecture, and development practices. The rules are structured in the following way:
+
+- Root-level `.cursor` file: Contains high-level project guidelines and references to component-specific rules
+- `/frontend/.cursor`: Contains detailed frontend development rules
+- `/backend/.cursor`: Contains detailed backend development rules
+
+These rules help guide AI assistants to follow project-specific conventions and ensure consistency across the codebase.
 
 ### How Cursor Rules Work
 
-Rules for AI are markdown files (`.mdc`) that contain guidelines, patterns, and instructions for AI to follow when generating or modifying code. These rules help ensure:
+Rules for AI contain guidelines, patterns, and instructions for AI to follow when generating or modifying code. These rules help ensure:
 
 - Consistent code style and formatting
 - Adherence to project architecture
 - Following best practices for specific technologies
 - Implementing proper design patterns
 
-Rules can be applied to specific file patterns using glob patterns and can be set to always apply or only when relevant.
+### Frontend-Specific Rules
 
-### Example Rules in This Project
+The frontend rules in this project cover:
 
-1. **General Rules** - Overall coding standards for the project:
-   ```
-   # Description: General coding guidelines for the Personal Portfolio MVP
-   # Globs: *.*
+- React component structure and organization
+- TypeScript best practices
+- Neumorphic design implementation with Tailwind CSS
+- Performance optimization
+- Accessibility compliance
+- API integration patterns
+- Error handling strategies
 
-   ## General Project Guidelines
-   - This is a React 18+ TypeScript project built with Vite, TailwindCSS, and shadcn/ui components
-   - Follow modern React practices using functional components and hooks
-   - Use TypeScript for type safety
-   ...
-   ```
+### Backend-Specific Rules
 
-2. **Tailwind Rules** - Styling guidelines for consistency:
-   ```
-   # Description: Tailwind CSS and styling guidelines for the Personal Portfolio MVP
-   # Globs: **/*.tsx, **/*.css
+The backend rules cover:
 
-   ## Tailwind Usage
-   - Use Tailwind utility classes for styling
-   - Follow the mobile-first responsive design approach
-   - Use Tailwind's color system consistently
-   ...
-   ```
+- Express.js and Node.js best practices
+- Sequelize ORM usage
+- API endpoint design
+- Authentication and security
+- Error handling
+- Database interactions
 
-3. **Component Rules** - React component architecture and patterns:
-   ```
-   # Description: Guidelines for React components in the Personal Portfolio MVP
-   # Globs: src/components/**/*.tsx, src/pages/**/*.tsx
+### Project-Wide Rules
 
-   ## Component Structure
-   - Follow a consistent folder structure for components
-   - Group related components in the same directory
-   - Keep component files small and focused
-   ...
-   ```
+The root-level rules address:
 
-### Creating Your Own Rules
-
-To create or modify rules manually:
-
-1. Create a `.mdc` file in the `.cursor/rules` directory using this command
-
-```
-echo "# Description: Guidelines for maintaining Cursor rules" > .cursor/rules/rule_maintenance.mdc && echo "# Globs: .cursor/rules/**/*.mdc" >> .cursor/rules/rule_maintenance.mdc && echo "" >> .cursor/rules/rule_maintenance.mdc && echo "## Rule Maintenance Guidelines" >> .cursor/rules/rule_maintenance.mdc && echo "- Keep Cursor rules up to date with project changes" >> .cursor/rules/rule_maintenance.mdc && echo "- Review and update rules periodically" >> .cursor/rules/rule_maintenance.mdc && echo "- Update rules when adding new technologies or patterns" >> .cursor/
-```
-
-2. Write guidelines as markdown sections and bullet points
-3. Restart Cursor or reload the rules
+- Cross-cutting concerns
+- API integration between frontend and backend
+- Deployment considerations
+- Security guidelines
+- Performance considerations
+- Git workflow guidelines
 
 For more information, check out the [Cursor Rules for AI Documentation](https://docs.cursor.com/context/rules-for-ai).
 
@@ -218,7 +205,8 @@ For more information, check out the [Cursor Rules for AI Documentation](https://
 - [Tailwind CSS](https://tailwindcss.com/)
 - [Vite](https://vitejs.dev/)
 - [React](https://react.dev/)
+- [Cursor](https://cursor.com/)
 
 ---
 
-Created with ❤️ by [Your Name]
+Created with ❤️ by [Steve Moon]

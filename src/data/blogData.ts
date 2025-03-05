@@ -1,11 +1,24 @@
+// Define interfaces for nested objects from the API
+export interface Author {
+  id: number;
+  username: string;
+}
+
+export interface Category {
+  id: number;
+  name: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
 export interface BlogPost {
   id: number;
   title: string;
   excerpt: string;
   content: string;
   date: string;
-  author: string;
-  category: string;
+  author: string | Author;
+  category: string | Category;
   imageUrl: string;
 }
 

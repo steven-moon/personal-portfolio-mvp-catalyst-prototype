@@ -1,0 +1,205 @@
+# Personal Portfolio MVP Cursor Rules
+
+## General Project Guidelines
+- This is a React 18+ TypeScript project built with Vite, TailwindCSS, and shadcn/ui components
+- Follow modern React practices using functional components and hooks
+- Use TypeScript for type safety
+- Use React Router for navigation
+- Use TailwindCSS for styling
+- Use shadcn/ui components for UI elements
+- Optimize for performance and accessibility
+
+## Code Style
+- Use 2 spaces for indentation
+- Use meaningful variable and function names
+- Write comments for complex logic
+- Keep functions small and focused on a single responsibility
+- Use ES6+ features where appropriate
+- Prefer const over let, avoid var
+- Use async/await over promises where appropriate
+- Organize imports alphabetically
+- Add proper TypeScript types to all variables, functions, and components
+
+## React Guidelines
+- Use functional components over class components
+- Use React hooks for state and side effects
+- Use React Context for global state when appropriate
+- Split large components into smaller, reusable ones
+- Add proper prop typing with TypeScript interfaces
+- Use React.memo for performance optimization when necessary
+- Use proper key props in lists
+
+## UI/UX Guidelines
+- Follow neumorphic design principles as described in the project README
+- Ensure all UI elements are responsive and work on all devices
+- Implement smooth animations and transitions
+- Ensure accessibility (WCAG) compliance
+- Use Lucide React for icons
+
+## Project Structure
+- Follow the directory structure outlined in the README
+- Keep related files together in appropriate directories
+- Use consistent file naming conventions
+- Maintain clear separation of concerns between components
+
+## Architecture Patterns
+- Use React Router for navigation and routing
+- Implement proper data fetching with React Query
+- Use Context API for global state management when necessary
+- Follow the container/presentation pattern for complex components
+- Implement code splitting for performance optimization
+
+## File Organization
+- Group related components in the same directory
+- Place shared utilities in the utils directory
+- Use the lib directory for third-party integrations
+- Keep hooks in the hooks directory
+- Store mock data and content in the data directory
+
+## Code Structure
+- Keep files small and focused on a single responsibility
+- Extract reusable logic into custom hooks
+- Use consistent export patterns
+- Implement proper error boundaries
+- Use lazy loading for routes and large components
+
+## Component Structure
+- Follow a consistent folder structure for components
+- Group related components in the same directory
+- Keep component files small and focused
+- Split large components into smaller, reusable ones
+- Use a clear naming convention for components (PascalCase)
+
+## Component Organization
+- Organize component code in the following order:
+  1. Imports
+  2. Type definitions (interfaces/types)
+  3. Component function
+  4. Helper functions
+  5. Styles (if not using Tailwind inline)
+  6. Exports
+
+## Performance Considerations
+- Use React.memo for performance optimization when appropriate
+- Avoid unnecessary re-renders
+- Use useMemo and useCallback for expensive calculations and callbacks
+- Optimize images and assets
+- Implement code splitting with React.lazy and Suspense
+
+## shadcn/ui Integration
+- Use shadcn/ui components as the foundation
+- Customize shadcn/ui components with Tailwind classes
+- Follow the shadcn/ui component patterns and conventions
+- Use Tailwind merge for extending shadcn/ui components
+
+## Neumorphic Design Implementation
+- Use consistent shadow values for the neumorphic effect
+- Maintain proper contrast ratios for accessibility
+- Use subtle, smooth transitions for hover and active states
+- Follow the soft UI principles with rounded corners and subtle shadows
+
+## TypeScript Best Practices
+- Use TypeScript's strict mode
+- Prefer interfaces over types for object definitions
+- Use type aliases for complex types or unions
+- Use enums for limited sets of values
+- Use generic types when appropriate
+- Define return types for functions
+- Use proper TypeScript utilities (Partial, Pick, Omit, etc.)
+
+## Type Definitions
+- Create dedicated type files for shared types
+- Use descriptive names for types and interfaces
+- Use PascalCase for interface and type names
+- Document complex types with JSDoc comments
+- Use readonly for immutable properties
+- Use optional properties (?) when appropriate
+- Use union types for variables that can have multiple types
+
+## Type Safety
+- Avoid using 'any' type
+- Use 'unknown' instead of 'any' when type is uncertain
+- Use type assertions only when necessary
+- Implement proper error handling with typed errors
+- Use nullish coalescing and optional chaining
+
+## Project-Specific Types
+- Define types for API responses and requests
+- Create types for state management
+- Define prop types for components
+- Create types for configuration objects
+
+## Tailwind Usage
+- Use Tailwind utility classes for styling
+- Follow the mobile-first responsive design approach
+- Use Tailwind's color system consistently
+- Leverage Tailwind's built-in dark mode support
+- Use @apply in CSS files only when necessary for repeated patterns
+
+## Custom Styling
+- Define custom colors and styles in tailwind.config.ts
+- Use consistent spacing with Tailwind's spacing scale
+- Use meaningful class names for custom components
+- Use tailwind-merge for conditional class application
+- Follow class ordering: layout → typography → visual styles → interactivity → misc
+
+## Neumorphic Design with Tailwind
+- Use custom shadow utilities defined in tailwind.config.ts
+- Maintain a consistent color palette for neumorphic effects
+- Use border-radius consistently for the soft UI look
+- Implement subtle transitions for interactive elements
+- Use the correct background colors to achieve the neumorphic effect
+
+## Responsive Design
+- Test all components at multiple breakpoints
+- Use sm:, md:, lg:, xl:, and 2xl: breakpoints appropriately
+- Avoid fixed widths and heights that could break responsive layouts
+- Consider touch targets on mobile devices
+- Ensure text remains readable at all screen sizes
+
+## Accessibility
+- Maintain sufficient color contrast ratios
+- Use proper semantic HTML elements
+- Ensure interactive elements have appropriate hover/focus states
+- Add proper ARIA attributes when necessary
+- Test with screen readers and keyboard navigation
+
+## Network API Guidelines
+- Use consistent error handling patterns across all API calls using the fetchWithError utility
+- Include proper request timeouts for all network requests (configure in API_CONFIG in api.ts)
+- Implement retry logic with exponential backoff for transient failures
+- Determine which errors are retryable based on error type (network errors, timeouts)
+- Cache responses where appropriate to minimize network calls
+- Ensure all API endpoints are properly authenticated
+- Follow the established pattern of separating entity-specific APIs (like blogApi, projectApi)
+- Always use typed responses with generics (Promise<T>)
+- Use the apiService for switching between mock and real APIs
+- Maintain consistent endpoint structure (/entity and /entity/:id)
+- For new entity types, create both real and mock API implementations
+- Document each API function with JSDoc comments describing its purpose and parameters
+- Use proper TypeScript types for request and response data
+
+## Error Handling
+- Implement central error handling in the fetchWithError utility
+- Convert API error responses to user-friendly messages
+- Log detailed errors to console for debugging
+- Use typed error handling with custom error types when appropriate
+- Propagate errors properly through the application
+
+## Rule Maintenance Guidelines
+- Keep Cursor rules up to date with project changes and evolution
+- When adding new technologies or patterns to the project, update relevant rules
+- When changing code style or architecture decisions, reflect those in the rules
+- Review and update rules periodically, at least once per quarter
+
+## Rule Organization
+- Keep rules categorized by domain (e.g., general, components, typescript)
+- Use descriptive filenames for rule files
+- Group related rules together
+- Use consistent formatting across all rule files
+
+## Rule Updates
+- When updating the project structure, update the rules to match
+- When adding new dependencies, update relevant rules with best practices
+- When learning new patterns that work well for the project, document them in rules
+- When encountering common issues or anti-patterns, add guidance to avoid them

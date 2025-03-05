@@ -1,12 +1,29 @@
+// Tag interface matching backend response
+export interface Tag {
+  id: number;
+  name: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+// ProjectImage interface matching backend response
+export interface ProjectImage {
+  id: number;
+  imageUrl: string;
+  projectId: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface Project {
   id: number;
   title: string;
   description: string;
   image: string;
-  tags: string[];
+  tags: Tag[] | string[]; // Can be either Tag objects from backend or string tags in mock data
   link: string;
   fullDescription: string;
-  images?: string[]; // For gallery
+  images?: ProjectImage[] | string[]; // Can be either ProjectImage objects from backend or string URLs in mock data
 }
 
 // Projects data

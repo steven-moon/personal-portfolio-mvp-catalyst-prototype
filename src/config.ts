@@ -4,8 +4,8 @@
 
 // API configuration
 export const API_CONFIG = {
-  // Base API URL
-  BASE_URL: 'http://localhost:3000',
+  // Base API URL - empty in development for proxy to work
+  BASE_URL: '',
   
   // Request timeout in milliseconds
   TIMEOUT: 10000,
@@ -35,7 +35,13 @@ export const isDevelopment = (): boolean => {
  * Get the full API URL for a given endpoint
  */
 export const getApiUrl = (endpoint: string): string => {
-  // Make sure endpoint starts with a slash
+  // In development, use relative URLs to leverage Vite's proxy
+  if (isDevelopment()) {
+    // Make sure endpoint starts with a slash
+    return endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+  }
+  
+  // In production, use the full URL
   const normalizedEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
   return `${API_CONFIG.BASE_URL}${normalizedEndpoint}`;
 }; 

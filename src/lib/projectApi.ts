@@ -1,7 +1,7 @@
 import { Project } from '../data/projectData';
 import { apiGet, apiPost, apiPut, apiDelete } from './api';
 
-const PROJECT_ENDPOINT = '/projects';
+const PROJECT_ENDPOINT = '/api/projects';
 
 /**
  * Fetch all projects

@@ -119,26 +119,18 @@ const AboutMe = () => {
               <h2 className="text-2xl font-semibold text-foreground">Skills</h2>
             </div>
             <div className="space-y-4">
-              <div>
-                <h3 className="text-lg font-medium mb-2 text-foreground">Technical Skills</h3>
-                <div className="flex flex-wrap gap-2">
-                  {aboutData.skills.technical.map((skill) => (
-                    <span key={skill} className="inline-block py-1 px-3 neu-flat dark:shadow-dark-neu-flat rounded-full text-sm text-foreground">
-                      {skill}
-                    </span>
-                  ))}
+              {aboutData.skillCategories.map((category) => (
+                <div key={category.id}>
+                  <h3 className="text-lg font-medium mb-2 text-foreground">{category.title}</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {category.skills.map((skill) => (
+                      <span key={skill} className="inline-block py-1 px-3 neu-flat dark:shadow-dark-neu-flat rounded-full text-sm text-foreground">
+                        {skill}
+                      </span>
+                    ))}
+                  </div>
                 </div>
-              </div>
-              <div>
-                <h3 className="text-lg font-medium mb-2 text-foreground">Design Skills</h3>
-                <div className="flex flex-wrap gap-2">
-                  {aboutData.skills.design.map((skill) => (
-                    <span key={skill} className="inline-block py-1 px-3 neu-flat dark:shadow-dark-neu-flat rounded-full text-sm text-foreground">
-                      {skill}
-                    </span>
-                  ))}
-                </div>
-              </div>
+              ))}
             </div>
           </NeumorphicCard>
           

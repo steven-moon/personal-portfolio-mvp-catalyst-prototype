@@ -2,11 +2,12 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { toast } from "sonner";
 import NeumorphicCard from '@/components/ui/NeumorphicCard';
 import NeumorphicButton from '@/components/ui/NeumorphicButton';
-import { Save, Image, Trash, Upload, Plus } from 'lucide-react';
+import { Save, Image, Trash, Upload, Plus, Crop } from 'lucide-react';
 import { HomeService } from '@/lib/apiService';
 import { HomePage } from '@/data/homeData';
 import LocalImage from '@/components/ui/LocalImage';
 import { clearProfileImage } from '@/lib/localStorageUtils';
+import ImageCropper from '@/components/ui/ImageCropper';
 
 const HomeEditor = () => {
   const [heroContent, setHeroContent] = useState<HomePage['hero']>({
@@ -21,24 +22,48 @@ const HomeEditor = () => {
   const [isDragging, setIsDragging] = useState<boolean>(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Add state for image cropper
+  const [showCropper, setShowCropper] = useState<boolean>(false);
+  const [tempImageSrc, setTempImageSrc] = useState<string | null>(null);
+
   // Fetch the current hero content from the API
   useEffect(() => {
     const fetchHomeContent = async () => {
       try {
         setIsLoading(true);
         const data = await HomeService.getHomeContent();
+        console.log('HomeEditor: Received home content:', data);
+        
+        // Make sure we have a valid services array
+        const services = data.hero?.services || [];
+        console.log('HomeEditor: Services loaded:', services);
+        
+        // Handle legacy data format if needed
+        if (!Array.isArray(services)) {
+          console.error('HomeEditor: Services is not an array, resetting to empty array');
+          data.hero.services = [];
+        }
+        
+        // Set the state with the fetched data, providing defaults if needed
         setHeroContent({
-          title: data.hero.title,
-          subtitle: data.hero.subtitle,
-          profession: data.hero.profession,
-          services: data.hero.services || []
+          title: data.hero?.title || '',
+          subtitle: data.hero?.subtitle || '',
+          profession: data.hero?.profession || '',
+          services: Array.isArray(data.hero?.services) ? data.hero.services : []
         });
         
-        if (data.hero.profileImage) {
+        if (data.hero?.profileImage) {
           setProfileImage(data.hero.profileImage);
         }
       } catch (error) {
         console.error('Error fetching home content:', error);
+        // Set default values on error
+        setHeroContent({
+          title: '',
+          subtitle: '',
+          profession: '',
+          services: []
+        });
         toast.error('Failed to load home page content');
       } finally {
         setIsLoading(false);
@@ -97,39 +122,104 @@ const HomeEditor = () => {
   };
 
   // Handle file input change (when user selects a file)
-  const handleImageChange = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files || files.length === 0) return;
     
     const file = files[0];
     console.log("File selected:", file.name);
     
+    // Create a URL for the selected file
+    const localPreviewUrl = URL.createObjectURL(file);
+    
+    // Store the temp image and show cropper instead of uploading directly
+    setTempImageSrc(localPreviewUrl);
+    setShowCropper(true);
+    
+    // Reset input so the same file can be selected again
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  }, []);
+
+  // Handle the cropped image from the ImageCropper component
+  const handleCroppedImage = async (dataUrl: string) => {
+    const validateImage = (src: string): Promise<void> => {
+      return new Promise((resolve, reject) => {
+        // Create an image element to check dimensions
+        const img = document.createElement('img');
+        img.onload = () => {
+          if (img.width > 0 && img.height > 0) {
+            console.log(`Validated image dimensions: ${img.width}x${img.height}`);
+            resolve();
+          } else {
+            reject(new Error("Invalid image dimensions"));
+          }
+        };
+        img.onerror = () => reject(new Error("Failed to load image"));
+        img.src = src;
+      });
+    };
+
     try {
       setIsLoading(true);
       
-      // First set a local preview for immediate feedback
-      const localPreviewUrl = URL.createObjectURL(file);
-      setProfileImage(localPreviewUrl);
+      // Verify the data URL is valid
+      if (!dataUrl || !dataUrl.startsWith('data:image/')) {
+        throw new Error("Invalid image data");
+      }
       
-      // Then upload to the API
-      const serverImageUrl = await HomeService.uploadProfileImage(file);
-      console.log("Upload successful, server URL:", serverImageUrl);
+      console.log(`Processing cropped image data URL length: ${dataUrl.length}`);
       
-      // Update with the server URL
-      setProfileImage(serverImageUrl);
-      toast.success("Image uploaded successfully");
+      try {
+        // Validate the data URL
+        await validateImage(dataUrl);
+        console.log("Image validation successful");
+      } catch (validationError) {
+        console.error("Image validation failed:", validationError);
+        throw validationError;
+      }
       
-      // Clean up the local URL
-      URL.revokeObjectURL(localPreviewUrl);
+      // Convert data URL to blob for upload
+      const response = await fetch(dataUrl);
+      const blob = await response.blob();
+      
+      // Convert blob to File object for upload
+      const croppedFile = new File([blob], 'cropped-profile.jpg', { 
+        type: 'image/jpeg',
+        lastModified: Date.now()
+      });
+      
+      // Set the preview image - use data URL directly
+      setProfileImage(dataUrl);
+      
+      try {
+        // Upload the cropped image to the API
+        const serverImageUrl = await HomeService.uploadProfileImage(croppedFile);
+        console.log("Upload successful, server URL:", serverImageUrl);
+        
+        // Update with the server URL
+        setProfileImage(serverImageUrl);
+        toast.success("Image cropped and uploaded successfully");
+      } catch (uploadError) {
+        console.error("API upload failed:", uploadError);
+        // Keep using the data URL since upload failed
+        toast.error(`Failed to upload to server: ${uploadError.message || 'Unknown error'}`);
+      }
     } catch (error) {
-      console.error("Upload failed:", error);
-      toast.error("Failed to upload image");
+      console.error("Cropping process failed:", error);
+      toast.error(`Failed to process cropped image: ${error.message || 'Unknown error'}`);
     } finally {
       setIsLoading(false);
-      // Reset input so the same file can be selected again
-      if (fileInputRef.current) fileInputRef.current.value = '';
     }
-  }, []);
+  };
+
+  // Close cropper without saving
+  const handleCloseCropper = useCallback(() => {
+    if (tempImageSrc) {
+      URL.revokeObjectURL(tempImageSrc);
+      setTempImageSrc(null);
+    }
+    setShowCropper(false);
+  }, [tempImageSrc]);
 
   // Trigger file input click
   const triggerFileInput = useCallback(() => {
@@ -172,29 +262,10 @@ const HomeEditor = () => {
       return;
     }
     
-    try {
-      setIsLoading(true);
-      
-      // First set a local preview for immediate feedback
-      const localPreviewUrl = URL.createObjectURL(file);
-      setProfileImage(localPreviewUrl);
-      
-      // Then upload to the API
-      const serverImageUrl = await HomeService.uploadProfileImage(file);
-      console.log("Upload successful, server URL:", serverImageUrl);
-      
-      // Update with the server URL
-      setProfileImage(serverImageUrl);
-      toast.success("Image uploaded successfully");
-      
-      // Clean up the local URL
-      URL.revokeObjectURL(localPreviewUrl);
-    } catch (error) {
-      console.error("Upload failed:", error);
-      toast.error("Failed to upload image");
-    } finally {
-      setIsLoading(false);
-    }
+    // Create a URL for the dropped file and show cropper
+    const localPreviewUrl = URL.createObjectURL(file);
+    setTempImageSrc(localPreviewUrl);
+    setShowCropper(true);
   }, []);
   
   const handleRemoveImage = useCallback(() => {
@@ -208,16 +279,54 @@ const HomeEditor = () => {
   const handleSave = async () => {
     try {
       setIsLoading(true);
+      toast.info("Saving home page content...");
+      
+      // Make sure all services have valid IDs
+      const servicesWithIds = heroContent.services.map(service => {
+        if (!service.id) {
+          return {
+            ...service,
+            id: Date.now().toString() + Math.random().toString(36).substring(2, 9)
+          };
+        }
+        return service;
+      });
+      
+      // Update the local state with validated services
+      const updatedHeroContent = {
+        ...heroContent,
+        services: servicesWithIds
+      };
+      setHeroContent(updatedHeroContent);
+      
       // Prepare the data to save
       const homeData: HomePage = {
         hero: {
-          ...heroContent,
+          ...updatedHeroContent,
           profileImage: profileImage || undefined
         }
       };
       
+      console.log('HomeEditor: Saving home data:', homeData);
+      
       // Save to the API
-      await HomeService.updateHomeContent(homeData);
+      const savedData = await HomeService.updateHomeContent(homeData);
+      console.log('HomeEditor: Save response:', savedData);
+      
+      // Update the local state with the data from the server to ensure consistency
+      if (savedData && savedData.hero) {
+        setHeroContent({
+          title: savedData.hero.title || heroContent.title,
+          subtitle: savedData.hero.subtitle || heroContent.subtitle,
+          profession: savedData.hero.profession || heroContent.profession,
+          services: Array.isArray(savedData.hero.services) ? savedData.hero.services : heroContent.services
+        });
+        
+        if (savedData.hero.profileImage) {
+          setProfileImage(savedData.hero.profileImage);
+        }
+      }
+      
       toast.success("Home page content saved successfully");
     } catch (error) {
       console.error('Error saving home content:', error);
@@ -241,6 +350,16 @@ const HomeEditor = () => {
 
   return (
     <div className="container py-12 mx-auto page-transition bg-background">
+      {/* Show the image cropper when needed */}
+      {showCropper && tempImageSrc && (
+        <ImageCropper
+          open={showCropper}
+          onClose={handleCloseCropper}
+          imageSrc={tempImageSrc}
+          onCropComplete={handleCroppedImage}
+        />
+      )}
+      
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold text-primary">Home Page Editor</h1>
         <NeumorphicButton 
@@ -352,51 +471,109 @@ const HomeEditor = () => {
           <NeumorphicCard>
             <h2 className="text-xl font-semibold mb-6 text-foreground">Profile Image</h2>
             
-            <div 
-              className={`w-64 h-64 rounded-full mx-auto overflow-hidden mb-6 ${
-                isDragging ? 'border-2 border-dashed border-primary' : 'neu-pressed dark:shadow-dark-neu-pressed'
-              }`}
-              onDragOver={handleDragOver}
-              onDragEnter={handleDragEnter}
-              onDragLeave={handleDragLeave}
-              onDrop={handleDrop}
-            >
-              {profileImage ? (
-                <div className="relative w-full h-full group">
-                  <LocalImage 
-                    src={profileImage} 
-                    alt="Profile" 
-                    className="w-full h-full object-cover"
-                    isProfileImage={true}
-                  />
-                  <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-                    <button 
-                      onClick={() => {
-                        setProfileImage(null);
-                        clearProfileImage();
-                      }}
-                      className="p-2 rounded-full bg-red-500 text-white"
+            <div className="mb-6">
+              <h2 className="text-xl font-semibold mb-4 text-foreground">
+                <div className="flex items-center gap-2">
+                  <Image size={20} />
+                  Profile Image
+                </div>
+              </h2>
+              
+              <div 
+                className={`
+                  neu-pressed dark:dark-neu-pressed rounded-xl p-6 
+                  ${isDragging ? 'border-2 border-dashed border-primary' : ''}
+                `}
+                onDragEnter={handleDragEnter}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+              >
+                <div className="flex flex-col sm:flex-row gap-6 items-center">
+                  {/* Profile image preview */}
+                  <div className="relative w-48 h-48 flex-shrink-0">
+                    <NeumorphicCard 
+                      variant="convex" 
+                      className="w-48 h-48 rounded-lg overflow-hidden flex items-center justify-center p-0"
                     >
-                      <Trash size={20} />
-                    </button>
+                      <div className="w-full h-full overflow-hidden flex items-center justify-center bg-background p-3">
+                        <div className="w-full h-full overflow-hidden">
+                          {profileImage ? (
+                            <LocalImage 
+                              src={profileImage} 
+                              alt="Profile"
+                              isProfileImage={true}
+                              className="w-full h-full"
+                            />
+                          ) : (
+                            <div className="flex flex-col items-center justify-center text-muted-foreground p-4 text-center">
+                              <Image size={48} strokeWidth={1} className="mb-2 opacity-50" />
+                              <p className="text-sm">No profile image set</p>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </NeumorphicCard>
+                    
+                    {/* Remove image button (only shown when an image is set) */}
+                    {profileImage && (
+                      <button
+                        onClick={handleRemoveImage}
+                        className="absolute -top-2 -right-2 bg-destructive text-destructive-foreground rounded-full p-1 shadow-md hover:bg-destructive/90 transition-colors"
+                        title="Remove image"
+                      >
+                        <Trash size={16} />
+                      </button>
+                    )}
+                  </div>
+
+                  {/* Upload controls */}
+                  <div className="flex flex-col gap-4 items-center sm:items-start">
+                    <div>
+                      <h3 className="font-medium mb-2 text-foreground">Image Guidelines</h3>
+                      <ul className="text-sm text-muted-foreground space-y-1 mb-4">
+                        <li>• Use a high-quality professional photo</li>
+                        <li>• Image will be cropped to a square</li>
+                        <li>• Maximum file size: 2MB</li>
+                        <li>• Supported formats: JPG, PNG, WebP</li>
+                      </ul>
+                    </div>
+
+                    <input 
+                      type="file" 
+                      accept="image/*" 
+                      className="hidden" 
+                      ref={fileInputRef} 
+                      onChange={handleFileChange}
+                    />
+                    
+                    <NeumorphicButton 
+                      onClick={triggerFileInput} 
+                      disabled={isLoading} 
+                      className="flex items-center gap-2"
+                    >
+                      {isLoading ? (
+                        <>
+                          <Crop className="animate-spin" size={16} />
+                          Processing...
+                        </>
+                      ) : (
+                        <>
+                          <Upload size={16} />
+                          Upload Image
+                        </>
+                      )}
+                    </NeumorphicButton>
                   </div>
                 </div>
-              ) : (
-                <div className="w-full h-full bg-gray-200 dark:bg-gray-700 flex flex-col items-center justify-center text-gray-400 dark:text-gray-500">
-                  <Image size={40} strokeWidth={1.5} />
-                  <p className="mt-2 text-sm text-muted-foreground text-center px-4">
-                    Drag & drop or click to upload
-                  </p>
-                </div>
-              )}
+              </div>
             </div>
             
             <div className="mt-8">
               <h3 className="font-medium mb-2">Image Guidelines</h3>
               <ul className="text-neu-text-secondary space-y-1 text-sm">
                 <li>• Use a high-quality professional photo</li>
-                <li>• Recommended size: 500x500 pixels</li>
-                <li>• Square aspect ratio works best</li>
+                <li>• Image will be cropped to a square</li>
                 <li>• Maximum file size: 2MB</li>
                 <li>• Supported formats: JPG, PNG, WebP</li>
               </ul>

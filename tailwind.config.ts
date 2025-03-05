@@ -110,10 +110,14 @@ export default {
 				'neu-flat': '5px 5px 10px #d1d1d4, -5px -5px 10px #ffffff',
 				'neu-pressed': 'inset 3px 3px 7px #d1d1d4, inset -3px -3px 7px #ffffff',
 				'neu-convex': '5px 5px 10px #d1d1d4, -5px -5px 10px #ffffff, inset 1px 1px 1px #ffffff, inset -1px -1px 1px #d1d1d4',
+				// Enhanced tag shadows for better 3D effect
+				'neu-tag': 'inset 2px 2px 5px #d1d1d4, inset -2px -2px 5px #ffffff, 1px 1px 3px rgba(255, 255, 255, 0.5)',
 				// Dark mode neumorphic shadows - toned down
 				'dark-neu-flat': '3px 3px 6px #181825, -3px -3px 6px #252533',
 				'dark-neu-pressed': 'inset 2px 2px 5px #181825, inset -2px -2px 5px #252533',
-				'dark-neu-convex': '3px 3px 6px #181825, -3px -3px 6px #252533, inset 1px 1px 1px #252533, inset -1px -1px 1px #181825'
+				'dark-neu-convex': '3px 3px 6px #181825, -3px -3px 6px #252533, inset 1px 1px 1px #252533, inset -1px -1px 1px #181825',
+				// Enhanced dark mode tag shadows with more contrast and depth
+				'dark-neu-tag': 'inset 3px 3px 6px #151520, inset -2px -2px 5px #2a2a3a, 1px 1px 2px rgba(37, 37, 51, 0.7)'
 			}
 		}
 	},

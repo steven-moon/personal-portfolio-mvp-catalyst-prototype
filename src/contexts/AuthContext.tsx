@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { signIn, signUp, SignInResponse, SignUpRequest } from '@/lib/authApi';
 import { API_CONFIG } from '@/config';
+import { isValidToken } from '@/lib/utils';
 
 interface User {
   id: number;
@@ -16,6 +17,7 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<boolean>;
   signup: (username: string, email: string, password: string) => Promise<boolean>;
   logout: () => void;
+  isLoading: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -36,17 +38,24 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     // Check localStorage on initial load
     const storedToken = localStorage.getItem(API_CONFIG.STORAGE_KEYS.TOKEN);
     const storedUser = localStorage.getItem(API_CONFIG.STORAGE_KEYS.USER);
     
-    if (storedToken && storedUser) {
+    if (storedToken && storedUser && isValidToken(storedToken)) {
       setToken(storedToken);
       setUser(JSON.parse(storedUser));
       setIsAuthenticated(true);
+    } else if (storedToken || storedUser) {
+      // If token is invalid or missing, clean up localStorage
+      localStorage.removeItem(API_CONFIG.STORAGE_KEYS.TOKEN);
+      localStorage.removeItem(API_CONFIG.STORAGE_KEYS.USER);
     }
+    
+    setIsLoading(false);
   }, []);
 
   const login = async (email: string, password: string): Promise<boolean> => {
@@ -109,7 +118,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     token,
     login,
     signup,
-    logout
+    logout,
+    isLoading
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

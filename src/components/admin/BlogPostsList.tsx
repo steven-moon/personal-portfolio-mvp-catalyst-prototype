@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from "sonner";
 import { FilePlus, FileEdit, Trash, FileText, ExternalLink } from 'lucide-react';
+import { format, parseISO, isValid } from 'date-fns';
 import NeumorphicButton from '@/components/ui/NeumorphicButton';
 import NeumorphicCard from '@/components/ui/NeumorphicCard';
 import { BlogService } from '@/lib/apiService';
-import { BlogPost } from '@/data/blogData';
+import { BlogPost, Category } from '@/data/blogData';
+import { formatDate } from '@/lib/dateUtils';
 
 const BlogPostItem = ({ post, onEdit, onDelete }: { 
   post: BlogPost; 
@@ -14,6 +16,14 @@ const BlogPostItem = ({ post, onEdit, onDelete }: {
 }) => {
   const navigate = useNavigate();
   
+  // Helper function to display category name correctly whether it's a string or object
+  const getCategoryName = (category: string | Category): string => {
+    if (typeof category === 'string') {
+      return category;
+    }
+    return category.name;
+  };
+  
   return (
     <NeumorphicCard className="mb-4 p-4">
       <div className="flex flex-col md:flex-row md:items-center">
@@ -21,10 +31,10 @@ const BlogPostItem = ({ post, onEdit, onDelete }: {
           <h3 className="text-lg font-semibold mb-1 text-foreground">{post.title}</h3>
           <div className="flex flex-wrap gap-2 mb-2">
             <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-background shadow-neu-pressed dark:shadow-dark-neu-pressed text-primary">
-              {post.category}
+              {getCategoryName(post.category)}
             </span>
             <span className="text-muted-foreground text-sm">
-              {post.date}
+              {formatDate(post.date)}
             </span>
           </div>
           <p className="text-muted-foreground text-sm line-clamp-2">{post.excerpt}</p>
@@ -69,10 +79,25 @@ const BlogPostItem = ({ post, onEdit, onDelete }: {
 const BlogPostsList = () => {
   const navigate = useNavigate();
   const [posts, setPosts] = useState<BlogPost[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('');
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string>('');
+  
+  // Fetch categories on component mount
+  useEffect(() => {
+    const loadCategories = async () => {
+      try {
+        const data = await BlogService.getAllCategories();
+        setCategories(data);
+      } catch (err) {
+        console.error('Error fetching categories:', err);
+      }
+    };
+    
+    loadCategories();
+  }, []);
   
   const fetchPosts = async () => {
     try {
@@ -81,8 +106,9 @@ const BlogPostsList = () => {
       
       if (searchQuery) {
         data = await BlogService.searchBlogPosts(searchQuery);
-      } else if (selectedCategory) {
-        data = await BlogService.getBlogPostsByCategory(selectedCategory);
+      } else if (selectedCategoryId) {
+        // Convert to number before passing to the API
+        data = await BlogService.getBlogPostsByCategory(parseInt(selectedCategoryId, 10));
       } else {
         data = await BlogService.getAllBlogPosts();
       }
@@ -99,7 +125,7 @@ const BlogPostsList = () => {
   
   useEffect(() => {
     fetchPosts();
-  }, [searchQuery, selectedCategory]);
+  }, [searchQuery, selectedCategoryId]);
   
   const handleEdit = (id: number) => {
     navigate(`/admin/blog/edit/${id}`);
@@ -127,11 +153,31 @@ const BlogPostsList = () => {
   };
   
   const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedCategory(e.target.value);
+    setSelectedCategoryId(e.target.value);
   };
   
-  // Get unique categories for filter dropdown
-  const categories = Array.from(new Set(posts.map(post => post.category)));
+  // Extract category information for the dropdown
+  const getCategoryOptions = () => {
+    if (!posts.length && !categories.length) return [];
+    
+    if (categories.length > 0) {
+      // If we have categories from the API
+      return categories;
+    } else {
+      // Extract unique categories from posts as a fallback
+      const uniqueCategories = new Map();
+      
+      posts.forEach(post => {
+        if (typeof post.category === 'string') {
+          uniqueCategories.set(post.category, { id: post.category, name: post.category });
+        } else {
+          uniqueCategories.set(post.category.id, post.category);
+        }
+      });
+      
+      return Array.from(uniqueCategories.values());
+    }
+  };
   
   return (
     <div className="container py-8 mx-auto bg-background">
@@ -163,12 +209,15 @@ const BlogPostsList = () => {
           
           <select
             className="p-3 bg-background shadow-neu-pressed dark:shadow-dark-neu-pressed rounded-lg focus:outline-none w-full md:w-48 text-foreground"
-            value={selectedCategory}
+            value={selectedCategoryId}
             onChange={handleCategoryChange}
           >
             <option value="">All Categories</option>
-            {categories.map(category => (
-              <option key={category} value={category}>{category}</option>
+            {getCategoryOptions().map(category => (
+              <option key={typeof category === 'string' ? category : category.id} 
+                      value={typeof category === 'string' ? category : category.id}>
+                {typeof category === 'string' ? category : category.name}
+              </option>
             ))}
           </select>
         </div>

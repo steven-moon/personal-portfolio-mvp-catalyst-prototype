@@ -4,7 +4,12 @@ import NeumorphicCard from '@/components/ui/NeumorphicCard';
 import NeumorphicButton from '@/components/ui/NeumorphicButton';
 import { Save, Plus, Trash, Briefcase, GraduationCap, Award, Heart } from 'lucide-react';
 import { AboutService } from '@/lib/apiService';
-import { AboutMeData } from '@/data/aboutData';
+import { AboutMeData, SkillCategory } from '@/data/aboutData';
+import { v4 as uuidv4 } from 'uuid';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 
 interface WorkExperience {
   id: string;
@@ -65,10 +70,18 @@ const AboutEditor = () => {
         description: "Foundation in programming, software design, and development methodologies."
       }
     ],
-    skills: {
-      technical: ["React", "TypeScript", "Next.js", "HTML/CSS", "JavaScript", "Node.js", "Git", "TailwindCSS"],
-      design: ["UI/UX Design", "Figma", "Responsive Design", "Design Systems", "Wireframing"]
-    },
+    skillCategories: [
+      {
+        id: uuidv4(),
+        title: 'Technical Skills',
+        skills: ["React", "TypeScript", "Next.js", "HTML/CSS", "JavaScript", "Node.js", "Git", "TailwindCSS"]
+      },
+      {
+        id: uuidv4(),
+        title: 'Design Skills',
+        skills: ["UI/UX Design", "Figma", "Responsive Design", "Design Systems", "Wireframing"]
+      }
+    ],
     values: [
       {
         id: "1",
@@ -98,13 +111,52 @@ const AboutEditor = () => {
   // Fetch the current about page content from the API
   useEffect(() => {
     const fetchAboutContent = async () => {
+      setIsLoading(true);
       try {
-        setIsLoading(true);
         const data = await AboutService.getAboutContent();
+        
+        // Ensure we have skillCategories or initialize with defaults
+        if (!data.skillCategories || !Array.isArray(data.skillCategories) || data.skillCategories.length === 0) {
+          data.skillCategories = [
+            {
+              id: uuidv4(),
+              title: 'Technical Skills',
+              skills: []
+            },
+            {
+              id: uuidv4(),
+              title: 'Design Skills',
+              skills: []
+            }
+          ];
+        }
+
         setAboutData(data);
       } catch (error) {
         console.error('Error fetching about content:', error);
-        toast.error('Failed to load about page content');
+        // Initialize with defaults if fetching fails
+        setAboutData({
+          intro: {
+            headline: '',
+            subheadline: ''
+          },
+          story: [''],
+          workExperience: [],
+          education: [],
+          skillCategories: [
+            {
+              id: uuidv4(),
+              title: 'Technical Skills',
+              skills: []
+            },
+            {
+              id: uuidv4(),
+              title: 'Design Skills',
+              skills: []
+            }
+          ],
+          values: []
+        });
       } finally {
         setIsLoading(false);
       }
@@ -249,14 +301,54 @@ const AboutEditor = () => {
   };
 
   // Skills handlers
-  const handleSkillsChange = (type: 'technical' | 'design', skillsList: string) => {
-    const skills = skillsList.split(',').map(skill => skill.trim());
+  const handleAddSkillCategory = () => {
     setAboutData(prev => ({
       ...prev,
-      skills: {
-        ...prev.skills,
-        [type]: skills
-      }
+      skillCategories: [
+        ...prev.skillCategories,
+        {
+          id: uuidv4(),
+          title: 'New Skill Category',
+          skills: []
+        }
+      ]
+    }));
+  };
+
+  const handleSkillCategoryTitleChange = (index: number, title: string) => {
+    setAboutData(prev => {
+      const updatedCategories = [...prev.skillCategories];
+      updatedCategories[index] = { 
+        ...updatedCategories[index], 
+        title 
+      };
+      return {
+        ...prev,
+        skillCategories: updatedCategories
+      };
+    });
+  };
+
+  const handleSkillsChange = (index: number, skillsList: string) => {
+    const skills = skillsList.split(',').map(skill => skill.trim()).filter(skill => skill);
+    
+    setAboutData(prev => {
+      const updatedCategories = [...prev.skillCategories];
+      updatedCategories[index] = { 
+        ...updatedCategories[index], 
+        skills 
+      };
+      return {
+        ...prev,
+        skillCategories: updatedCategories
+      };
+    });
+  };
+
+  const handleRemoveSkillCategory = (index: number) => {
+    setAboutData(prev => ({
+      ...prev,
+      skillCategories: prev.skillCategories.filter((_, i) => i !== index)
     }));
   };
 
@@ -539,38 +631,47 @@ const AboutEditor = () => {
         </NeumorphicCard>
         
         {/* Skills Section */}
-        <NeumorphicCard>
-          <div className="flex items-start mb-4">
-            <div className="p-3 neu-pressed dark:shadow-dark-neu-pressed rounded-lg mr-4">
-              <Award className="text-primary" size={24} />
+        <Card className="mb-6">
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <CardTitle>Skills</CardTitle>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={handleAddSkillCategory}
+              >
+                Add Category
+              </Button>
             </div>
-            <h2 className="text-xl font-semibold text-foreground">Skills</h2>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-muted-foreground mb-2">Technical Skills</label>
-              <p className="text-xs text-muted-foreground mb-2">Enter skills separated by commas</p>
-              <textarea 
-                value={aboutData.skills.technical.join(", ")}
-                onChange={(e) => handleSkillsChange('technical', e.target.value)}
-                className="w-full px-4 py-2 rounded-lg neu-pressed dark:shadow-dark-neu-pressed text-foreground bg-transparent min-h-[100px]"
-                placeholder="React, JavaScript, TypeScript, etc."
-              />
-            </div>
-            
-            <div>
-              <label className="block text-muted-foreground mb-2">Design Skills</label>
-              <p className="text-xs text-muted-foreground mb-2">Enter skills separated by commas</p>
-              <textarea 
-                value={aboutData.skills.design.join(", ")}
-                onChange={(e) => handleSkillsChange('design', e.target.value)}
-                className="w-full px-4 py-2 rounded-lg neu-pressed dark:shadow-dark-neu-pressed text-foreground bg-transparent min-h-[100px]"
-                placeholder="UI/UX, Figma, Wireframing, etc."
-              />
-            </div>
-          </div>
-        </NeumorphicCard>
+          </CardHeader>
+          <CardContent>
+            {aboutData.skillCategories.map((category, index) => (
+              <div key={category.id || index} className="mb-6">
+                <div className="flex items-center gap-3 mb-3">
+                  <Input
+                    value={category.title}
+                    onChange={(e) => handleSkillCategoryTitleChange(index, e.target.value)}
+                    placeholder="Category Title"
+                    className="font-semibold"
+                  />
+                  <Button 
+                    variant="destructive" 
+                    size="icon"
+                    onClick={() => handleRemoveSkillCategory(index)}
+                  >
+                    <Trash size={16} />
+                  </Button>
+                </div>
+                <Textarea
+                  value={category.skills.join(', ')}
+                  onChange={(e) => handleSkillsChange(index, e.target.value)}
+                  placeholder="Skills (comma-separated)"
+                  className="min-h-[100px]"
+                />
+              </div>
+            ))}
+          </CardContent>
+        </Card>
         
         {/* Personal Values Section */}
         <NeumorphicCard>

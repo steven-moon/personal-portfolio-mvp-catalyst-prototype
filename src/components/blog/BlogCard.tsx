@@ -4,15 +4,51 @@ import { Calendar, User, Tag, ChevronRight } from 'lucide-react';
 import NeumorphicCard from '@/components/ui/NeumorphicCard';
 import { BlogPost } from '@/data/blogData';
 import LocalImage from '@/components/ui/LocalImage';
+import { formatDate } from '@/lib/dateUtils';
+
+// Define interfaces for nested objects from the API
+interface Author {
+  id: number;
+  username: string;
+}
+
+interface Category {
+  id: number;
+  name: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+// Update BlogPost interface to handle both string and object types
+interface ExtendedBlogPost extends Omit<BlogPost, 'author' | 'category'> {
+  author: string | Author;
+  category: string | Category;
+}
 
 interface BlogCardProps {
-  post: BlogPost;
+  post: ExtendedBlogPost;
   isAdmin?: boolean;
 }
 
 const BlogCard = ({ post, isAdmin = false }: BlogCardProps) => {
   const linkPath = isAdmin ? `/admin/blog/edit/${post.id}` : `/blog/${post.id}`;
   const viewLinkPath = `/blog/${post.id}`;
+  
+  // Helper function to get author display name
+  const getAuthorName = (author: string | Author): string => {
+    if (typeof author === 'string') {
+      return author;
+    }
+    return author.username;
+  };
+  
+  // Helper function to get category display name
+  const getCategoryName = (category: string | Category): string => {
+    if (typeof category === 'string') {
+      return category;
+    }
+    return category.name;
+  };
   
   return (
     <NeumorphicCard className="overflow-hidden h-full flex flex-col">
@@ -29,18 +65,18 @@ const BlogCard = ({ post, isAdmin = false }: BlogCardProps) => {
         <div className="flex items-center space-x-4 text-muted-foreground text-sm mb-3">
           <div className="flex items-center">
             <Calendar size={14} className="mr-1" />
-            <span>{post.date}</span>
+            <span>{formatDate(post.date)}</span>
           </div>
           <div className="flex items-center">
             <User size={14} className="mr-1" />
-            <span>{post.author}</span>
+            <span>{getAuthorName(post.author)}</span>
           </div>
         </div>
         
         <div className="mb-2">
           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-background shadow-neu-pressed dark:shadow-dark-neu-pressed text-primary">
             <Tag size={12} className="mr-1" />
-            {post.category}
+            {getCategoryName(post.category)}
           </span>
         </div>
         

@@ -174,19 +174,60 @@ export const mockBlogApi = {
     return blogPosts.filter(post => 
       post.title.toLowerCase().includes(lowercaseQuery) || 
       post.content.toLowerCase().includes(lowercaseQuery) ||
-      post.category.toLowerCase().includes(lowercaseQuery)
+      (typeof post.category === 'string' 
+        ? post.category.toLowerCase().includes(lowercaseQuery)
+        : post.category.name.toLowerCase().includes(lowercaseQuery))
     );
   },
   
   // Get posts by category
-  async getBlogPostsByCategory(category: string): Promise<BlogPost[]> {
+  async getBlogPostsByCategory(categoryId: number): Promise<BlogPost[]> {
     await delay();
-    if (!category) return [...blogPosts];
+    // In the mock implementation, we'll map the categoryId to a category name
+    // since we don't have a separate categories table
+    const categories = [...new Set(blogPosts.map(post => post.category))];
+    const category = categories[categoryId - 1] || ''; // Map ID to category name (1-indexed)
     
-    const lowercaseCategory = category.toLowerCase();
+    if (!category) return [];
+    
     return blogPosts.filter(post => 
-      post.category.toLowerCase() === lowercaseCategory
+      post.category === category
     );
+  },
+
+  // Get all categories
+  async getAllCategories(): Promise<any[]> {
+    await delay();
+    // Extract unique categories from blog posts
+    const categories = [...new Set(blogPosts.map(post => post.category))];
+    return categories.map((name, index) => ({
+      id: index + 1,
+      name,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    }));
+  },
+
+  // Get posts by author
+  async getBlogPostsByAuthor(authorId: number): Promise<BlogPost[]> {
+    await delay();
+    // In the mock implementation, we'll use the author's name
+    // since we don't have a separate authors table with IDs
+    const author = `Author ${authorId}`; // Simple mapping for mock data
+    return blogPosts.filter(post => post.author === author);
+  },
+
+  // Upload blog image
+  async uploadBlogImage(image: File): Promise<string> {
+    // This is a mock implementation
+    await delay();
+    
+    console.log("Mock API: Uploading blog image", image.name, image.size);
+    
+    // In a real app, we would upload to a server and get back a URL
+    // Here we just pretend we did and return a URL pattern
+    const fileName = image.name.replace(/\s+/g, '-').toLowerCase();
+    return `/assets/images/blog/${Date.now()}-${fileName}`;
   }
 };
 

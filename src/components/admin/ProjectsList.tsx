@@ -5,7 +5,7 @@ import { FilePlus, FileEdit, Trash, FileText, ExternalLink, Image } from 'lucide
 import NeumorphicButton from '@/components/ui/NeumorphicButton';
 import NeumorphicCard from '@/components/ui/NeumorphicCard';
 import { ProjectService } from '@/lib/apiService';
-import { Project } from '@/data/projectData';
+import { Project, Tag } from '@/data/projectData';
 import LocalImage from '@/components/ui/LocalImage';
 
 // Default images to use when none are provided
@@ -15,6 +15,14 @@ const DEFAULT_GALLERY_IMAGES = [
   "https://images.unsplash.com/photo-1516116216624-53e697fedbea?q=80&auto=format",
   "https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&auto=format"
 ];
+
+// Helper function to get tag name regardless of tag format (string or object)
+const getTagName = (tag: string | Tag): string => {
+  if (typeof tag === 'string') {
+    return tag;
+  }
+  return tag.name;
+};
 
 const ProjectItem = ({ project, onEdit, onDelete }: { 
   project: Project; 
@@ -48,10 +56,10 @@ const ProjectItem = ({ project, onEdit, onDelete }: {
           <div className="flex flex-wrap gap-2 mb-2">
             {project.tags.map((tag, index) => (
               <span 
-                key={index}
+                key={typeof tag === 'string' ? `tag-${index}` : tag.id}
                 className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-background shadow-neu-pressed dark:shadow-dark-neu-pressed text-primary"
               >
-                {tag}
+                {getTagName(tag)}
               </span>
             ))}
           </div>
