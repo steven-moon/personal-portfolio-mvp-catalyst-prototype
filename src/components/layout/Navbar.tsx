@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, LogIn, LogOut, LayoutDashboard } from 'lucide-react';
+import { Menu, X, LogIn, LogOut, LayoutDashboard, Edit } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/contexts/AuthContext';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
@@ -34,6 +34,7 @@ const Navbar = () => {
   const { isAuthenticated, logout } = useAuth();
   const { siteSettings, loading } = useSiteSettings();
   const isAdminRoute = location.pathname.startsWith('/admin');
+  const isBannerEnabled = !loading && siteSettings.features?.enableMvpBanner;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -53,6 +54,22 @@ const Navbar = () => {
     logout();
     // No need for navigation as the AuthContext will handle the state change
     // and the protected routes will redirect accordingly
+  };
+
+  // Get the corresponding admin route for the current public page
+  const getAdminEditRoute = () => {
+    const path = location.pathname;
+    if (path === '/') return '/admin/home';
+    if (path.startsWith('/projects/')) {
+      const projectId = path.split('/').pop();
+      return `/admin/projects/edit/${projectId}`;
+    }
+    if (path.startsWith('/blog/')) {
+      const blogId = path.split('/').pop();
+      return `/admin/blog/edit/${blogId}`;
+    }
+    // For regular pages like /about, /projects, /blog, /contact
+    return `/admin${path}`;
   };
 
   // Admin navigation links
@@ -117,6 +134,10 @@ const Navbar = () => {
       </div>
       {isAuthenticated ? (
         <div className="flex items-center space-x-1 md:space-x-2">
+          {/* Edit Page button - only shows for authenticated users on public pages */}
+          <Link to={getAdminEditRoute()} className="px-3 py-2 rounded-lg hover:neu-flat transition-medium text-primary" title="Edit this page">
+            <Edit className="h-5 w-5" />
+          </Link>
           <Link to="/admin" className="px-3 py-2 rounded-lg hover:neu-flat transition-medium">
             <LayoutDashboard className="h-5 w-5" />
           </Link>
@@ -140,7 +161,7 @@ const Navbar = () => {
 
   return (
     <header className={cn(
-      "fixed top-0 left-0 right-0 z-50 transition-medium px-4 py-2",
+      "fixed left-0 right-0 top-0 z-40 transition-medium px-4 py-4 pt-6",
       isScrolled ? "bg-background/90 backdrop-blur-sm border-b border-border" : "bg-transparent"
     )}>
       <div className="max-w-7xl mx-auto flex items-center justify-between">
@@ -176,7 +197,7 @@ const Navbar = () => {
 
         {/* Mobile Navigation */}
         {isMobileMenuOpen && (
-          <div className="md:hidden fixed inset-0 top-16 z-50 p-4 bg-background">
+          <div className="md:hidden fixed inset-0 top-[var(--navbar-height)] z-50 p-4 bg-background">
             <nav className="flex flex-col items-center space-y-4 mt-8">
               {isAdminRoute ? (
                 <>
@@ -233,6 +254,11 @@ const Navbar = () => {
                   )}
                   {isAuthenticated ? (
                     <div className="flex items-center space-x-4 mt-4">
+                      {/* Edit Page button for mobile - only shows for authenticated users */}
+                      <Link to={getAdminEditRoute()} className="px-3 py-2 rounded-lg neu-flat transition-medium flex items-center text-primary">
+                        <Edit className="h-5 w-5 mr-2" />
+                        Edit Page
+                      </Link>
                       <Link to="/admin" className="px-3 py-2 rounded-lg neu-flat transition-medium flex items-center">
                         <LayoutDashboard className="h-5 w-5 mr-2" />
                         Admin

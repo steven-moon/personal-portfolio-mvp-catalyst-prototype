@@ -65,6 +65,18 @@ const FeaturesSettingsSection: React.FC<SectionProps> = ({ settings, handleToggl
             className="data-[state=checked]:bg-primary"
           />
         </div>
+        
+        <div className="flex items-center justify-between p-4 neu-flat dark:shadow-dark-neu-flat rounded-lg">
+          <div>
+            <h3 className="font-medium text-foreground">Enable MVP Banner</h3>
+            <p className="text-sm text-muted-foreground">Show MVP Catalyst demo banner at the top of the site</p>
+          </div>
+          <Switch 
+            checked={settings.features.enableMvpBanner}
+            onCheckedChange={() => handleToggleChange('features', 'enableMvpBanner')}
+            className="data-[state=checked]:bg-primary"
+          />
+        </div>
       </div>
     </NeumorphicCard>
   );

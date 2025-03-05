@@ -25,24 +25,29 @@ export interface Project {
 
 interface ProjectCardProps {
   project: Project;
+  isAdmin?: boolean;
 }
 
-const ProjectCard = ({ project }: ProjectCardProps) => {
+const ProjectCard = ({ project, isAdmin = false }: ProjectCardProps) => {
   // Use default image if project.image is empty or "/placeholder.svg"
   const displayImage = (!project.image || project.image === "/placeholder.svg") ? DEFAULT_IMAGE : project.image;
+  
+  // Define navigation paths based on isAdmin flag
+  const linkPath = isAdmin ? `/admin/projects/edit/${project.id}` : `/project/${project.id}`;
+  const viewLinkPath = `/project/${project.id}`;
   
   return (
     <NeumorphicCard 
       className="h-full flex flex-col transition-medium hover:scale-[1.02]"
     >
-      <div className="h-48 w-full bg-gray-200 dark:bg-gray-700 mb-4 rounded-lg overflow-hidden">
+      <Link to={viewLinkPath} className="h-48 w-full bg-gray-200 dark:bg-gray-700 mb-4 rounded-lg overflow-hidden">
         <LocalImage 
           src={project.image} 
           alt={project.title}
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
           fallbackSrc={DEFAULT_IMAGE}
         />
-      </div>
+      </Link>
       <h3 className="text-xl font-semibold mb-2 text-foreground">{project.title}</h3>
       <p className="text-muted-foreground mb-4 flex-grow">{project.description}</p>
       <div className="flex flex-wrap gap-2 mb-4">
@@ -52,12 +57,12 @@ const ProjectCard = ({ project }: ProjectCardProps) => {
           </span>
         ))}
       </div>
-      <Link to={`/project/${project.id}`}>
+      <Link to={linkPath}>
         <NeumorphicButton
           variant="secondary"
           className="w-full flex items-center justify-center gap-2"
         >
-          View Details
+          {isAdmin ? "Edit Project" : "View Details"}
         </NeumorphicButton>
       </Link>
     </NeumorphicCard>

@@ -20,7 +20,7 @@ const Footer = () => {
   // Don't render social media icons while loading
   if (loading) {
     return (
-      <footer className="fixed bottom-0 left-0 right-0 py-4 px-6 border-t border-gray-200 dark:border-gray-800 bg-background z-10">
+      <footer className="w-full py-4 px-6 border-t border-gray-200 dark:border-gray-800 bg-background z-10">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center">
           <div className="mb-4 md:mb-0">
             <p className="text-sm text-muted-foreground">
@@ -39,7 +39,7 @@ const Footer = () => {
   const authorName = general.authorName || 'Portfolio';
 
   return (
-    <footer className="fixed bottom-0 left-0 right-0 py-4 px-6 border-t border-gray-200 dark:border-gray-800 bg-background z-10">
+    <footer className="w-full py-4 px-6 border-t border-gray-200 dark:border-gray-800 bg-background z-10">
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-center">
           <div className="mb-4 md:mb-0">

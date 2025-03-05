@@ -31,11 +31,14 @@ const ProjectItem = ({ project, onEdit, onDelete }: {
   return (
     <NeumorphicCard className="mb-4 p-4">
       <div className="flex flex-col md:flex-row md:items-center">
-        <div className="w-24 h-24 flex-shrink-0 rounded-lg overflow-hidden mr-4 mb-4 md:mb-0">
+        <div 
+          className="w-24 h-24 flex-shrink-0 rounded-lg overflow-hidden mr-4 mb-4 md:mb-0 cursor-pointer"
+          onClick={() => onEdit(project.id)}
+        >
           <LocalImage 
             src={mainImage} 
             alt={project.title}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
             fallbackSrc={DEFAULT_IMAGE}
           />
         </div>

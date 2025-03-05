@@ -272,7 +272,6 @@ const ImageUploader = ({
                 crop={crop}
                 onChange={(c) => setCrop(c)}
                 onComplete={(c) => setCompletedCrop(c)}
-                aspect={3/2}
                 className="max-w-full"
               >
                 <img

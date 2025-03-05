@@ -52,7 +52,7 @@ const Projects = () => {
                 className="animate-fade-in"
                 style={{ animationDelay: `${0.1 + index * 0.1}s` }}
               >
-                <ProjectCard project={project} />
+                <ProjectCard project={project} isAdmin={false} />
               </div>
             ))}
           </div>

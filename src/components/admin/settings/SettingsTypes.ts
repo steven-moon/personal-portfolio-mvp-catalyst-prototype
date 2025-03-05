@@ -25,6 +25,7 @@ export interface SiteSettings {
     enableProjects: boolean;
     enableContactForm: boolean;
     enableNewsletter: boolean;
+    enableMvpBanner: boolean;
   };
   socialMedia: {
     enableGithub: boolean;

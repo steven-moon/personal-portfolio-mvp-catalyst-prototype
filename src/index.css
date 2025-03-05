@@ -7,7 +7,7 @@
 @layer base {
   :root {
     /* Light mode variables */
-    --background: 0 0% 95%;
+    --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
 
     --card: 0 0% 100%;
@@ -36,6 +36,10 @@
     --ring: 221.2 83% 53.3%;
 
     --radius: 0.75rem;
+    
+    /* Custom layout variables */
+    --navbar-height: 5rem;
+    --banner-height: 2.5rem;
   }
 
   .dark {

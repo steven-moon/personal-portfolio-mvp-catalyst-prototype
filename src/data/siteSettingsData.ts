@@ -26,6 +26,7 @@ export const defaultSiteSettings: SiteSettings = {
     enableProjects: true,
     enableContactForm: true,
     enableNewsletter: false,
+    enableMvpBanner: true,
   },
   socialMedia: {
     enableGithub: true,
