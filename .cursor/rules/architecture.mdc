@@ -1,12 +1,39 @@
----
-description: 
-globs: 
-alwaysApply: false
----
-# Description: Project architecture guidelines for Personal Portfolio MVP
+# Description: Project architecture and structure guidelines for the Personal Portfolio MVP
 # Globs: **/*
 
-## Architecture Guidelines
-- Follow the directory structure in README
-- Use React Router for navigation
-- Implement proper data fetching patterns
+## Project Structure
+- Follow the directory structure outlined in the README
+- Keep related files together in appropriate directories
+- Use consistent file naming conventions
+- Maintain clear separation of concerns between components
+
+## Architecture Patterns
+- Use React Router for navigation and routing
+- Implement proper data fetching with React Query
+- Use Context API for global state management when necessary
+- Follow the container/presentation pattern for complex components
+- Implement code splitting for performance optimization
+
+## File Organization
+- Group related components in the same directory
+- Place shared utilities in the utils directory
+- Use the lib directory for third-party integrations
+- Keep hooks in the hooks directory
+- Store mock data and content in the data directory
+
+## Code Structure
+- Keep files small and focused on a single responsibility
+- Extract reusable logic into custom hooks
+- Use consistent export patterns
+- Implement proper error boundaries
+- Use lazy loading for routes and large components
+
+## Scalability Considerations
+- Design components to be reusable
+- Implement proper abstractions for potential future needs
+- Consider performance implications of architectural decisions
+- Document architectural decisions and patterns
+- Follow established React patterns and best practices
+
+## References
+@file ../README.md 

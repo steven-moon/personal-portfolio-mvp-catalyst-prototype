@@ -222,6 +222,51 @@ export interface AboutMeData {
     description: string;
   }[];
 }
+
+### SiteSettings
+
+```typescript
+export interface SiteSettings {
+  general: {
+    siteName: string;
+    authorName: string;
+    siteIcon: string;
+    email: string;
+    showEmailInFooter: boolean;
+  };
+  appearance: {
+    theme: 'light' | 'dark' | 'system';
+    primaryColor: string;
+    enableAnimations: boolean;
+    fontFamily: string;
+  };
+  seo: {
+    metaDescription: string;
+    keywords: string;
+    enableSocialMetaTags: boolean;
+    googleAnalyticsId: string;
+  };
+  features: {
+    enableBlog: boolean;
+    enableProjects: boolean;
+    enableContactForm: boolean;
+    enableNewsletter: boolean;
+  };
+  socialMedia: {
+    enableGithub: boolean;
+    enableLinkedin: boolean;
+    enableTwitter: boolean;
+    enableInstagram: boolean;
+    enableYoutube: boolean;
+    enableFacebook: boolean;
+    githubUrl: string;
+    linkedinUrl: string;
+    twitterUrl: string;
+    instagramUrl: string;
+    youtubeUrl: string;
+    facebookUrl: string;
+  };
+}
 ```
 
 In a production environment, these would typically be fetched from an API.

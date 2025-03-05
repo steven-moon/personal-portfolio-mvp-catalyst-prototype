@@ -4,6 +4,8 @@ import { Menu, X, LogIn, LogOut, LayoutDashboard } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/contexts/AuthContext';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
+import { useSiteSettings } from '@/contexts/SiteSettingsContext';
+import LocalImage from '@/components/ui/LocalImage';
 
 interface NavLinkProps {
   to: string;
@@ -30,6 +32,7 @@ const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
   const { isAuthenticated, logout } = useAuth();
+  const { siteSettings, loading } = useSiteSettings();
   const isAdminRoute = location.pathname.startsWith('/admin');
 
   useEffect(() => {
@@ -64,15 +67,21 @@ const Navbar = () => {
       <NavLink to="/admin/about" isActive={location.pathname === '/admin/about'}>
         About
       </NavLink>
-      <NavLink to="/admin/projects" isActive={location.pathname === '/admin/projects' || location.pathname.startsWith('/admin/projects/')}>
-        Projects
-      </NavLink>
-      <NavLink to="/admin/blog" isActive={location.pathname === '/admin/blog' || location.pathname.startsWith('/admin/blog/')}>
-        Blog
-      </NavLink>
-      <NavLink to="/admin/contact" isActive={location.pathname === '/admin/contact'}>
-        Contact
-      </NavLink>
+      {!loading && siteSettings.features.enableProjects && (
+        <NavLink to="/admin/projects" isActive={location.pathname === '/admin/projects' || location.pathname.startsWith('/admin/projects/')}>
+          Projects
+        </NavLink>
+      )}
+      {!loading && siteSettings.features.enableBlog && (
+        <NavLink to="/admin/blog" isActive={location.pathname === '/admin/blog' || location.pathname.startsWith('/admin/blog/')}>
+          Blog
+        </NavLink>
+      )}
+      {!loading && siteSettings.features.enableContactForm && (
+        <NavLink to="/admin/contact" isActive={location.pathname === '/admin/contact'}>
+          Contact
+        </NavLink>
+      )}
       <NavLink to="/" isActive={location.pathname === '/'}>
         Return to Portfolio
       </NavLink>
@@ -88,15 +97,21 @@ const Navbar = () => {
       <NavLink to="/about" isActive={location.pathname === '/about'}>
         About
       </NavLink>
-      <NavLink to="/projects" isActive={location.pathname === '/projects'}>
-        Projects
-      </NavLink>
-      <NavLink to="/blog" isActive={location.pathname === '/blog'}>
-        Blog
-      </NavLink>
-      <NavLink to="/contact" isActive={location.pathname === '/contact'}>
-        Contact
-      </NavLink>
+      {!loading && siteSettings.features.enableProjects && (
+        <NavLink to="/projects" isActive={location.pathname === '/projects'}>
+          Projects
+        </NavLink>
+      )}
+      {!loading && siteSettings.features.enableBlog && (
+        <NavLink to="/blog" isActive={location.pathname === '/blog'}>
+          Blog
+        </NavLink>
+      )}
+      {!loading && siteSettings.features.enableContactForm && (
+        <NavLink to="/contact" isActive={location.pathname === '/contact'}>
+          Contact
+        </NavLink>
+      )}
       <div className="mx-2">
         <ThemeToggle />
       </div>
@@ -120,14 +135,26 @@ const Navbar = () => {
     </div>
   );
 
+  const siteName = loading ? 'Loading...' : (siteSettings.general.siteName || 'My Portfolio');
+  const siteIcon = !loading && siteSettings.general.siteIcon ? siteSettings.general.siteIcon : '';
+
   return (
     <header className={cn(
       "fixed top-0 left-0 right-0 z-50 transition-medium px-4 py-2",
       isScrolled ? "bg-background/90 backdrop-blur-sm border-b border-border" : "bg-transparent"
     )}>
       <div className="max-w-7xl mx-auto flex items-center justify-between">
-        <Link to="/" className="flex items-center">
-          <span className="text-xl font-semibold">Portfolio</span>
+        <Link to="/" className="flex items-center gap-2">
+          {siteIcon && (
+            <div className="w-8 h-8 overflow-hidden rounded-md">
+              <LocalImage 
+                src={siteIcon} 
+                alt="Site Icon" 
+                className="w-full h-full object-cover"
+              />
+            </div>
+          )}
+          <span className="text-xl font-semibold">{siteName}</span>
         </Link>
 
         {/* Desktop Navigation */}
@@ -162,15 +189,21 @@ const Navbar = () => {
                   <NavLink to="/admin/about" isActive={location.pathname === '/admin/about'}>
                     About
                   </NavLink>
-                  <NavLink to="/admin/projects" isActive={location.pathname === '/admin/projects' || location.pathname.startsWith('/admin/projects/')}>
-                    Projects
-                  </NavLink>
-                  <NavLink to="/admin/blog" isActive={location.pathname === '/admin/blog' || location.pathname.startsWith('/admin/blog/')}>
-                    Blog
-                  </NavLink>
-                  <NavLink to="/admin/contact" isActive={location.pathname === '/admin/contact'}>
-                    Contact
-                  </NavLink>
+                  {!loading && siteSettings.features.enableProjects && (
+                    <NavLink to="/admin/projects" isActive={location.pathname === '/admin/projects' || location.pathname.startsWith('/admin/projects/')}>
+                      Projects
+                    </NavLink>
+                  )}
+                  {!loading && siteSettings.features.enableBlog && (
+                    <NavLink to="/admin/blog" isActive={location.pathname === '/admin/blog' || location.pathname.startsWith('/admin/blog/')}>
+                      Blog
+                    </NavLink>
+                  )}
+                  {!loading && siteSettings.features.enableContactForm && (
+                    <NavLink to="/admin/contact" isActive={location.pathname === '/admin/contact'}>
+                      Contact
+                    </NavLink>
+                  )}
                   <NavLink to="/" isActive={location.pathname === '/'}>
                     Return to Portfolio
                   </NavLink>
@@ -183,15 +216,21 @@ const Navbar = () => {
                   <NavLink to="/about" isActive={location.pathname === '/about'}>
                     About
                   </NavLink>
-                  <NavLink to="/projects" isActive={location.pathname === '/projects'}>
-                    Projects
-                  </NavLink>
-                  <NavLink to="/blog" isActive={location.pathname === '/blog'}>
-                    Blog
-                  </NavLink>
-                  <NavLink to="/contact" isActive={location.pathname === '/contact'}>
-                    Contact
-                  </NavLink>
+                  {!loading && siteSettings.features.enableProjects && (
+                    <NavLink to="/projects" isActive={location.pathname === '/projects'}>
+                      Projects
+                    </NavLink>
+                  )}
+                  {!loading && siteSettings.features.enableBlog && (
+                    <NavLink to="/blog" isActive={location.pathname === '/blog'}>
+                      Blog
+                    </NavLink>
+                  )}
+                  {!loading && siteSettings.features.enableContactForm && (
+                    <NavLink to="/contact" isActive={location.pathname === '/contact'}>
+                      Contact
+                    </NavLink>
+                  )}
                   {isAuthenticated ? (
                     <div className="flex items-center space-x-4 mt-4">
                       <Link to="/admin" className="px-3 py-2 rounded-lg neu-flat transition-medium flex items-center">

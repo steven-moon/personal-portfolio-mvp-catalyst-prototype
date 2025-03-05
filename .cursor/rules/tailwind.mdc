@@ -1,12 +1,41 @@
----
-description: 
-globs: 
-alwaysApply: false
----
-# Description: Tailwind CSS guidelines for Personal Portfolio MVP
+# Description: Tailwind CSS and styling guidelines for the Personal Portfolio MVP
 # Globs: **/*.tsx, **/*.css
 
-## Tailwind Guidelines
+## Tailwind Usage
 - Use Tailwind utility classes for styling
-- Follow mobile-first responsive design approach
-- Implement neumorphic design with custom shadows
+- Follow the mobile-first responsive design approach
+- Use Tailwind's color system consistently
+- Leverage Tailwind's built-in dark mode support
+- Use @apply in CSS files only when necessary for repeated patterns
+
+## Custom Styling
+- Define custom colors and styles in tailwind.config.ts
+- Use consistent spacing with Tailwind's spacing scale
+- Use meaningful class names for custom components
+- Use tailwind-merge for conditional class application
+- Follow class ordering: layout → typography → visual styles → interactivity → misc
+
+## Neumorphic Design with Tailwind
+- Use custom shadow utilities defined in tailwind.config.ts
+- Maintain a consistent color palette for neumorphic effects
+- Use border-radius consistently for the soft UI look
+- Implement subtle transitions for interactive elements
+- Use the correct background colors to achieve the neumorphic effect
+
+## Responsive Design
+- Test all components at multiple breakpoints
+- Use sm:, md:, lg:, xl:, and 2xl: breakpoints appropriately
+- Avoid fixed widths and heights that could break responsive layouts
+- Consider touch targets on mobile devices
+- Ensure text remains readable at all screen sizes
+
+## Accessibility
+- Maintain sufficient color contrast ratios
+- Use proper semantic HTML elements
+- Ensure interactive elements have appropriate hover/focus states
+- Add proper ARIA attributes when necessary
+- Test with screen readers and keyboard navigation
+
+## References
+@file ../tailwind.config.ts
+@file ../postcss.config.js 

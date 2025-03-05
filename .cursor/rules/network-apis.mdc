@@ -1,6 +1,6 @@
 ---
-description: 
-globs: 
+description:
+globs:
 alwaysApply: false
 ---
 # Description: Guidelines for network API implementation and usage
@@ -8,8 +8,9 @@ alwaysApply: false
 
 ## Network API Guidelines
 - Use consistent error handling patterns across all API calls using the fetchWithError utility
-- Include proper request timeouts for all network requests (configure in api.ts)
-- Implement retry logic for transient failures
+- Include proper request timeouts for all network requests (configure in API_CONFIG in api.ts)
+- Implement retry logic with exponential backoff for transient failures
+- Determine which errors are retryable based on error type (network errors, timeouts)
 - Cache responses where appropriate to minimize network calls
 - Ensure all API endpoints are properly authenticated
 - Follow the established pattern of separating entity-specific APIs (like blogApi, projectApi)
@@ -17,3 +18,12 @@ alwaysApply: false
 - Use the apiService for switching between mock and real APIs
 - Maintain consistent endpoint structure (/entity and /entity/:id)
 - For new entity types, create both real and mock API implementations
+- Document each API function with JSDoc comments describing its purpose and parameters
+- Use proper TypeScript types for request and response data
+
+## Error Handling
+- Implement central error handling in the fetchWithError utility
+- Convert API error responses to user-friendly messages
+- Log detailed errors to console for debugging
+- Use typed error handling with custom error types when appropriate
+- Propagate errors properly through the application
