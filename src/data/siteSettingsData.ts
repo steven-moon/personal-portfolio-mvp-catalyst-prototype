@@ -3,10 +3,10 @@ import { SiteSettings } from '@/components/admin/settings/SettingsTypes';
 // Default site settings
 export const defaultSiteSettings: SiteSettings = {
   general: {
-    siteName: 'My Portfolio',
-    authorName: 'Jane Doe',
+    siteName: 'Steven Moon Portfolio',
+    authorName: 'Steven Moon',
     siteIcon: '',
-    email: 'hello@example.com',
+    email: 'steven@clevercoding.com',
     showEmailInFooter: true,
   },
   appearance: {
@@ -34,10 +34,10 @@ export const defaultSiteSettings: SiteSettings = {
     enableInstagram: false,
     enableYoutube: false,
     enableFacebook: false,
-    githubUrl: 'https://github.com',
-    linkedinUrl: 'https://linkedin.com',
-    twitterUrl: 'https://twitter.com',
-    instagramUrl: 'https://instagram.com',
+    githubUrl: 'https://github.com/steven-moon',
+    linkedinUrl: 'https://linkedin.com/in/stevenmoon',
+    twitterUrl: 'https://twitter.com/stevenmoon',
+    instagramUrl: 'https://instagram.com/',
     youtubeUrl: 'https://youtube.com',
     facebookUrl: 'https://facebook.com',
   },

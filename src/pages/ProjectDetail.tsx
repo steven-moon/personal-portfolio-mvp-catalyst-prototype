@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { ExternalLink, ArrowLeft } from 'lucide-react';
+import { ExternalLink, ArrowLeft, X } from 'lucide-react';
 import NeumorphicButton from '@/components/ui/NeumorphicButton';
 import ImageGallery from '@/components/projects/ImageGallery';
 import { Project } from '@/data/projectData';
 import { ProjectService } from '@/lib/apiService';
 import NeumorphicCard from '@/components/ui/NeumorphicCard';
 import LocalImage from '@/components/ui/LocalImage';
+import { Dialog, DialogContent, DialogOverlay } from '@/components/ui/dialog';
 
 // Default images to use when none are provided
 const DEFAULT_IMAGE = "https://images.unsplash.com/photo-1587620962725-abab7fe55159?q=80&auto=format";
@@ -22,6 +23,8 @@ const ProjectDetail = () => {
   const [project, setProject] = useState<Project | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isGalleryModalOpen, setIsGalleryModalOpen] = useState(false);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
   useEffect(() => {
     const fetchProject = async () => {
@@ -46,6 +49,12 @@ const ProjectDetail = () => {
 
     fetchProject();
   }, [id]);
+
+  // Handle opening the gallery modal
+  const openGalleryModal = (index: number = 0) => {
+    setSelectedImageIndex(index);
+    setIsGalleryModalOpen(true);
+  };
 
   // Handle loading state
   if (isLoading) {
@@ -109,7 +118,10 @@ const ProjectDetail = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
-        <div className="bg-background rounded-xl overflow-hidden shadow-neu dark:shadow-dark-neu">
+        <div 
+          className="bg-background rounded-xl overflow-hidden shadow-neu dark:shadow-dark-neu cursor-pointer"
+          onClick={() => openGalleryModal(0)}
+        >
           <ImageGallery images={displayImages} />
         </div>
         
@@ -137,6 +149,102 @@ const ProjectDetail = () => {
             </div>
           </NeumorphicCard>
         </div>
+      </div>
+
+      {/* Image Gallery Modal */}
+      <Dialog open={isGalleryModalOpen} onOpenChange={setIsGalleryModalOpen}>
+        <DialogContent className="max-w-7xl w-[95vw] p-0 bg-background/95 backdrop-blur-sm">
+          <button 
+            onClick={() => setIsGalleryModalOpen(false)}
+            className="absolute right-4 top-4 z-50 p-2 rounded-full bg-background/80 text-foreground hover:bg-background transition-colors"
+            aria-label="Close gallery"
+          >
+            <X size={24} />
+          </button>
+          
+          <FullScreenImageGallery 
+            images={displayImages} 
+            initialIndex={selectedImageIndex} 
+          />
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+};
+
+// Full screen image gallery component for the modal
+const FullScreenImageGallery: React.FC<{ images: string[], initialIndex: number }> = ({ images, initialIndex }) => {
+  const [currentIndex, setCurrentIndex] = useState(initialIndex);
+  
+  const handlePrevious = () => {
+    setCurrentIndex(prevIndex => 
+      prevIndex === 0 ? images.length - 1 : prevIndex - 1
+    );
+  };
+  
+  const handleNext = () => {
+    setCurrentIndex(prevIndex => 
+      prevIndex === images.length - 1 ? 0 : prevIndex + 1
+    );
+  };
+  
+  const handleThumbnailClick = (index: number) => {
+    setCurrentIndex(index);
+  };
+  
+  return (
+    <div className="flex flex-col h-[90vh] py-8 px-4">
+      <div className="relative flex-1 h-full w-full">
+        <div className="h-full w-full flex items-center justify-center">
+          <LocalImage 
+            src={images[currentIndex]} 
+            alt={`Project image ${currentIndex + 1}`}
+            className="max-h-full max-w-full object-contain"
+            fallbackSrc="/placeholder.svg"
+          />
+        </div>
+        
+        <button 
+          onClick={handlePrevious}
+          className="absolute left-4 top-1/2 transform -translate-y-1/2 p-3 rounded-full bg-background/80 text-foreground hover:bg-background transition-colors"
+          aria-label="Previous image"
+        >
+          <ArrowLeft size={24} />
+        </button>
+        <button 
+          onClick={handleNext}
+          className="absolute right-4 top-1/2 transform -translate-y-1/2 p-3 rounded-full bg-background/80 text-foreground hover:bg-background transition-colors"
+          aria-label="Next image"
+        >
+          <ArrowLeft size={24} className="rotate-180" />
+        </button>
+      </div>
+      
+      {images.length > 1 && (
+        <div className="pt-6 mt-auto">
+          <div className="flex justify-center gap-2 overflow-x-auto py-2 px-1">
+            {images.map((image, index) => (
+              <button
+                key={index}
+                onClick={() => handleThumbnailClick(index)}
+                className={`flex-shrink-0 w-16 h-16 md:w-20 md:h-20 rounded-lg overflow-hidden transition-all ${
+                  index === currentIndex ? 'ring-2 ring-primary scale-110' : 'opacity-70 hover:opacity-100'
+                }`}
+              >
+                <LocalImage 
+                  src={image} 
+                  alt={`Thumbnail ${index + 1}`}
+                  className="w-full h-full object-cover"
+                  fallbackSrc="/placeholder.svg"
+                />
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+      
+      <div className="text-center text-sm text-muted-foreground mt-2">
+        {currentIndex + 1} / {images.length}
       </div>
     </div>
   );
