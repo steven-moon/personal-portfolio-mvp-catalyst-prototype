@@ -26,7 +26,7 @@ const AboutMe = () => {
 
   if (isLoading || !aboutData) {
     return (
-      <section className="py-20 px-6 bg-background">
+      <section className="py-8 px-6 bg-background">
         <div className="max-w-4xl mx-auto">
           <div className="animate-pulse space-y-8">
             <div className="h-10 bg-neu-pressed dark:bg-zinc-700 w-1/3 rounded mx-auto"></div>
@@ -46,7 +46,7 @@ const AboutMe = () => {
   }
 
   return (
-    <section className="py-20 px-6 bg-background">
+    <section className="py-8 px-6 bg-background">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-16 animate-slide-up">
           <h1 className="text-4xl font-bold mb-4 text-foreground">{aboutData.intro.headline}</h1>

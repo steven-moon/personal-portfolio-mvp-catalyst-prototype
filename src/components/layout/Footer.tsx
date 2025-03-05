@@ -1,8 +1,6 @@
-import React, { useState } from 'react';
-import { Github, Linkedin, Twitter, Instagram, Youtube, Facebook, Mail, Send } from 'lucide-react';
+import React from 'react';
+import { Github, Linkedin, Twitter, Instagram, Youtube, Facebook, Mail } from 'lucide-react';
 import { useSiteSettings } from '@/contexts/SiteSettingsContext';
-import { toast } from 'sonner';
-import NeumorphicButton from '@/components/ui/NeumorphicButton';
 
 // Helper function to validate URLs
 const isValidUrl = (url: string): boolean => {
@@ -16,39 +14,13 @@ const isValidUrl = (url: string): boolean => {
   }
 };
 
-// Helper function to validate email
-const isValidEmail = (email: string): boolean => {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(email);
-};
-
 const Footer = () => {
   const { siteSettings, loading } = useSiteSettings();
-  const [email, setEmail] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  
-  const handleNewsletterSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!isValidEmail(email)) {
-      toast.error('Please enter a valid email address');
-      return;
-    }
-    
-    setIsSubmitting(true);
-    
-    // Simulate API call
-    setTimeout(() => {
-      toast.success('Thank you for subscribing to our newsletter!');
-      setEmail('');
-      setIsSubmitting(false);
-    }, 1000);
-  };
   
   // Don't render social media icons while loading
   if (loading) {
     return (
-      <footer className="py-8 px-6 border-t border-gray-200 dark:border-gray-800 mt-20 bg-background">
+      <footer className="fixed bottom-0 left-0 right-0 py-4 px-6 border-t border-gray-200 dark:border-gray-800 bg-background z-10">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center">
           <div className="mb-4 md:mb-0">
             <p className="text-sm text-muted-foreground">
@@ -63,45 +35,12 @@ const Footer = () => {
     );
   }
 
-  const { socialMedia, general, features } = siteSettings;
+  const { socialMedia, general } = siteSettings;
   const authorName = general.authorName || 'Portfolio';
 
   return (
-    <footer className="py-8 px-6 border-t border-gray-200 dark:border-gray-800 mt-20 bg-background">
+    <footer className="fixed bottom-0 left-0 right-0 py-4 px-6 border-t border-gray-200 dark:border-gray-800 bg-background z-10">
       <div className="max-w-7xl mx-auto">
-        {features.enableNewsletter && (
-          <div className="mb-8 pb-8 border-b border-gray-200 dark:border-gray-800">
-            <div className="max-w-md mx-auto text-center">
-              <h3 className="text-lg font-medium mb-3 text-foreground">Subscribe to Newsletter</h3>
-              <p className="text-sm text-muted-foreground mb-4">
-                Stay updated with our latest projects and articles
-              </p>
-              <form onSubmit={handleNewsletterSubmit} className="flex gap-2">
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Enter your email"
-                  className="flex-1 p-2 bg-background shadow-neu-pressed dark:shadow-dark-neu-pressed rounded-lg focus:outline-none text-foreground"
-                  required
-                />
-                <NeumorphicButton 
-                  type="submit" 
-                  size="sm"
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting ? 'Subscribing...' : (
-                    <>
-                      <Send className="h-4 w-4 mr-2" />
-                      Subscribe
-                    </>
-                  )}
-                </NeumorphicButton>
-              </form>
-            </div>
-          </div>
-        )}
-
         <div className="flex flex-col md:flex-row justify-between items-center">
           <div className="mb-4 md:mb-0">
             <p className="text-sm text-muted-foreground">

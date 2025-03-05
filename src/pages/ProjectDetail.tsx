@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { ExternalLink, ArrowLeft, X } from 'lucide-react';
+import { ExternalLink, ArrowLeft, X, Image } from 'lucide-react';
 import NeumorphicButton from '@/components/ui/NeumorphicButton';
 import ImageGallery from '@/components/projects/ImageGallery';
 import { Project } from '@/data/projectData';
@@ -59,7 +59,7 @@ const ProjectDetail = () => {
   // Handle loading state
   if (isLoading) {
     return (
-      <div className="max-w-5xl mx-auto py-20 px-6">
+      <div className="max-w-5xl mx-auto py-8 px-6">
         <div className="text-center py-12">
           <p className="text-lg">Loading project details...</p>
         </div>
@@ -70,7 +70,7 @@ const ProjectDetail = () => {
   // Handle error state
   if (error || !project) {
     return (
-      <div className="max-w-5xl mx-auto py-20 px-6">
+      <div className="max-w-5xl mx-auto py-8 px-6">
         <div className="text-center py-12">
           <p className="text-lg text-red-500">{error || 'Project not found'}</p>
           <NeumorphicButton
@@ -90,7 +90,7 @@ const ProjectDetail = () => {
   const displayImages = hasImages ? project.images : DEFAULT_GALLERY_IMAGES;
 
   return (
-    <div className="max-w-5xl mx-auto py-20 px-6 bg-background animate-fade-in">
+    <div className="max-w-5xl mx-auto py-8 px-6 bg-background animate-fade-in">
       <div className="mb-8">
         <Link to="/projects">
           <NeumorphicButton
@@ -118,11 +118,24 @@ const ProjectDetail = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
-        <div 
-          className="bg-background rounded-xl overflow-hidden shadow-neu dark:shadow-dark-neu cursor-pointer"
-          onClick={() => openGalleryModal(0)}
-        >
-          <ImageGallery images={displayImages} />
+        <div className="bg-background rounded-xl overflow-hidden shadow-neu dark:shadow-dark-neu">
+          <div className="pt-3 px-3 text-center">
+            <p className="text-sm text-muted-foreground">Click on an image to view in full screen</p>
+          </div>
+          <ImageGallery 
+            images={displayImages} 
+            onImageClick={(index) => openGalleryModal(index)}
+          />
+          <div className="p-4 text-center">
+            <NeumorphicButton
+              onClick={() => openGalleryModal(0)}
+              className="inline-flex items-center gap-2 hover:scale-105 transition-transform duration-200"
+              variant="secondary"
+            >
+              <Image size={16} />
+              <span>View Gallery</span>
+            </NeumorphicButton>
+          </div>
         </div>
         
         <div>
@@ -175,6 +188,16 @@ const ProjectDetail = () => {
 // Full screen image gallery component for the modal
 const FullScreenImageGallery: React.FC<{ images: string[], initialIndex: number }> = ({ images, initialIndex }) => {
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
+  const [isImageLoading, setIsImageLoading] = useState(true);
+  
+  // Reset loading state when image changes
+  useEffect(() => {
+    setIsImageLoading(true);
+  }, [currentIndex]);
+
+  const handleImageLoad = () => {
+    setIsImageLoading(false);
+  };
   
   const handlePrevious = () => {
     setCurrentIndex(prevIndex => 
@@ -191,16 +214,46 @@ const FullScreenImageGallery: React.FC<{ images: string[], initialIndex: number 
   const handleThumbnailClick = (index: number) => {
     setCurrentIndex(index);
   };
+
+  // Add keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      switch (e.key) {
+        case 'ArrowLeft':
+          handlePrevious();
+          break;
+        case 'ArrowRight':
+          handleNext();
+          break;
+        case 'Escape':
+          // The Dialog component handles ESC for closing
+          break;
+        default:
+          break;
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
   
   return (
     <div className="flex flex-col h-[90vh] py-8 px-4">
       <div className="relative flex-1 h-full w-full">
         <div className="h-full w-full flex items-center justify-center">
+          {isImageLoading && (
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+            </div>
+          )}
           <LocalImage 
             src={images[currentIndex]} 
             alt={`Project image ${currentIndex + 1}`}
-            className="max-h-full max-w-full object-contain"
+            className={`max-h-full max-w-full object-contain transition-opacity duration-300 ${isImageLoading ? 'opacity-0' : 'opacity-100'}`}
             fallbackSrc="/placeholder.svg"
+            onLoad={handleImageLoad}
           />
         </div>
         

@@ -11,38 +11,51 @@ const DEFAULT_GALLERY_IMAGES = [
 
 interface ImageGalleryProps {
   images: string[];
+  onImageClick?: (index: number) => void;
 }
 
-const ImageGallery: React.FC<ImageGalleryProps> = ({ images }) => {
+const ImageGallery: React.FC<ImageGalleryProps> = ({ images, onImageClick }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   
   // Check if we have valid images or need to use defaults
   const hasValidImages = images && images.length > 0 && !images.every(img => img === "/placeholder.svg");
   const displayImages = hasValidImages ? images : DEFAULT_GALLERY_IMAGES;
   
-  const handlePrevious = () => {
+  const handlePrevious = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent click from propagating to parent
     setCurrentIndex(prevIndex => 
       prevIndex === 0 ? displayImages.length - 1 : prevIndex - 1
     );
   };
   
-  const handleNext = () => {
+  const handleNext = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent click from propagating to parent
     setCurrentIndex(prevIndex => 
       prevIndex === displayImages.length - 1 ? 0 : prevIndex + 1
     );
   };
   
-  const handleThumbnailClick = (index: number) => {
+  const handleThumbnailClick = (e: React.MouseEvent, index: number) => {
+    e.stopPropagation(); // Prevent click from propagating to parent
     setCurrentIndex(index);
+  };
+
+  const handleMainImageClick = () => {
+    if (onImageClick) {
+      onImageClick(currentIndex);
+    }
   };
   
   return (
     <div className="space-y-4">
-      <div className="relative h-[400px] w-full rounded-xl overflow-hidden neu-pressed dark:shadow-dark-neu-pressed">
+      <div 
+        className="relative h-[400px] w-full rounded-xl overflow-hidden neu-pressed dark:shadow-dark-neu-pressed"
+        onClick={handleMainImageClick}
+      >
         <LocalImage 
           src={displayImages[currentIndex]} 
           alt={`Project image ${currentIndex + 1}`}
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover cursor-pointer"
           fallbackSrc="/placeholder.svg"
         />
         
@@ -67,7 +80,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images }) => {
               {displayImages.map((_, index) => (
                 <button
                   key={index}
-                  onClick={() => handleThumbnailClick(index)}
+                  onClick={(e) => handleThumbnailClick(e, index)}
                   className={`w-2.5 h-2.5 rounded-full ${
                     index === currentIndex ? 'bg-white' : 'bg-white/50'
                   }`}
@@ -80,11 +93,11 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images }) => {
       </div>
       
       {displayImages.length > 1 && (
-        <div className="flex overflow-x-auto gap-2 py-2 px-1">
+        <div className="flex overflow-x-auto gap-2 py-2 px-1" onClick={(e) => e.stopPropagation()}>
           {displayImages.map((image, index) => (
             <button
               key={index}
-              onClick={() => handleThumbnailClick(index)}
+              onClick={(e) => handleThumbnailClick(e, index)}
               className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden ${
                 index === currentIndex ? 'ring-2 ring-primary' : 'opacity-80'
               }`}

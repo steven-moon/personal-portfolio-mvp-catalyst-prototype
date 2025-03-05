@@ -1,3 +1,8 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
 # Description: Project architecture and structure guidelines for the Personal Portfolio MVP
 # Globs: **/*
 

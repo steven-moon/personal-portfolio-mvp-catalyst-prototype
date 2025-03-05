@@ -27,7 +27,7 @@ const Projects = () => {
   }, []);
 
   return (
-    <main className="page-transition py-20 px-6 bg-background">
+    <main className="page-transition py-8 px-6 bg-background">
       <div className="max-w-5xl mx-auto">
         <div className="text-center mb-16 animate-slide-up">
           <h1 className="text-4xl font-bold mb-4 text-foreground">My Projects</h1>

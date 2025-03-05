@@ -41,7 +41,7 @@ const Hero = () => {
   // Show skeleton loading state
   if (isLoading) {
     return (
-      <section className="min-h-screen flex flex-col items-center justify-center px-6 pt-20 bg-background">
+      <section className="flex flex-col px-6 pt-4 pb-8 bg-background">
         <div className="w-full max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
           <div className="order-2 md:order-1 animate-pulse">
             <div className="mb-6">
@@ -63,7 +63,7 @@ const Hero = () => {
   }
 
   return (
-    <section className="min-h-screen flex flex-col items-center justify-center px-6 pt-20 bg-background">
+    <section className="flex flex-col px-6 pt-4 pb-8 bg-background">
       <div className="w-full max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
         <div className="order-2 md:order-1 animate-slide-up">
           <div className="mb-6">
@@ -119,7 +119,7 @@ const Hero = () => {
         </div>
       </div>
       
-      <div className="w-full max-w-4xl mx-auto mt-20 md:mt-32 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 animate-fade-in" style={{ animationDelay: '0.3s' }}>
+      <div className="w-full max-w-4xl mx-auto mt-6 md:mt-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 animate-fade-in" style={{ animationDelay: '0.3s' }}>
         {heroData.services.map((service) => (
           <NeumorphicCard key={service.id}>
             <h3 className="text-xl font-semibold mb-2 text-foreground">{service.title}</h3>
