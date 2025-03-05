@@ -107,7 +107,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## 🤖 Cursor Rules for AI
 
-This project uses Cursor's Rules for AI feature to maintain consistent coding standards. For details, see the [.cursor file](./.cursor).
+This project uses Cursor's Rules for AI feature to maintain consistent coding standards. For details, see the [.cursor file](./.cursorrules).
 
 ## 🙏 Acknowledgements
 - [Lucide Icons](https://lucide.dev/)
