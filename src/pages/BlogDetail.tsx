@@ -45,9 +45,8 @@ const BlogDetail = () => {
             <LocalImage 
               src={post.imageUrl} 
               alt={post.title} 
-              className="w-full h-full object-cover object-center"
+              className="w-full h-full object-contain object-center max-w-full"
               fallbackSrc="https://via.placeholder.com/800x400?text=Featured+Image"
-              style={{ maxWidth: '100%' }}
             />
           </div>
           

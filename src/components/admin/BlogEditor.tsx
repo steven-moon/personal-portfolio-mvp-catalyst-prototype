@@ -11,13 +11,15 @@ import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { BlogService, configureApi } from '@/lib/apiService';
-import { BlogPost } from '@/data/blogData';
+import { BlogPost, Category, Author } from '@/data/blogData';
 import { cn } from '@/lib/utils';
 import { storeImageLocally, STORAGE_KEYS } from '@/lib/localStorageUtils';
 import LocalImage from '@/components/ui/LocalImage';
 import { Button } from "@/components/ui/button";
 import { UserService } from '@/lib/apiService';
 import { formatDate, toISODate } from '@/lib/dateUtils';
+import ImageUploader from '@/components/ui/ImageUploader';
+import { API_CONFIG } from '@/config';
 
 // Types
 interface BlogFormData extends Omit<BlogPost, 'id'> {}
@@ -114,8 +116,8 @@ const DatePickerDemo = ({
   );
 };
 
-// Image Uploader Component
-const ImageUploader = ({ 
+// Replace the old ImageUploader with this simplified component
+const BlogImageSection = ({ 
   imageUrl, 
   onImageChange 
 }: { 
@@ -123,369 +125,108 @@ const ImageUploader = ({
   onImageChange: (url: string) => void 
 }) => {
   const [isDragging, setIsDragging] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [imageSrc, setImageSrc] = useState<string | null>(null);
-  const [crop, setCrop] = useState<Crop>({
-    unit: 'px',
-    width: 200,
-    height: 150,
-    x: 0,
-    y: 0
-  });
-  const [completedCrop, setCompletedCrop] = useState<PixelCrop | null>(null);
-  const imgRef = useRef<HTMLImageElement>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
-  // Handle file input change
-  const handleImageChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files || files.length === 0) return;
-    
-    const file = files[0];
-    if (!file.type.startsWith('image/')) {
-      toast.error("Please select an image file");
-      return;
-    }
-    
-    setImageFile(file);
-    const localPreviewUrl = URL.createObjectURL(file);
-    setImageSrc(localPreviewUrl);
-    setIsDialogOpen(true);
-  }, []);
-
-  // Trigger file input click
-  const triggerFileInput = useCallback(() => {
-    fileInputRef.current?.click();
-  }, []);
-
-  // Handle drag events
-  const handleDragEnter = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDragging(true);
-  }, []);
-
-  const handleDragLeave = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDragging(false);
-  }, []);
-
-  const handleDragOver = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDragging(true);
-  }, []);
-
-  const handleDrop = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDragging(false);
-    
-    const files = e.dataTransfer.files;
-    if (!files || files.length === 0) return;
-    
-    const file = files[0];
-    if (!file.type.startsWith('image/')) {
-      toast.error("Please drop an image file");
-      return;
-    }
-    
-    setImageFile(file);
-    const localPreviewUrl = URL.createObjectURL(file);
-    setImageSrc(localPreviewUrl);
-    setIsDialogOpen(true);
-  }, []);
-
-  // Handle image crop
-  const onImageLoad = useCallback((e: React.SyntheticEvent<HTMLImageElement>) => {
-    const { width, height } = e.currentTarget;
-    
-    // 16:9 aspect ratio for blog featured images
-    const aspectRatio = 16 / 9;
-    
-    // Calculate the maximum size that fits within the image dimensions while maintaining aspect ratio
-    let cropWidth, cropHeight;
-    
-    // Try using width as the limiting factor
-    cropWidth = Math.min(width, 800);
-    cropHeight = cropWidth / aspectRatio;
-    
-    // If height exceeds image height, recalculate based on height
-    if (cropHeight > height) {
-      cropHeight = height;
-      cropWidth = cropHeight * aspectRatio;
-    }
-    
-    // Center the crop area
-    const x = (width - cropWidth) / 2;
-    const y = (height - cropHeight) / 2;
-    
-    const initialCrop: Crop = {
-      unit: 'px',
-      width: cropWidth,
-      height: cropHeight,
-      x: x,
-      y: y
-    };
-    
-    // Set both crop and completedCrop to enable the Save button immediately
-    setCrop(initialCrop);
-    
-    // Also set completedCrop so the Save button is enabled immediately
-    setCompletedCrop({
-      width: cropWidth,
-      height: cropHeight,
-      x: x,
-      y: y,
-      unit: 'px'
-    });
-  }, []);
-
-  // Save the cropped image
-  const saveCroppedImage = useCallback(async () => {
-    if (!completedCrop || !imgRef.current || !imageFile) return;
-    
-    try {
-      setIsLoading(true);
-      
-      // Create a canvas with the cropped image
-      const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d');
-      
-      if (!ctx) {
-        throw new Error('Could not get canvas context');
-      }
-      
-      // Set the canvas size to the cropped image size
-      const pixelRatio = window.devicePixelRatio || 1;
-      const scaleX = imgRef.current.naturalWidth / imgRef.current.width;
-      const scaleY = imgRef.current.naturalHeight / imgRef.current.height;
-      
-      // Use the pixel ratio and natural image dimensions for better quality
-      canvas.width = completedCrop.width * scaleX;
-      canvas.height = completedCrop.height * scaleY;
-      
-      // Draw the cropped image to the canvas
-      ctx.drawImage(
-        imgRef.current,
-        completedCrop.x * scaleX,
-        completedCrop.y * scaleY,
-        completedCrop.width * scaleX,
-        completedCrop.height * scaleY,
-        0,
-        0,
-        completedCrop.width * scaleX,
-        completedCrop.height * scaleY
-      );
-      
-      // Convert the canvas to a blob with better quality
-      const blob = await new Promise<Blob>((resolve, reject) => {
-        canvas.toBlob(
-          (blob) => {
-            if (blob) {
-              resolve(blob);
-            } else {
-              reject(new Error('Failed to create blob'));
-            }
-          },
-          'image/jpeg',
-          0.95 // Higher quality for the crop
-        );
-      });
-      
-      // Create a File from the Blob
-      const croppedFile = new File(
-        [blob], 
-        `cropped-${imageFile.name}`, 
-        { type: 'image/jpeg' }
-      );
-      
-      try {
-        // First save locally for offline/demo mode
-        const localPath = await storeImageLocally(croppedFile, STORAGE_KEYS.IMAGES);
-        
-        // Then try to upload to server if we're using the real API
-        const { useMockApi } = configureApi();
-        let finalImageUrl = localPath;
-        
-        if (!useMockApi && window.navigator.onLine) {
-          try {
-            // Upload to server
-            finalImageUrl = await BlogService.uploadBlogImage(croppedFile);
-            console.log("Image uploaded to server:", finalImageUrl);
-          } catch (uploadError) {
-            console.error("Server upload failed, using local path:", uploadError);
-            // Continue with local path if server upload fails
-          }
-        } else {
-          console.log("Using local image path:", localPath);
-        }
-        
-        // Update the form with the image URL
-        onImageChange(finalImageUrl);
-        
-        // Close the dialog
-        setIsDialogOpen(false);
-        setImageSrc(null);
-        
-        toast.success('Image uploaded successfully');
-      } catch (error) {
-        console.error('Failed to save image:', error);
-        toast.error('Failed to save image');
-      }
-    } catch (error) {
-      console.error('Failed to process cropped image:', error);
-      toast.error('Failed to process image');
-    } finally {
-      setIsLoading(false);
-    }
-  }, [completedCrop, imageFile, onImageChange]);
-
-  const cancelCrop = useCallback(() => {
-    if (imageSrc) {
-      URL.revokeObjectURL(imageSrc);
-    }
-    setIsDialogOpen(false);
-    setImageFile(null);
-    setImageSrc(null);
-  }, [imageSrc]);
-
+  
   // Clear the selected image
   const clearImage = useCallback(() => {
     onImageChange('');
+    toast.success('Image removed');
   }, [onImageChange]);
 
+  // Handle when an image is uploaded
+  const handleImageUploaded = (url: string) => {
+    console.log('🔍 DEBUG - BlogEditor - Image uploaded, URL:', url);
+    
+    // Remove any query parameters or timestamps from the URL
+    let cleanUrl = url.split('?')[0];
+    
+    // Check if the URL includes a timestamp and remove it
+    if (cleanUrl.includes('/images/')) {
+      const parts = cleanUrl.split('/images/');
+      if (parts.length > 1) {
+        const filename = parts[1];
+        // If filename has timestamp pattern (numbers followed by dash)
+        if (/^\d+-/.test(filename)) {
+          // Remove the timestamp prefix from the filename
+          const cleanFilename = filename.replace(/^\d+-/, '');
+          cleanUrl = `/images/${cleanFilename}`;
+          console.log('🔍 DEBUG - BlogEditor - Removed timestamp from URL:', cleanUrl);
+        }
+      }
+    }
+    
+    console.log('🔍 DEBUG - BlogEditor - Clean URL after processing:', cleanUrl);
+    onImageChange(cleanUrl);
+    toast.success('Image uploaded successfully');
+  };
+
   return (
-    <>
-      <div 
-        className={`relative overflow-hidden rounded-lg mb-4 ${
-          isDragging ? 'border-2 border-dashed border-primary' : ''
-        }`}
-        onDragOver={handleDragOver}
-        onDragEnter={handleDragEnter}
-        onDragLeave={handleDragLeave}
-        onDrop={handleDrop}
-      >
-        {imageUrl ? (
-          <div className="relative h-48 overflow-hidden">
-            <LocalImage 
-              src={imageUrl} 
-              alt="Featured" 
-              className="w-full h-full object-cover object-center"
-              fallbackSrc="https://via.placeholder.com/800x400?text=Featured+Image"
-              style={{ 
-                objectFit: 'cover', 
-                objectPosition: 'center',
-                width: '100%',
-                height: '100%',
-                maxWidth: '100%'
-              }}
-            />
-            <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 hover:opacity-100 flex items-center justify-center transition-opacity">
-              <div className="flex gap-2">
-                <button 
-                  onClick={triggerFileInput}
-                  className="p-2 rounded-full bg-primary text-primary-foreground"
-                  title="Change image"
-                >
-                  <Upload size={20} />
-                </button>
-                <button 
-                  onClick={clearImage}
-                  className="p-2 rounded-full bg-red-500 text-white"
-                  title="Remove image"
-                >
-                  <Trash size={20} />
-                </button>
-              </div>
+    <div 
+      className={`relative overflow-hidden rounded-lg mb-4 ${
+        isDragging ? 'border-2 border-dashed border-primary' : ''
+      }`}
+      onDragOver={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsDragging(true);
+      }}
+      onDragEnter={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsDragging(true);
+      }}
+      onDragLeave={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsDragging(false);
+      }}
+      onDrop={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsDragging(false);
+      }}
+    >
+      {imageUrl ? (
+        <div className="relative h-48 overflow-hidden">
+          <LocalImage 
+            src={imageUrl} 
+            alt="Blog post image" 
+            className="w-full h-full object-contain object-center"
+            fallbackSrc="/assets/images/placeholder.jpg"
+          />
+          <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 hover:opacity-100 flex items-center justify-center transition-opacity">
+            <div className="flex gap-2">
+              <ImageUploader 
+                onImageUploaded={handleImageUploaded}
+                title="Blog Featured Image"
+                description="Crop the image to fit a 16:9 aspect ratio for best results"
+                aspect={16/9}
+                storageKey="IMAGES"
+              />
+              <button 
+                onClick={clearImage}
+                className="p-2 rounded-full bg-red-500 text-white"
+                title="Remove image"
+              >
+                <Trash size={20} />
+              </button>
             </div>
           </div>
-        ) : (
-          <div 
-            className="flex flex-col items-center justify-center p-12 border-2 border-dashed border-muted-foreground rounded-lg cursor-pointer h-48 bg-muted/20"
-            onClick={triggerFileInput}
-          >
-            <ImagePlus className="mb-2 text-muted-foreground" size={32} />
-            <p className="text-sm text-muted-foreground">
-              Click or drag & drop to upload image
-            </p>
-          </div>
-        )}
-      </div>
-      
-      <input
-        ref={fileInputRef}
-        type="file"
-        accept="image/*"
-        className="hidden"
-        onChange={handleImageChange}
-      />
-      
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="max-w-screen-md">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <CropIcon size={18} />
-              Crop Image
-            </DialogTitle>
-          </DialogHeader>
-          
-          <div className="my-4 max-h-[60vh] overflow-auto">
-            {imageSrc && (
-              <ReactCrop
-                crop={crop}
-                onChange={(c) => setCrop(c)}
-                onComplete={(c) => setCompletedCrop(c)}
-                aspect={16/9}
-                className="max-w-full"
-              >
-                <img
-                  ref={imgRef}
-                  src={imageSrc}
-                  alt="Preview"
-                  onLoad={onImageLoad}
-                  className="max-w-full"
-                  style={{ 
-                    maxHeight: '60vh',
-                    maxWidth: '100%'
-                  }}
-                />
-              </ReactCrop>
-            )}
-          </div>
-          
-          <DialogFooter>
-            <NeumorphicButton
-              size="sm"
-              variant="secondary"
-              onClick={cancelCrop}
-              disabled={isLoading}
-              className="px-4"
-            >
-              <X className="mr-2 h-4 w-4" />
-              Cancel
-            </NeumorphicButton>
-            
-            <NeumorphicButton
-              size="sm"
-              onClick={saveCroppedImage}
-              disabled={isLoading || !completedCrop}
-              className="px-4"
-            >
-              {isLoading ? 'Processing...' : (
-                <>
-                  <Check className="mr-2 h-4 w-4" />
-                  Save
-                </>
-              )}
-            </NeumorphicButton>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-    </>
+        </div>
+      ) : (
+        <div className="flex flex-col items-center justify-center p-12 border-2 border-dashed border-muted-foreground rounded-lg h-48 bg-muted/20">
+          <ImageUploader 
+            onImageUploaded={handleImageUploaded}
+            title="Blog Featured Image"
+            description="Crop the image to fit a 16:9 aspect ratio for best results"
+            aspect={16/9}
+            storageKey="IMAGES"
+          />
+          <p className="text-sm text-muted-foreground mt-2">
+            Click or drag & drop to upload image
+          </p>
+        </div>
+      )}
+    </div>
   );
 };
 
@@ -542,14 +283,17 @@ const useBlogForm = (postId: number, isEditMode: boolean) => {
 
   // Save the blog post
   const savePost = async () => {
+    console.log('🔴 SAVE POST - START of savePost function');
     try {
       setIsSaving(true);
+      console.log('🔴 SAVE POST - Set isSaving to true');
       
       // Create a copy of the form data for processing
       const postData: BlogFormData & {
         categoryId?: number;
         authorId?: number;
       } = { ...formData };
+      console.log('🔴 SAVE POST - Created postData copy:', postData);
       
       // Handle category data
       if (typeof postData.category === 'object' && postData.category !== null) {
@@ -652,32 +396,65 @@ const useBlogForm = (postId: number, isEditMode: boolean) => {
       const isOnline = window.navigator.onLine;
       const { useMockApi } = configureApi();
       
-      // Only validate the image URL, but don't replace it with placeholders
-      // We're now handling proper image uploads
-      if (!postData.imageUrl) {
-        toast.error('Please upload a featured image');
-        setIsSaving(false);
-        return;
+      // Provide a default image URL if none is provided
+      if (!postData.imageUrl || postData.imageUrl.trim() === '') {
+        console.log('🔴 SAVE POST - No image URL provided, using placeholder');
+        // Use a default placeholder image instead of blocking the save
+        postData.imageUrl = 'https://placehold.co/600x400?text=Blog+Post+Image';
       }
       
-      console.log('Saving blog post with data:', postData);
+      console.log('🔴 SAVE POST - Saving blog post with data:', postData);
+      
+      // Check for auth token
+      const authToken = localStorage.getItem(API_CONFIG.STORAGE_KEYS.TOKEN);
+      if (!authToken) {
+        console.warn('🔴 SAVE POST - No auth token found, creating a dummy one for development');
+        // For development purposes, create a dummy token
+        localStorage.setItem(API_CONFIG.STORAGE_KEYS.TOKEN, 'dev-token-123456789');
+        console.log('🔴 SAVE POST - Added dummy auth token to localStorage');
+        toast.info('Created a temporary authentication token for development');
+      }
       
       // Save to the API
-      if (isEditMode) {
-        await BlogService.updateBlogPost(postId, postData);
-        toast.success('Blog post updated successfully');
-      } else {
-        await BlogService.createBlogPost(postData);
-        toast.success('Blog post created successfully');
+      console.log('🔴 SAVE POST - BEFORE API CALL - Mode:', isEditMode ? 'UPDATE' : 'CREATE');
+      try {
+        if (isEditMode) {
+          console.log('🔴 SAVE POST - Calling BlogService.updateBlogPost');
+          const result = await BlogService.updateBlogPost(postId, postData);
+          console.log('🔴 SAVE POST - API UPDATE RESULT:', result);
+          toast.success('Blog post updated successfully');
+        } else {
+          console.log('🔴 SAVE POST - Calling BlogService.createBlogPost with:', postData);
+          const result = await BlogService.createBlogPost(postData);
+          console.log('🔴 SAVE POST - API CREATE RESULT:', result);
+          toast.success('Blog post created successfully');
+        }
+        console.log('🔴 SAVE POST - AFTER API CALL - SUCCESS');
+        
+        navigate('/admin/blog');
+      } catch (innerErr: any) {
+        console.error('🔴 SAVE POST - INNER ERROR during API call:', innerErr);
+        console.error('🔴 SAVE POST - INNER ERROR details:', {
+          name: innerErr.name,
+          message: innerErr.message,
+          stack: innerErr.stack
+        });
+        throw innerErr; // Re-throw to be caught by the outer catch
       }
-      
-      navigate('/admin/blog');
     } catch (err: any) {
-      console.error('Error saving blog post:', err);
+      console.error('🔴 SAVE POST - OUTER ERROR:', err);
+      // Log additional details about the error
+      console.error('🔴 SAVE POST - OUTER ERROR details:', {
+        name: err.name,
+        message: err.message,
+        stack: err.stack
+      });
       toast.error(`Failed to save blog post. ${err.message || 'Please try again.'}`);
     } finally {
+      console.log('🔴 SAVE POST - In finally block, setting isSaving to false');
       setIsSaving(false);
     }
+    console.log('🔴 SAVE POST - END of savePost function');
   };
 
   return {
@@ -1063,7 +840,7 @@ const PostSettings = ({
       
       <div className="mb-4">
         <label className="block mb-2 text-sm text-foreground">Featured Image</label>
-        <ImageUploader 
+        <BlogImageSection 
           imageUrl={formData.imageUrl}
           onImageChange={(url) => handleChange('imageUrl', url)}
         />

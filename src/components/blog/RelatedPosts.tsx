@@ -38,9 +38,8 @@ const RelatedPosts = ({ posts, currentPostId }: RelatedPostsProps) => {
               <LocalImage 
                 src={post.imageUrl} 
                 alt={post.title} 
-                className="w-full h-full object-cover object-center"
+                className="w-full h-full object-contain object-center max-w-full"
                 fallbackSrc="https://via.placeholder.com/400x300?text=Related+Post"
-                style={{ maxWidth: '100%' }}
               />
             </div>
             

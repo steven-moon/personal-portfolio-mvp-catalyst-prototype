@@ -13,8 +13,14 @@ RUN apk add --no-cache python3 make g++ && \
 # Copy the rest of the application
 COPY . .
 
+# Make the startup script executable
+RUN chmod +x startup.sh
+
 # Expose the port the app runs on
 EXPOSE 8080
 
-# Command to run the application
-CMD ["npm", "run", "dev"] 
+# Set Node.js options for increased memory and stability
+ENV NODE_OPTIONS="--max-old-space-size=4096"
+
+# Command to run the application with retry logic
+CMD ["./startup.sh"] 

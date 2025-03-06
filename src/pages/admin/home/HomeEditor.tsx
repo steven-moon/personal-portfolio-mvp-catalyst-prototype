@@ -7,6 +7,8 @@ import { HomeService } from '@/lib/apiService';
 import { HomePage } from '@/data/homeData';
 import LocalImage from '@/components/ui/LocalImage';
 import { clearProfileImage } from '@/lib/localStorageUtils';
+import ImageUploader from '@/components/ui/ImageUploader';
+import { DEFAULT_AVATAR } from '@/lib/constants';
 import ImageCropper from '@/components/ui/ImageCropper';
 
 const HomeEditor = () => {
@@ -336,6 +338,25 @@ const HomeEditor = () => {
     }
   };
 
+  // Handle image upload - updated to use new ImageUploader
+  const handleImageUploaded = useCallback((imageUrl: string) => {
+    setHeroContent({
+      ...heroContent,
+      profileImage: imageUrl
+    });
+    toast.success('Profile image updated successfully');
+  }, [heroContent]);
+
+  // Keep existing image handling code
+  // But add this new function that will be used with our ImageUploader
+  const handleProfileImageUploaded = useCallback((imageUrl: string) => {
+    setHeroContent({
+      ...heroContent,
+      profileImage: imageUrl
+    });
+    toast.success('Profile image updated successfully');
+  }, [heroContent]);
+
   if (isLoading && heroContent.services.length === 0) {
     return (
       <div className="container py-12 mx-auto">
@@ -596,6 +617,21 @@ const HomeEditor = () => {
             </NeumorphicCard>
           </div>
         </div>
+      </div>
+
+      {/* Add a new section for the Profile Image where we'll use our new uploader */}
+      <div className="mt-4">
+        <h2 className="text-lg font-medium mb-2">Alternative Upload Method</h2>
+        <p className="text-sm text-muted-foreground mb-3">
+          You can also use this uploader to set your profile image:
+        </p>
+        <ImageUploader
+          onImageUploaded={handleProfileImageUploaded}
+          title="Crop Profile Image"
+          description="Crop your profile image to a perfect square"
+          aspect={1}
+          storageKey="PROFILE_IMAGE"
+        />
       </div>
     </div>
   );

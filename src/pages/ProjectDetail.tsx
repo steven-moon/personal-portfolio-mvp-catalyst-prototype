@@ -45,8 +45,19 @@ const ProjectDetail = () => {
       try {
         setIsLoading(true);
         const projectData = await ProjectService.getProjectById(Number(id));
+        console.log('🔍 DEBUG - ProjectDetail - Raw project data:', projectData);
         setProject(projectData);
         setError(null);
+        
+        // Debug localStorage state to help with troubleshooting
+        if (typeof window !== 'undefined') {
+          // Dynamically import the debugLocalStorage function
+          import('@/lib/localStorageUtils').then(module => {
+            module.debugLocalStorage();
+          }).catch(err => {
+            console.error('Error importing debugLocalStorage:', err);
+          });
+        }
       } catch (err) {
         console.error('Error fetching project:', err);
         setError('Failed to load project data. The project may not exist.');
@@ -95,9 +106,32 @@ const ProjectDetail = () => {
 
   // Check if we have valid images or need to use defaults
   const hasImages = project.images && project.images.length > 0;
+  console.log('🔍 DEBUG - ProjectDetail - Project images:', project.images);
+
   const displayImages = hasImages 
-    ? project.images.map((img: any) => typeof img === 'string' ? img : img.imageUrl) 
+    ? project.images.map((img: any) => {
+        // Get the image URL considering different possible formats
+        let imageUrl = typeof img === 'string' ? img : img.imageUrl;
+        
+        // Remove any query parameters
+        imageUrl = imageUrl.split('?')[0];
+        
+        // If it's an /assets/ path, normalize to /images/ format for consistency
+        if (imageUrl.startsWith('/assets/images/')) {
+          const filename = imageUrl.split('/').pop();
+          if (filename) {
+            const normalizedPath = `/images/${filename}`;
+            console.log('🔍 DEBUG - ProjectDetail - Normalized path from:', imageUrl, 'to:', normalizedPath);
+            imageUrl = normalizedPath;
+          }
+        }
+        
+        console.log('🔍 DEBUG - ProjectDetail - Final image URL:', imageUrl);
+        return imageUrl;
+      }) 
     : DEFAULT_GALLERY_IMAGES;
+
+  console.log('🔍 DEBUG - ProjectDetail - Display images:', displayImages);
 
   return (
     <div className="max-w-5xl mx-auto py-8 px-6 bg-background animate-fade-in">
@@ -250,38 +284,36 @@ const FullScreenImageGallery: React.FC<{ images: string[], initialIndex: number 
   }, []);
   
   return (
-    <div className="flex flex-col h-[90vh] py-8 px-4">
-      <div className="relative flex-1 h-full w-full">
-        <div className="h-full w-full flex items-center justify-center">
-          {isImageLoading && (
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
-            </div>
-          )}
-          <LocalImage 
-            src={images[currentIndex]} 
-            alt={`Project image ${currentIndex + 1}`}
-            className={`max-h-full max-w-full object-contain transition-opacity duration-300 ${isImageLoading ? 'opacity-0' : 'opacity-100'}`}
-            fallbackSrc="/placeholder.svg"
-            onLoad={handleImageLoad}
-          />
-        </div>
-        
-        <button 
-          onClick={handlePrevious}
-          className="absolute left-4 top-1/2 transform -translate-y-1/2 p-3 rounded-full bg-background/80 text-foreground hover:bg-background transition-colors"
-          aria-label="Previous image"
-        >
-          <ArrowLeft size={24} />
-        </button>
-        <button 
-          onClick={handleNext}
-          className="absolute right-4 top-1/2 transform -translate-y-1/2 p-3 rounded-full bg-background/80 text-foreground hover:bg-background transition-colors"
-          aria-label="Next image"
-        >
-          <ArrowLeft size={24} className="rotate-180" />
-        </button>
+    <div className="h-screen flex flex-col relative overflow-hidden">
+      <div className="flex-1 flex items-center justify-center p-2 relative">
+        {isImageLoading && (
+          <div className="absolute inset-0 flex items-center justify-center bg-background/50">
+            <div className="w-16 h-16 rounded-full border-4 border-primary border-t-transparent animate-spin" />
+          </div>
+        )}
+        <img
+          src={images[currentIndex]}
+          alt={`Full screen image ${currentIndex + 1}`}
+          className="max-h-full max-w-full object-contain"
+          onLoad={handleImageLoad}
+          onError={() => console.error('🔍 DEBUG - FullScreenImageGallery - Error loading image:', images[currentIndex])}
+        />
       </div>
+      
+      <button 
+        onClick={handlePrevious}
+        className="absolute left-4 top-1/2 transform -translate-y-1/2 p-3 rounded-full bg-background/80 text-foreground hover:bg-background transition-colors"
+        aria-label="Previous image"
+      >
+        <ArrowLeft size={24} />
+      </button>
+      <button 
+        onClick={handleNext}
+        className="absolute right-4 top-1/2 transform -translate-y-1/2 p-3 rounded-full bg-background/80 text-foreground hover:bg-background transition-colors"
+        aria-label="Next image"
+      >
+        <ArrowLeft size={24} className="rotate-180" />
+      </button>
       
       {images.length > 1 && (
         <div className="pt-6 mt-auto">

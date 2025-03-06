@@ -35,13 +35,9 @@ export const isDevelopment = (): boolean => {
  * Get the full API URL for a given endpoint
  */
 export const getApiUrl = (endpoint: string): string => {
-  // In development, use relative URLs to leverage Vite's proxy
-  if (isDevelopment()) {
-    // Make sure endpoint starts with a slash
-    return endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
-  }
-  
-  // In production, use the full URL
+  // Make sure endpoint starts with a slash
   const normalizedEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
-  return `${API_CONFIG.BASE_URL}${normalizedEndpoint}`;
+  
+  // In development or Docker, use the same path to let Vite proxy handle it
+  return normalizedEndpoint;
 }; 

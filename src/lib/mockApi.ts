@@ -162,7 +162,15 @@ export const mockBlogApi = {
     }
     
     blogPosts.splice(postIndex, 1);
-    persistData(STORAGE_KEYS.BLOGS, blogPosts);
+    const success = persistData(STORAGE_KEYS.BLOGS, blogPosts);
+    
+    if (!success) {
+      console.warn('Failed to persist blog posts after deletion');
+      // Still return successfully as the in-memory data was updated
+    }
+    
+    // Return void as expected, no need to return JSON data for delete operations
+    return;
   },
   
   // Search blog posts

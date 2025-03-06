@@ -56,9 +56,8 @@ const BlogCard = ({ post, isAdmin = false }: BlogCardProps) => {
         <LocalImage 
           src={post.imageUrl} 
           alt={post.title} 
-          className="w-full h-full object-cover object-center transition-transform duration-300 hover:scale-105"
+          className="w-full h-full object-contain object-center transition-transform duration-300 hover:scale-105 max-w-full"
           fallbackSrc="https://via.placeholder.com/800x400?text=Featured+Image"
-          style={{ maxWidth: '100%' }}
         />
       </Link>
       <div className="p-6 flex-grow flex flex-col">

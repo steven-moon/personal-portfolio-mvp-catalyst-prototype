@@ -77,6 +77,17 @@ For installation instructions and development workflow, see the [Developer Guide
 - Replace placeholder images with your own in `public/`
 - Customize colors and styling in `tailwind.config.ts`
 
+### Environment Variables
+
+The application supports the following environment variables:
+
+- `VITE_USE_MOCK_DATA`: Set to `true` to use mock API data instead of real API endpoints (defaults to `true`)
+
+To set up environment variables:
+
+1. Create a `.env` file in the frontend directory (you can copy from `.env.example`)
+2. Set the variables according to your needs
+
 For detailed customization options, refer to the [Technical Documentation](./DOCUMENTATION.md#customization-guide).
 
 ## 📦 Deployment

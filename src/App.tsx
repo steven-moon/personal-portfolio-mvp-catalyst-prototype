@@ -3,6 +3,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { useEffect } from "react";
 import Navbar from "./components/layout/Navbar";
 import Footer from "./components/layout/Footer";
 import NewsletterSection from "./components/layout/NewsletterSection";
@@ -22,6 +23,7 @@ import { AuthProvider } from "./contexts/AuthContext";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { SiteSettingsProvider, useSiteSettings } from "./contexts/SiteSettingsContext";
 import { cn } from "@/lib/utils";
+import { configureApi } from "@/lib/apiService";
 
 const queryClient = new QueryClient();
 
@@ -62,6 +64,12 @@ const AppLayout = () => {
 };
 
 const App = () => {
+  // Configure API once on app initialization
+  useEffect(() => {
+    configureApi();
+    console.log(`API configured with VITE_USE_MOCK_DATA=${import.meta.env.VITE_USE_MOCK_DATA || 'not set (defaults to true)'}`);
+  }, []); // Empty dependency array ensures this runs once on mount
+
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>

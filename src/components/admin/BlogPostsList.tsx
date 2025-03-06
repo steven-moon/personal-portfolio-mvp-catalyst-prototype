@@ -134,12 +134,46 @@ const BlogPostsList = () => {
   const handleDelete = async (id: number) => {
     if (confirm('Are you sure you want to delete this post?')) {
       try {
+        console.log('Attempting to delete blog post with ID:', id);
         await BlogService.deleteBlogPost(id);
+        
+        // Update the local state to remove the deleted post
         setPosts(posts.filter(post => post.id !== id));
         toast.success('Blog post deleted successfully');
       } catch (err) {
         console.error('Error deleting blog post:', err);
-        toast.error('Failed to delete blog post. Please try again.');
+        
+        // Provide a more user-friendly error message
+        let errorMessage = 'Failed to delete blog post. Please try again.';
+        
+        if (err instanceof Error) {
+          const isJsonError = err.message.includes('JSON');
+          const isNetworkError = err.message.includes('network') || err.message.includes('fetch');
+          
+          if (isJsonError) {
+            errorMessage = 'The server response was invalid. The post may have been deleted, but the response was not processed correctly.';
+            
+            // If it's a JSON parsing error, the post might actually be deleted
+            // Refresh the list to check
+            try {
+              const freshPosts = await BlogService.getAllBlogPosts();
+              const postStillExists = freshPosts.some(post => post.id === id);
+              
+              if (!postStillExists) {
+                // Post is gone, so it was likely deleted successfully despite the error
+                setPosts(freshPosts);
+                toast.success('Blog post appears to have been deleted successfully, despite a response error.');
+                return;
+              }
+            } catch (refreshErr) {
+              console.error('Error refreshing posts after delete error:', refreshErr);
+            }
+          } else if (isNetworkError) {
+            errorMessage = 'Network error occurred. Please check your internet connection and try again.';
+          }
+        }
+        
+        toast.error(errorMessage);
       }
     }
   };

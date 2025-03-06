@@ -22,7 +22,29 @@ export async function getBlogPostById(id: number): Promise<BlogPost> {
  * Create a new blog post
  */
 export async function createBlogPost(blogPost: Omit<BlogPost, 'id'>): Promise<BlogPost> {
-  return apiPost<BlogPost, Omit<BlogPost, 'id'>>(`${BLOG_ENDPOINT}/posts`, blogPost);
+  console.log('🟢 BLOG API - createBlogPost called with:', blogPost);
+  try {
+    const endpoint = `${BLOG_ENDPOINT}/posts`;
+    console.log('🟢 BLOG API - Endpoint for creating blog post:', endpoint);
+    console.log('🟢 BLOG API - BEFORE calling apiPost');
+    
+    // Create a clean copy of the blogPost object with the correct types
+    // Note: We pass the original blogPost object to avoid type issues
+    console.log('🟢 BLOG API - Using original blog post data for API call');
+    
+    const result = await apiPost<BlogPost, Omit<BlogPost, 'id'>>(endpoint, blogPost, true);
+    console.log('🟢 BLOG API - AFTER calling apiPost - success');
+    console.log('🟢 BLOG API - Blog post created successfully:', result);
+    return result;
+  } catch (error) {
+    console.error('🟢 BLOG API - ERROR in createBlogPost:', error);
+    console.error('🟢 BLOG API - ERROR details:', {
+      name: error.name,
+      message: error.message,
+      stack: error.stack
+    });
+    throw error;
+  }
 }
 
 /**

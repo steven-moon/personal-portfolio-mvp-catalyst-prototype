@@ -6,12 +6,24 @@ import * as contactApi from './contactApi';
 import * as aboutApi from './aboutApi';
 import { storeImageLocally, STORAGE_KEYS } from './localStorageUtils';
 
-// Determine whether to use mock API or real API
-// Change this to false to use the real API by default
-const USE_MOCK_API = false;
+// Read environment variable for using mock API
+// If not set, default to true
+const ENV_USE_MOCK_API = import.meta.env.VITE_USE_MOCK_DATA !== undefined
+  ? import.meta.env.VITE_USE_MOCK_DATA === 'true'
+  : true;
 
 // API service configuration state
-let useMockApi = USE_MOCK_API;
+let useMockApi = ENV_USE_MOCK_API;
+
+// Log the current API mode on startup
+console.log(`API Service initialized. Using ${useMockApi ? 'MOCK' : 'REAL'} API`);
+
+// Add a function to force the use of real API for testing
+const forceRealApi = () => {
+  useMockApi = false;
+  console.log('FORCED API to use REAL implementation');
+  return useMockApi;
+};
 
 // Add a helper function for safe error logging
 const logApiError = (service: string, method: string, error: any) => {
@@ -66,10 +78,53 @@ export const BlogService = {
     return useMockApi ? mockBlogApi.getBlogPostById(id) : blogApi.getBlogPostById(id);
   },
   createBlogPost: async (blogPost: any) => {
-    return useMockApi ? mockBlogApi.createBlogPost(blogPost) : blogApi.createBlogPost(blogPost);
+    console.log('🟠 BLOG SERVICE - createBlogPost called with:', blogPost);
+    try {
+      // Use regular API without forcing real API
+      const isMockApi = useMockApi;
+      console.log(`🟠 BLOG SERVICE - Using ${isMockApi ? 'MOCK' : 'REAL'} API for blog post creation`);
+      
+      let result;
+      if (isMockApi) {
+        console.log('🟠 BLOG SERVICE - BEFORE calling mockBlogApi.createBlogPost');
+        result = await mockBlogApi.createBlogPost(blogPost);
+        console.log('🟠 BLOG SERVICE - AFTER calling mockBlogApi.createBlogPost - success');
+      } else {
+        console.log('🟠 BLOG SERVICE - BEFORE calling blogApi.createBlogPost');
+        result = await blogApi.createBlogPost(blogPost);
+        console.log('🟠 BLOG SERVICE - AFTER calling blogApi.createBlogPost - success');
+      }
+      
+      console.log('🟠 BLOG SERVICE - Blog post created successfully:', result);
+      return result;
+    } catch (error) {
+      console.error('🟠 BLOG SERVICE - ERROR in createBlogPost:', error);
+      console.error('🟠 BLOG SERVICE - ERROR details:', {
+        name: error.name,
+        message: error.message,
+        stack: error.stack
+      });
+      throw error;
+    }
   },
   updateBlogPost: async (id: number, blogPostUpdate: any) => {
-    return useMockApi ? mockBlogApi.updateBlogPost(id, blogPostUpdate) : blogApi.updateBlogPost(id, blogPostUpdate);
+    console.log(`Updating blog post ${id}`);
+    try {
+      if (useMockApi) {
+        console.log('Using mock API for blog post update');
+        const result = await mockBlogApi.updateBlogPost(id, blogPostUpdate);
+        console.log('Blog post updated with mock API');
+        return result;
+      } else {
+        console.log('Using real API for blog post update');
+        const result = await blogApi.updateBlogPost(id, blogPostUpdate);
+        console.log('Blog post updated with real API');
+        return result;
+      }
+    } catch (error) {
+      console.error('Error updating blog post:', error);
+      throw error;
+    }
   },
   deleteBlogPost: async (id: number) => {
     return useMockApi ? mockBlogApi.deleteBlogPost(id) : blogApi.deleteBlogPost(id);
@@ -221,9 +276,15 @@ export const AboutService = {
 
 // Configure API settings
 export const configureApi = (options: { useMockApi?: boolean } = {}) => {
+  // If explicitly provided in options, use that value
   if (options.useMockApi !== undefined) {
     useMockApi = options.useMockApi;
     console.log(`API configured to use ${useMockApi ? 'mock' : 'real'} implementation`);
+  } 
+  // Otherwise use the environment variable value
+  else if (import.meta.env.VITE_USE_MOCK_DATA !== undefined) {
+    useMockApi = import.meta.env.VITE_USE_MOCK_DATA === 'true';
+    console.log(`API configured from environment to use ${useMockApi ? 'mock' : 'real'} implementation`);
   }
 
   return {
@@ -231,6 +292,8 @@ export const configureApi = (options: { useMockApi?: boolean } = {}) => {
     setUseMockApi: (value: boolean) => {
       useMockApi = value;
       console.log(`API switched to ${useMockApi ? 'mock' : 'real'} implementation`);
-    }
+    },
+    // Add a utility to check the current setting
+    isMockApi: () => useMockApi
   };
 }; 
