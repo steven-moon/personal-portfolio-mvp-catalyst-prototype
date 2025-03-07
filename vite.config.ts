@@ -20,9 +20,8 @@ export default defineConfig(({ mode }) => ({
     },
     proxy: {
       // Proxy API requests to the backend service
-      // Using direct IP address instead of service name
       '/api': {
-        target: 'http://172.18.0.3:3000',
+        target: 'http://backend:3000',
         changeOrigin: true,
         secure: false,
         rewrite: (path) => path,
