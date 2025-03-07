@@ -32,21 +32,21 @@ export const PROJECTS: Project[] = [
     id: 1,
     title: "Portfolio Website",
     description: "A modern personal portfolio with a neumorphic design",
-    image: "/images/projects/portfolio.jpg",
+    image: "https://source.unsplash.com/random/800x600/?portfolio,website",
     tags: ["React", "TypeScript", "TailwindCSS"],
     link: "https://example.com/portfolio",
     fullDescription: "A personal portfolio website built with React, TypeScript, and TailwindCSS. Features a custom neumorphic design system and responsive layout.",
     images: [
-      "/images/projects/portfolio-1.jpg",
-      "/images/projects/portfolio-2.jpg",
-      "/images/projects/portfolio-3.jpg"
+      "https://source.unsplash.com/random/800x600/?coding",
+      "https://source.unsplash.com/random/800x600/?portfolio",
+      "https://source.unsplash.com/random/800x600/?developer"
     ]
   },
   {
     id: 2,
     title: "E-commerce Dashboard",
     description: "Admin dashboard for managing an online store",
-    image: "/images/projects/ecommerce.jpg",
+    image: "https://source.unsplash.com/random/800x600/?ecommerce,dashboard",
     tags: ["React", "Redux", "Material UI"],
     link: "https://example.com/ecommerce",
     fullDescription: "A comprehensive admin dashboard for e-commerce stores. Includes inventory management, order processing, and customer analytics features."
@@ -55,7 +55,7 @@ export const PROJECTS: Project[] = [
     id: 3,
     title: "Weather App",
     description: "Real-time weather forecasting application",
-    image: "/images/projects/weather.jpg",
+    image: "https://source.unsplash.com/random/800x600/?weather,forecast",
     tags: ["JavaScript", "API Integration", "CSS"],
     link: "https://example.com/weather",
     fullDescription: "A weather application that provides real-time forecasts using weather API integration. Features include location detection, 5-day forecasts, and weather alerts."
