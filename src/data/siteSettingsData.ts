@@ -1,23 +1,24 @@
 import { SiteSettings } from '@/components/admin/settings/SettingsTypes';
 
-// Default site settings
+// Default site settings updated for a fictional female developer
 export const defaultSiteSettings: SiteSettings = {
   general: {
-    siteName: 'Steven Moon Portfolio',
-    authorName: 'Steven Moon',
-    siteIcon: '',
-    email: 'steven@clevercoding.com',
+    siteName: 'Avery Parker Portfolio',
+    authorName: 'Avery Parker',
+    siteIcon: '/assets/images/logo.png',
+    email: 'avery.parker@fictional.dev',
     showEmailInFooter: true,
   },
   appearance: {
     theme: 'light',
-    primaryColor: '#9b87f5',
+    primaryColor: '#FF78AE',
     enableAnimations: true,
-    fontFamily: 'inter',
+    fontFamily: 'open-sans',
   },
   seo: {
-    metaDescription: 'Personal portfolio website with projects, blog, and contact information',
-    keywords: 'portfolio, web development, design, projects',
+    metaDescription:
+      'A passionate developer dedicated to building inclusive, cutting-edge web and mobile experiences.',
+    keywords: 'web developer, mobile apps, AI, portfolio, software engineering, design',
     enableSocialMetaTags: true,
     googleAnalyticsId: '',
   },
@@ -26,20 +27,20 @@ export const defaultSiteSettings: SiteSettings = {
     enableProjects: true,
     enableContactForm: true,
     enableNewsletter: false,
-    enableMvpBanner: true,
+    enableMvpBanner: false,
   },
   socialMedia: {
     enableGithub: true,
     enableLinkedin: true,
-    enableTwitter: false,
-    enableInstagram: false,
+    enableTwitter: true,
+    enableInstagram: true,
     enableYoutube: false,
     enableFacebook: false,
-    githubUrl: 'https://github.com/steven-moon',
-    linkedinUrl: 'https://linkedin.com/in/stevenmoon',
-    twitterUrl: 'https://twitter.com/stevenmoon',
-    instagramUrl: 'https://instagram.com/',
-    youtubeUrl: 'https://youtube.com',
-    facebookUrl: 'https://facebook.com',
+    githubUrl: 'https://github.com/averyparker-fictional',
+    linkedinUrl: 'https://linkedin.com/in/averyparker-fictional',
+    twitterUrl: 'https://twitter.com/averycodes-fictional',
+    instagramUrl: 'https://instagram.com/avery.dev-fictional',
+    youtubeUrl: '',
+    facebookUrl: '',
   },
-}; 
+};

@@ -9,35 +9,39 @@ export interface HomePage {
       title: string;
       description: string;
     }[];
-  }
+  };
 }
 
-// Default profile image
-const DEFAULT_PROFILE_IMAGE = "https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&auto=format";
+// You can replace this image URL with any other placeholder or real image URL
+const DEFAULT_PROFILE_IMAGE =
+  "https://images.unsplash.com/photo-1554692938-6556a1d4d16d?q=80&auto=format";
 
-// Home page data
+// Home page data adapted for a fictional female developer named Avery Parker
 export const HOME_DATA: HomePage = {
   hero: {
-    title: "Jane Doe",
-    subtitle: "Creating beautiful digital experiences with attention to detail",
-    profession: "Frontend Developer",
+    title: "Avery Parker",
+    subtitle: "Building inclusive, next-generation web and AI solutions",
+    profession: "Full-Stack & AI Developer",
     profileImage: DEFAULT_PROFILE_IMAGE,
     services: [
       {
         id: "1",
-        title: "UI/UX Design",
-        description: "Creating intuitive and beautiful user interfaces."
+        title: "End-to-End Web Development",
+        description:
+          "Creating user-friendly, performance-driven solutions with React, Node, and beyond."
       },
       {
         id: "2",
-        title: "Web Development",
-        description: "Building responsive and performant websites."
+        title: "AI-driven Innovation",
+        description:
+          "Designing AI-based features for chatbots, predictive analytics, and data-driven experiences."
       },
       {
         id: "3",
-        title: "Mobile Apps",
-        description: "Developing cross-platform mobile experiences."
+        title: "Blockchain Integrations",
+        description:
+          "Implementing secure, decentralized functionalities with Ethereum, Solidity, and more."
       }
     ]
   }
-}; 
+};
