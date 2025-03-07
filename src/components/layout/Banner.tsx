@@ -7,42 +7,36 @@ const Banner = () => {
   const { siteSettings, loading } = useSiteSettings();
   
   // Don't try to access URLs if still loading
-  const socialMedia = !loading ? siteSettings.socialMedia : {
-    githubUrl: '',
-    twitterUrl: '',
-    linkedinUrl: ''
+  const socialMedia = {
+    githubUrl: 'https://github.com/steven-moon',
+    twitterUrl: 'https://twitter.com/stevenmoon',
+    linkedinUrl: 'https://linkedin.com/in/stevenmoon'
   };
   
   return (
     <div className="fixed bottom-0 left-0 right-0 w-full h-[var(--banner-height)] flex items-center justify-between px-4 sm:px-6 text-sm font-medium bg-primary text-primary-foreground shadow-md z-50">
       <div className="flex items-center space-x-4">
-        {!loading && socialMedia.githubUrl && (
+        {socialMedia.githubUrl && (
           <a 
             href={socialMedia.githubUrl} 
-            target="_blank" 
-            rel="noopener noreferrer" 
             aria-label="GitHub" 
             className="hover:opacity-80 transition-opacity flex items-center"
           >
             <Github size={18} strokeWidth={2} />
           </a>
         )}
-        {!loading && socialMedia.linkedinUrl && (
+        {socialMedia.linkedinUrl && (
           <a 
             href={socialMedia.linkedinUrl} 
-            target="_blank" 
-            rel="noopener noreferrer" 
             aria-label="LinkedIn" 
             className="hover:opacity-80 transition-opacity flex items-center"
           >
             <Linkedin size={18} strokeWidth={2} />
           </a>
         )}
-        {!loading && socialMedia.twitterUrl && (
+        {socialMedia.twitterUrl && (
           <a 
             href={socialMedia.twitterUrl} 
-            target="_blank" 
-            rel="noopener noreferrer" 
             aria-label="Twitter" 
             className="hover:opacity-80 transition-opacity flex items-center"
           >
@@ -52,11 +46,9 @@ const Banner = () => {
       </div>
       
       <div className="text-center px-2">
-        This is a MVP Catalyst demo site learn more at{' '}
+        This is a demo MVP Catalyst site learn more at{' '}
         <a 
           href="https://clevercoding.com" 
-          target="_blank" 
-          rel="noopener noreferrer"
           className="underline font-bold hover:opacity-90 transition-opacity ml-1"
         >
           https://clevercoding.com
