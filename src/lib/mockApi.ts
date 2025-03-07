@@ -11,7 +11,9 @@ const STORAGE_KEYS = {
   PROJECTS: 'mock_projects',
   HOME: 'mock_home_data',
   CONTACT: 'mock_contact_data',
-  ABOUT: 'mock_about_data'
+  ABOUT: 'mock_about_data',
+  CONTACT_MESSAGES: 'mock_contact_messages',
+  TOKEN: 'auth_token'
 };
 
 // Load or initialize in-memory store for the mock data
@@ -372,6 +374,61 @@ export const mockHomeApi = {
   }
 };
 
+// Create example contact messages for mock data
+const mockContactMessages = [
+  {
+    id: 1,
+    name: 'John Doe',
+    email: 'john@example.com',
+    subject: 'Collaboration Opportunity',
+    message: 'Hi there,\n\nI saw your portfolio and I\'m impressed with your work. Would you be interested in collaborating on a project? Let\'s chat soon.\n\nBest,\nJohn',
+    isRead: true,
+    createdAt: '2025-03-01T10:30:00Z',
+    updatedAt: '2025-03-01T10:30:00Z'
+  },
+  {
+    id: 2,
+    name: 'Sarah Smith',
+    email: 'sarah@example.com',
+    subject: 'Website Design Inquiry',
+    message: 'Hello,\n\nI\'m looking for someone to redesign my company\'s website. Your portfolio looks great and I think you might be a good fit. Could you let me know your availability and rates?\n\nThank you,\nSarah',
+    isRead: false,
+    createdAt: '2025-03-04T14:15:00Z',
+    updatedAt: '2025-03-04T14:15:00Z'
+  },
+  {
+    id: 3,
+    name: 'Mike Johnson',
+    email: 'mike@example.com',
+    subject: 'Speaking Opportunity',
+    message: 'Hi,\n\nI\'m organizing a tech conference and would love to have you as a speaker. Please let me know if you\'re interested and we can discuss the details.\n\nRegards,\nMike',
+    isRead: false,
+    createdAt: '2025-03-05T09:45:00Z',
+    updatedAt: '2025-03-05T09:45:00Z'
+  }
+];
+
+// Store the messages in localStorage
+try {
+  const storedMessages = localStorage.getItem(STORAGE_KEYS.CONTACT_MESSAGES);
+  if (!storedMessages) {
+    localStorage.setItem(STORAGE_KEYS.CONTACT_MESSAGES, JSON.stringify(mockContactMessages));
+  }
+} catch (error) {
+  console.error('Failed to initialize mock contact messages:', error);
+}
+
+// Function to check if the user is authenticated in the mock API
+const isAuthenticated = (): boolean => {
+  try {
+    const token = localStorage.getItem(STORAGE_KEYS.TOKEN);
+    return !!token;
+  } catch (error) {
+    console.error('Error checking authentication:', error);
+    return false;
+  }
+};
+
 // Mock implementation for Contact API
 export const mockContactApi = {
   // Get contact info
@@ -386,6 +443,126 @@ export const mockContactApi = {
     Object.assign(contactData, updatedContact);
     persistData(STORAGE_KEYS.CONTACT, contactData);
     return { ...contactData };
+  },
+  
+  // Submit contact message
+  async submitContactMessage(formData: { name: string; email: string; subject: string; message: string }): Promise<{ success: boolean; message: string; id: number }> {
+    await delay();
+    
+    try {
+      // Get existing messages
+      let messages = [];
+      const storedMessages = localStorage.getItem(STORAGE_KEYS.CONTACT_MESSAGES);
+      
+      if (storedMessages) {
+        messages = JSON.parse(storedMessages);
+      }
+      
+      // Create new message
+      const newMessage = {
+        id: getNextId(messages),
+        ...formData,
+        isRead: false,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+      
+      // Add to messages array
+      messages.push(newMessage);
+      
+      // Save back to localStorage
+      localStorage.setItem(STORAGE_KEYS.CONTACT_MESSAGES, JSON.stringify(messages));
+      
+      return {
+        success: true,
+        message: 'Contact message submitted successfully',
+        id: newMessage.id
+      };
+    } catch (error) {
+      console.error('Mock API - Error storing contact message:', error);
+      throw new Error('Failed to submit contact message');
+    }
+  },
+  
+  // Get all contact messages
+  async getContactMessages(): Promise<any[]> {
+    await delay();
+    
+    // Check if user is authenticated
+    if (!isAuthenticated()) {
+      throw new Error('Authentication required to access messages');
+    }
+    
+    try {
+      const storedMessages = localStorage.getItem(STORAGE_KEYS.CONTACT_MESSAGES);
+      const messages = storedMessages ? JSON.parse(storedMessages) : [];
+      return messages.sort((a: any, b: any) => 
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      );
+    } catch (error) {
+      console.error('Mock API - Error fetching contact messages:', error);
+      return [];
+    }
+  },
+  
+  // Get contact message by ID
+  async getContactMessageById(id: number): Promise<any> {
+    await delay();
+    
+    // Check if user is authenticated
+    if (!isAuthenticated()) {
+      throw new Error('Authentication required to access message details');
+    }
+    
+    try {
+      const storedMessages = localStorage.getItem(STORAGE_KEYS.CONTACT_MESSAGES);
+      const messages = storedMessages ? JSON.parse(storedMessages) : [];
+      const message = messages.find((msg: any) => msg.id === id);
+      
+      if (!message) {
+        throw new Error(`Message with ID ${id} not found`);
+      }
+      
+      return message;
+    } catch (error) {
+      console.error(`Mock API - Error fetching contact message with ID ${id}:`, error);
+      throw error;
+    }
+  },
+  
+  // Update contact message
+  async updateContactMessage(id: number, updates: { isRead?: boolean }): Promise<any> {
+    await delay();
+    
+    // Check if user is authenticated
+    if (!isAuthenticated()) {
+      throw new Error('Authentication required to update message');
+    }
+    
+    try {
+      const storedMessages = localStorage.getItem(STORAGE_KEYS.CONTACT_MESSAGES);
+      const messages = storedMessages ? JSON.parse(storedMessages) : [];
+      const messageIndex = messages.findIndex((msg: any) => msg.id === id);
+      
+      if (messageIndex === -1) {
+        throw new Error(`Message with ID ${id} not found`);
+      }
+      
+      // Update the message
+      messages[messageIndex] = {
+        ...messages[messageIndex],
+        ...updates,
+        updatedAt: new Date().toISOString()
+      };
+      
+      // Save back to localStorage
+      localStorage.setItem(STORAGE_KEYS.CONTACT_MESSAGES, JSON.stringify(messages));
+      
+      return messages[messageIndex];
+    } catch (error) {
+      console.error(`Mock API - Error updating contact message with ID ${id}:`, error);
+      throw error;
+    }
   }
 };
 

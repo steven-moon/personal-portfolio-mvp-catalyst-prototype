@@ -3,6 +3,7 @@ import NeumorphicCard from '../ui/NeumorphicCard';
 import NeumorphicButton from '../ui/NeumorphicButton';
 import { toast } from '@/hooks/use-toast';
 import { Send } from 'lucide-react';
+import { ContactService } from '@/lib/apiService';
 
 const MessageForm = () => {
   const [formData, setFormData] = useState({
@@ -22,21 +23,34 @@ const MessageForm = () => {
     e.preventDefault();
     setIsSubmitting(true);
     
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    toast({
-      title: "Message sent!",
-      description: "Thank you for your message. I'll get back to you soon.",
-    });
-    
-    setFormData({
-      name: '',
-      email: '',
-      subject: '',
-      message: ''
-    });
-    setIsSubmitting(false);
+    try {
+      // Send message using API service
+      const response = await ContactService.submitContactMessage(formData);
+      
+      // Show success toast
+      toast({
+        title: "Message sent!",
+        description: "Thank you for your message. I'll get back to you soon.",
+      });
+      
+      // Reset form
+      setFormData({
+        name: '',
+        email: '',
+        subject: '',
+        message: ''
+      });
+    } catch (error) {
+      console.error('Error sending message:', error);
+      // Show error toast
+      toast({
+        title: "Error sending message",
+        description: error instanceof Error ? error.message : "Something went wrong. Please try again later.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (

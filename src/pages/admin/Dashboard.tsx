@@ -1,9 +1,8 @@
-
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from "sonner";
 import NeumorphicButton from '@/components/ui/NeumorphicButton';
-import { FileEdit, Settings, BookOpen, FileText, User } from 'lucide-react';
+import { FileEdit, Settings, BookOpen, FileText, User, MessageCircle } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 
 const AdminCard = ({ title, description, icon: Icon, onClick }: { 
@@ -42,6 +41,8 @@ const Dashboard = () => {
       navigate('/admin/home');
     } else if (section === 'Site Settings') {
       navigate('/admin/settings');
+    } else if (section === 'Messages') {
+      navigate('/admin/messages');
     } else {
       toast.info(`${section} editor would open here`);
     }
@@ -87,6 +88,13 @@ const Dashboard = () => {
           description="Manage contact information and form settings"
           icon={FileEdit}
           onClick={() => handleCardClick('Contact Page')}
+        />
+        
+        <AdminCard 
+          title="Messages" 
+          description="View and manage contact form submissions"
+          icon={MessageCircle}
+          onClick={() => handleCardClick('Messages')}
         />
         
         <AdminCard 

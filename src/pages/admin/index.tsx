@@ -13,6 +13,8 @@ import AboutEditor from './about/AboutEditor';
 import ContactEditor from './contact/ContactEditor';
 import HomeEditor from './home/HomeEditor';
 import SiteSettingsEditor from './settings/SiteSettingsEditor';
+import MessagesList from './contact/MessagesList';
+import MessageDetail from './contact/MessageDetail';
 
 const Admin = () => {
   const navigate = useNavigate();
@@ -49,6 +51,8 @@ const Admin = () => {
       <Route path="/contact" element={<ContactEditor />} />
       <Route path="/home" element={<HomeEditor />} />
       <Route path="/settings" element={<SiteSettingsEditor />} />
+      <Route path="/messages" element={<MessagesList />} />
+      <Route path="/messages/:id" element={<MessageDetail />} />
     </Routes>
   );
 };

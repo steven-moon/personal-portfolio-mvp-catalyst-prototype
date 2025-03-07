@@ -236,6 +236,18 @@ export const ContactService = {
   updateContactInfo: async (updatedContact: any) => {
     return useMockApi ? mockContactApi.updateContactInfo(updatedContact) : contactApi.updateContactInfo(updatedContact);
   },
+  submitContactMessage: async (formData: { name: string; email: string; subject: string; message: string }) => {
+    return useMockApi ? mockContactApi.submitContactMessage(formData) : contactApi.submitContactMessage(formData);
+  },
+  getContactMessages: async () => {
+    return useMockApi ? mockContactApi.getContactMessages() : contactApi.getContactMessages();
+  },
+  getContactMessageById: async (id: number) => {
+    return useMockApi ? mockContactApi.getContactMessageById(id) : contactApi.getContactMessageById(id);
+  },
+  updateContactMessage: async (id: number, updates: { isRead?: boolean }) => {
+    return useMockApi ? mockContactApi.updateContactMessage(id, updates) : contactApi.updateContactMessage(id, updates);
+  }
 };
 
 /**

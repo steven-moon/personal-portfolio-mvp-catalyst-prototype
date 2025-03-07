@@ -38,13 +38,13 @@ const LocalImage: React.FC<LocalImageProps> = ({
     
     // Don't process empty sources
     if (!src) {
-      console.log('🔍 DEBUG - LocalImage - Empty src provided');
+      // console.log('🔍 DEBUG - LocalImage - Empty src provided');
       setError(true);
       setLoading(false);
       return;
     }
     
-    console.log('🔍 DEBUG - LocalImage - Processing new src:', src);
+    // console.log('🔍 DEBUG - LocalImage - Processing new src:', src);
     handleImageSource(src);
   }, [src]);
 
@@ -52,20 +52,20 @@ const LocalImage: React.FC<LocalImageProps> = ({
   useEffect(() => {
     // Special handling for debugging a failed image load
     if (error && !resolvedSrc && !fallbackSrc) {
-      console.log('🔍 DEBUG - LocalImage - No image could be loaded for:', src);
+      // console.log('🔍 DEBUG - LocalImage - No image could be loaded for:', src);
       
       // Try to list all localStorage keys related to images for debugging
       try {
-        console.log('🔍 DEBUG - LocalImage - Dumping all localStorage image keys:');
+        // console.log('🔍 DEBUG - LocalImage - Dumping all localStorage image keys:');
         const allKeys = Object.keys(localStorage);
         const imageKeys = allKeys.filter(key => key.includes('portfolio_'));
         
-        console.log('🔍 DEBUG - LocalImage - Found', imageKeys.length, 'image keys:');
+        // console.log('🔍 DEBUG - LocalImage - Found', imageKeys.length, 'image keys:');
         imageKeys.forEach(key => {
-          console.log('  >', key);
+          // console.log('  >', key);
         });
       } catch (e) {
-        console.error('🔍 DEBUG - LocalImage - Error dumping localStorage keys:', e);
+        // console.error('🔍 DEBUG - LocalImage - Error dumping localStorage keys:', e);
       }
     }
   }, [error, resolvedSrc, fallbackSrc, src]);
@@ -74,7 +74,7 @@ const LocalImage: React.FC<LocalImageProps> = ({
   const handleImageSource = (source: string) => {
     // If it's a remote URL or data URL, use directly
     if (source.startsWith('http') || source.startsWith('data:')) {
-      console.log('🔍 DEBUG - LocalImage - Using direct URL:', source.substring(0, 30) + '...');
+      // console.log('🔍 DEBUG - LocalImage - Using direct URL:', source.substring(0, 30) + '...');
       setResolvedSrc(source);
       setLoading(false);
       return;
@@ -82,11 +82,11 @@ const LocalImage: React.FC<LocalImageProps> = ({
     
     // Clean the source path by removing any query parameters
     const cleanSource = source.split('?')[0];
-    console.log('🔍 DEBUG - LocalImage - Clean source:', cleanSource);
+    // console.log('🔍 DEBUG - LocalImage - Clean source:', cleanSource);
     
     // Extract filename for direct key lookup
     const filename = cleanSource.split('/').pop();
-    console.log('🔍 DEBUG - LocalImage - Extracted filename:', filename);
+    // console.log('🔍 DEBUG - LocalImage - Extracted filename:', filename);
     
     // Try direct localStorage lookup first with multiple formats (most reliable)
     if (cleanSource) {
@@ -94,7 +94,7 @@ const LocalImage: React.FC<LocalImageProps> = ({
       const imageData = localStorage.getItem(directKey);
       
       if (imageData && imageData.startsWith('data:')) {
-        console.log('🔍 DEBUG - LocalImage - Found image with primary key:', directKey);
+        // console.log('🔍 DEBUG - LocalImage - Found image with primary key:', directKey);
         setResolvedSrc(imageData);
         setLoading(false);
         return;
@@ -107,15 +107,15 @@ const LocalImage: React.FC<LocalImageProps> = ({
       const filenameData = localStorage.getItem(filenameKey);
       
       if (filenameData && filenameData.startsWith('data:')) {
-        console.log('🔍 DEBUG - LocalImage - Found image with filename key:', filenameKey);
+        // console.log('🔍 DEBUG - LocalImage - Found image with filename key:', filenameKey);
         
         // Also store it under the direct key for faster lookup next time
         try {
           const directKey = `portfolio_images_${cleanSource}`;
           localStorage.setItem(directKey, filenameData);
-          console.log('🔍 DEBUG - LocalImage - Copied image data to direct key for future use');
+          // console.log('🔍 DEBUG - LocalImage - Copied image data to direct key for future use');
         } catch (e) {
-          console.warn('🔍 DEBUG - LocalImage - Error copying to direct key:', e);
+          // console.warn('🔍 DEBUG - LocalImage - Error copying to direct key:', e);
         }
         
         setResolvedSrc(filenameData);
@@ -126,7 +126,7 @@ const LocalImage: React.FC<LocalImageProps> = ({
     
     // For local images from storage - try the general object format as a last resort
     const key = isProfileImage ? STORAGE_KEYS.PROFILE_IMAGE : STORAGE_KEYS.IMAGES;
-    console.log('🔍 DEBUG - LocalImage - Looking for image in JSON storage with key:', key);
+    // console.log('🔍 DEBUG - LocalImage - Looking for image in JSON storage with key:', key);
     
     try {
       const storageData = localStorage.getItem(key);
@@ -135,7 +135,7 @@ const LocalImage: React.FC<LocalImageProps> = ({
         
         // Check if the image exists in storage
         if (storage[cleanSource]) {
-          console.log('🔍 DEBUG - LocalImage - Found image in JSON storage:', cleanSource);
+          // console.log('🔍 DEBUG - LocalImage - Found image in JSON storage:', cleanSource);
           
           const imageData = storage[cleanSource];
           
@@ -143,9 +143,9 @@ const LocalImage: React.FC<LocalImageProps> = ({
           try {
             const directKey = `portfolio_images_${cleanSource}`;
             localStorage.setItem(directKey, imageData);
-            console.log('🔍 DEBUG - LocalImage - Copied image data to direct key from JSON storage');
+            // console.log('🔍 DEBUG - LocalImage - Copied image data to direct key from JSON storage');
           } catch (e) {
-            console.warn('🔍 DEBUG - LocalImage - Error copying to direct key:', e);
+            // console.warn('🔍 DEBUG - LocalImage - Error copying to direct key:', e);
           }
           
           setResolvedSrc(imageData);
@@ -154,13 +154,13 @@ const LocalImage: React.FC<LocalImageProps> = ({
         }
       }
     } catch (e) {
-      console.warn('🔍 DEBUG - LocalImage - Error parsing storage:', e);
+      // console.warn('🔍 DEBUG - LocalImage - Error parsing storage:', e);
     }
     
     // If image not found but filename exists, try one more direct approach
     if (filename) {
       try {
-        console.log('🔍 DEBUG - LocalImage - Last resort: searching all localStorage keys for filename:', filename);
+        // console.log('🔍 DEBUG - LocalImage - Last resort: searching all localStorage keys for filename:', filename);
         // Try to find any key in localStorage that contains our filename
         const allKeys = Object.keys(localStorage);
         
@@ -169,15 +169,15 @@ const LocalImage: React.FC<LocalImageProps> = ({
               key.includes('portfolio_')) {
             const value = localStorage.getItem(key);
             if (value && value.startsWith('data:')) {
-              console.log('🔍 DEBUG - LocalImage - Found image by key search:', key);
+              // console.log('🔍 DEBUG - LocalImage - Found image by key search:', key);
               
               // Also store it under direct key for faster lookup next time
               try {
                 const directKey = `portfolio_images_${cleanSource}`;
                 localStorage.setItem(directKey, value);
-                console.log('🔍 DEBUG - LocalImage - Copied image data to direct key from search');
+                // console.log('🔍 DEBUG - LocalImage - Copied image data to direct key from search');
               } catch (e) {
-                console.warn('🔍 DEBUG - LocalImage - Error copying to direct key:', e);
+                // console.warn('🔍 DEBUG - LocalImage - Error copying to direct key:', e);
               }
               
               setResolvedSrc(value);
@@ -187,37 +187,37 @@ const LocalImage: React.FC<LocalImageProps> = ({
           }
         }
       } catch (e) {
-        console.warn('🔍 DEBUG - LocalImage - Error during localStorage key search:', e);
+        // console.warn('🔍 DEBUG - LocalImage - Error during localStorage key search:', e);
       }
     }
     
     if (fallbackSrc) {
-      console.log('🔍 DEBUG - LocalImage - Using fallback src:', fallbackSrc);
+      // console.log('🔍 DEBUG - LocalImage - Using fallback src:', fallbackSrc);
       setResolvedSrc(fallbackSrc);
     } else {
-      console.log('🔍 DEBUG - LocalImage - No fallback available, setting error state');
+      // console.log('🔍 DEBUG - LocalImage - No fallback available, setting error state');
       setError(true);
     }
     setLoading(false);
   };
 
   const handleError = () => {
-    console.warn('🔍 DEBUG - LocalImage - Error loading image:', src);
+    // console.warn('🔍 DEBUG - LocalImage - Error loading image:', src);
     
     // If we have a fallback and aren't already using it
     if (fallbackSrc && resolvedSrc !== fallbackSrc) {
-      console.log('🔍 DEBUG - LocalImage - Falling back to:', fallbackSrc);
+      // console.log('🔍 DEBUG - LocalImage - Falling back to:', fallbackSrc);
       setResolvedSrc(fallbackSrc);
       // Don't set error yet, give the fallback a chance
     } else {
-      console.error('🔍 DEBUG - LocalImage - No fallback available or fallback also failed');
+      // console.error('🔍 DEBUG - LocalImage - No fallback available or fallback also failed');
       setError(true);
     }
     setLoading(false);
   };
 
   const handleLoad = () => {
-    console.log('🔍 DEBUG - LocalImage - Image loaded successfully:', src);
+    // console.log('🔍 DEBUG - LocalImage - Image loaded successfully:', src);
     setLoading(false);
     setError(false);
   };
