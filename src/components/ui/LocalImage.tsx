@@ -191,6 +191,14 @@ const LocalImage: React.FC<LocalImageProps> = ({
       }
     }
     
+    // NEW: If not found in localStorage, try accessing from public folder directly
+    if (source.startsWith('/') && !source.startsWith('//')) {
+      console.log('🔍 DEBUG - LocalImage - Trying to load from public folder:', source);
+      setResolvedSrc(source);
+      setLoading(false);
+      return;
+    }
+    
     if (fallbackSrc) {
       // console.log('🔍 DEBUG - LocalImage - Using fallback src:', fallbackSrc);
       setResolvedSrc(fallbackSrc);

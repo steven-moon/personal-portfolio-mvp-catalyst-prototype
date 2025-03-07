@@ -34,7 +34,7 @@ const Hero = () => {
     title: "",
     subtitle: "",
     profession: "",
-    profileImage: undefined,
+    profileImage: "/images/sample-profile.png",
     services: []
   });
 
@@ -79,7 +79,7 @@ const Hero = () => {
             title: backendData.title || "",
             subtitle: backendData.subtitle || "",
             profession: backendData.profession || "",
-            profileImage: backendData.profileImage || undefined,
+            profileImage: backendData.profileImage || "/images/sample-profile.png",
             services: Array.isArray(backendData.services) 
               ? backendData.services.map(service => ({
                   id: service.id.toString(),
@@ -113,7 +113,7 @@ const Hero = () => {
             title: data.title || "",
             subtitle: data.subtitle || "",
             profession: data.profession || "",
-            profileImage: data.profileImage || undefined,
+            profileImage: data.profileImage || "/images/sample-profile.png",
             services: Array.isArray(data.services) 
               ? data.services.map((service: any) => ({
                   id: (service.id || Math.random().toString(36)).toString(),
