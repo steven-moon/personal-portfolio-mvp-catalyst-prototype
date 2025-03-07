@@ -22,7 +22,7 @@ export const HOME_DATA: HomePage = {
     title: "Avery Parker",
     subtitle: "Building inclusive, next-generation web and AI solutions",
     profession: "Full-Stack & AI Developer",
-    profileImage: DEFAULT_PROFILE_IMAGE,
+    profileImage: "/images/sample-profile.png",
     services: [
       {
         id: "1",
