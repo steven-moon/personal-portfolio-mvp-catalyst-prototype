@@ -57,12 +57,15 @@ const Hero = () => {
         console.log('Hero: Response has services property?', 'services' in data);
         console.log('Hero: Response has hero property?', 'hero' in data);
         
-        // Check the data format from multiple possible sources:
-        // 1. Backend API data with id property
-        // 2. Backend API data with services directly included
-        // 3. Mock API data with hero property
-        if ('id' in data) {
-          console.log('Hero: Detected backend API format');
+        // Determine if this is mock data by checking if useMockApi is true
+        // We can't rely solely on the data structure to determine if it's mock data
+        // since the real API can also return data with a hero property
+        const isMockApi = import.meta.env.VITE_USE_MOCK_DATA === 'true';
+        console.log('Hero: Is using mock API according to env?', isMockApi);
+        
+        if ('id' in data && !('hero' in data)) {
+          // Backend API format 1: data with id at root level
+          console.log('Hero: Detected backend API format (with root id)');
           // Backend API data structure
           const backendData = data as unknown as BackendHomePage;
           console.log('Hero: Backend data:', backendData);
@@ -94,18 +97,35 @@ const Hero = () => {
           
           setHeroData(transformedData);
         } else if ('hero' in data) {
-          console.log('Hero: Detected mock API format');
-          // Mock API data structure
-          const mockData = (data as HomePage).hero;
-          console.log('Hero: Mock data:', mockData);
-          console.log('Hero: Mock services:', mockData.services);
-          console.log('Hero: Mock services count:', mockData.services?.length || 0);
+          // This could be from either real API or mock API with hero property
+          console.log('Hero: Detected response with hero property');
           
-          setHeroData({
-            ...mockData,
-            // Ensure services is an array even if missing
-            services: Array.isArray(mockData.services) ? mockData.services : []
-          });
+          if (isMockApi) {
+            console.log('Hero: Processing as mock API data (based on env setting)');
+            // Mock API data structure
+            const mockData = (data as HomePage).hero;
+            console.log('Hero: Mock data:', mockData);
+            console.log('Hero: Mock services:', mockData.services);
+            console.log('Hero: Mock services count:', mockData.services?.length || 0);
+            
+            setHeroData({
+              ...mockData,
+              // Ensure services is an array even if missing
+              services: Array.isArray(mockData.services) ? mockData.services : []
+            });
+          } else {
+            // Real API with hero property
+            console.log('Hero: Processing as real API data with hero property');
+            const apiData = (data as HomePage).hero;
+            console.log('Hero: Real API data with hero:', apiData);
+            console.log('Hero: Real API services:', apiData.services);
+            console.log('Hero: Real API services count:', apiData.services?.length || 0);
+            
+            setHeroData({
+              ...apiData,
+              services: Array.isArray(apiData.services) ? apiData.services : []
+            });
+          }
         } else {
           console.log('Hero: Unknown data format, trying to adapt');
           // Try to adapt to whatever we received

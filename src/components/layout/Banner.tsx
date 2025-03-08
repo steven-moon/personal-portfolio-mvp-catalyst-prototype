@@ -46,7 +46,7 @@ const Banner = () => {
       </div>
       
       <div className="text-center px-2">
-        This is a demo MVP Catalyst site learn more at{' '}
+        This is a Catalyst app site learn more at{' '}
         <a 
           href="https://clevercoding.com" 
           className="underline font-bold hover:opacity-90 transition-opacity ml-1"
