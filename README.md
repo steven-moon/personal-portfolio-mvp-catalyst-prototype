@@ -67,6 +67,83 @@ This project includes comprehensive documentation to help you get started and un
 
 Update the log with dated entries as you make changes. This practice helps with knowledge sharing, onboarding new developers, and troubleshooting.
 
+## 📋 Git Commit Conventions
+
+When contributing to the frontend portion of this project, please use the following commit message format to maintain consistency and clarity in the git history.
+
+```
+<type>(<scope>): <subject>
+// blank line
+<body>
+// blank line
+<footer>
+```
+
+### Commit Structure
+
+- **Header** is mandatory, while **Body** and **Footer** are optional
+- No line should exceed 72 characters to avoid automatic line breaks
+
+### Types
+
+- `feat`: New feature (e.g., new component, page or functionality)
+- `fix`: Bug fix (e.g., visual glitch, responsive issue, state management bug)
+- `docs`: Documentation changes (e.g., component docs, comments)
+- `style`: Visual styling changes, CSS/Tailwind updates
+- `refactor`: Code refactoring (e.g., component restructuring)
+- `perf`: Performance improvements
+- `test`: Adding/updating tests (e.g., component tests, E2E tests)
+- `chore`: Build process, dependency or tool changes (e.g., Vite config)
+- `ui`: UI component updates or Neumorphic design improvements
+- `a11y`: Accessibility improvements
+
+### Scopes (Frontend-Specific)
+
+- `components`: Reusable UI components
+- `pages`: Page components
+- `hooks`: Custom React hooks
+- `store`: State management
+- `api`: API integration or service functions
+- `styles`: CSS/Tailwind styles
+- `utils`: Utility functions
+- `types`: TypeScript types/interfaces
+- `assets`: Images, icons, or other static assets
+- `config`: Configuration files
+- `deps`: Dependencies
+- `routes`: Routing related changes
+- `auth`: Authentication-related code
+
+### Examples
+
+```
+feat(components): Add NeumorphicCard component
+
+Create a reusable neumorphic card component with customizable shadow depth,
+radius, and hover states. Implemented component uses compound pattern 
+to provide:
+- CardHeader
+- CardContent
+- CardFooter subcomponents
+
+Addresses #45
+```
+
+```
+fix(pages): Resolve project gallery layout on mobile devices
+
+Fixed the grid layout issues on the Projects page that caused overflow 
+on mobile screens under 375px width. Updated responsive breakpoints and
+adjusted card sizing.
+```
+
+```
+refactor(hooks): Convert useProjects to use React Query
+
+Migrated the custom useProjects hook from manual fetch implementation
+to React Query for better caching, refetching, and error handling.
+Added loading states and error feedback.
+```
+
 ## 🚀 Getting Started
 
 For installation instructions and development workflow, see the [Developer Guide](./DEVELOPER-GUIDE.md).
